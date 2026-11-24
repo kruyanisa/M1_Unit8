@@ -1,1 +1,890 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Spring Celebrations - Reading (T/F)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Prompt:wght@500;700&family=Sarabun:wght@400;600;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://kruyanisa.github.io/classroom-core/quiz-config.js"></script>
 
+    <style>
+        :root {
+            --emerald: #10b981;
+            --emerald-dark: #059669;
+            --magenta: #ec4899;
+            --magenta-dark: #be185d;
+            --amber: #f59e0b;
+            --amber-dark: #d97706;
+            --ink: #1e293b;
+            --success: #16a34a;
+            --danger: #dc2626;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: 'Sarabun', sans-serif;
+            margin: 0;
+            padding: 12px 12px 40px 12px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--ink);
+            background: linear-gradient(160deg, #ecfdf5 0%, #fefce8 50%, #fdf2f8 100%);
+        }
+
+        /* Profile Bar */
+        .profile-bar {
+            width: 100%;
+            max-width: 740px;
+            font-size: clamp(12px, 3.2vw, 14px);
+            background: rgba(255, 255, 255, 0.94);
+            border: 2px solid #a7f3d0;
+            padding: 8px 14px;
+            border-radius: 20px;
+            color: #065f46;
+            font-weight: 700;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.12);
+        }
+
+        .btn-switch {
+            background: var(--magenta);
+            color: #fff;
+            border: none;
+            padding: 4px 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-family: 'Prompt', sans-serif;
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        /* Card Layout */
+        .card {
+            width: 100%;
+            max-width: 740px;
+            background: rgba(255, 255, 255, 0.96);
+            border: 3px solid #fbcfe8;
+            border-radius: 24px;
+            padding: 18px 16px;
+            box-shadow: 0 12px 28px rgba(190, 24, 93, 0.09);
+            margin-bottom: 16px;
+        }
+
+        /* Header & Intro Banner */
+        .header-center { text-align: center; margin-bottom: 14px; }
+
+        .badge-unit {
+            display: inline-block;
+            background: linear-gradient(90deg, var(--magenta), var(--amber));
+            color: #fff;
+            font-family: 'Prompt', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 4px 14px;
+            border-radius: 20px;
+            margin-bottom: 6px;
+        }
+
+        h1 {
+            font-family: 'Fredoka One', cursive;
+            color: #831843;
+            font-size: clamp(24px, 6vw, 34px);
+            margin: 0 0 6px 0;
+        }
+
+        .intro-box {
+            background: linear-gradient(135deg, #fdf2f8, #fffbeb);
+            border: 2px dashed #f472b6;
+            border-radius: 16px;
+            padding: 14px;
+            margin-bottom: 16px;
+        }
+
+        .intro-text {
+            font-size: clamp(15px, 3.8vw, 17px);
+            font-weight: 600;
+            color: #831843;
+            margin: 0 0 10px 0;
+            line-height: 1.5;
+        }
+
+        /* Festival Tabs */
+        .fest-tabs {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+
+        @media (min-width: 540px) {
+            .fest-tabs { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        .fest-tab {
+            padding: 10px 10px;
+            border-radius: 14px;
+            border: 2px solid #e2e8f0;
+            background: #f8fafc;
+            font-family: 'Prompt', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            color: #475569;
+            cursor: pointer;
+            transition: 0.15s;
+            text-align: center;
+        }
+
+        .fest-tab.active {
+            background: var(--emerald);
+            border-color: var(--emerald-dark);
+            color: #fff;
+            box-shadow: 0 4px 0 var(--emerald-dark);
+        }
+
+        /* Reading Panel */
+        .reading-panel { display: none; animation: fadeIn 0.25s ease; }
+        .reading-panel.active { display: block; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Image Gallery (16:9) */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        @media (min-width: 540px) {
+            .gallery-grid.cols-2 { grid-template-columns: 1fr 1fr; }
+            .gallery-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        .img-frame {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background: #0f172a;
+            border-radius: 14px;
+            border: 3px solid #fde68a;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .img-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+
+        /* Audio Player Bar */
+        .audio-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #f0fdf4;
+            border: 2px solid #86efac;
+            border-radius: 14px;
+            padding: 8px 12px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .audio-label {
+            font-family: 'Prompt', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            color: #166534;
+            white-space: nowrap;
+        }
+
+        audio {
+            flex: 1;
+            min-width: 200px;
+            height: 36px;
+        }
+
+        /* Passage Box */
+        .passage-box {
+            background: #ffffff;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 16px;
+            font-size: clamp(16px, 4vw, 18px);
+            line-height: 1.75;
+            color: #1e293b;
+        }
+
+        .speaker-tag {
+            display: inline-block;
+            margin-top: 8px;
+            background: #fef3c7;
+            color: #92400e;
+            font-family: 'Prompt', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 3px 12px;
+            border-radius: 10px;
+        }
+
+        .vocab-hint-bar {
+            font-size: 13px;
+            color: #be185d;
+            font-weight: 700;
+            margin-top: 10px;
+            text-align: right;
+        }
+
+        .vocab-word {
+            color: #be185d;
+            font-weight: 800;
+            border-bottom: 2px dashed #f472b6;
+            cursor: pointer;
+            padding: 0 2px;
+            border-radius: 4px;
+            transition: background 0.15s;
+        }
+        .vocab-word:hover { background: #fce7f3; }
+
+        /* Vocab Popover */
+        #vocab-popover {
+            display: none;
+            position: fixed;
+            background: #fff;
+            border: 2px solid var(--magenta);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+            padding: 10px 14px;
+            border-radius: 14px;
+            text-align: center;
+            z-index: 2500;
+            min-width: 160px;
+            max-width: 230px;
+        }
+        .pop-eng { font-family: 'Prompt', sans-serif; font-size: 16px; font-weight: 700; color: #831843; }
+        .pop-thai { font-size: 15px; font-weight: 800; color: #059669; margin-top: 3px; }
+
+        /* Quiz Section */
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px dashed #fbcfe8;
+            padding-bottom: 10px;
+            margin-bottom: 14px;
+        }
+
+        .quiz-title {
+            font-family: 'Prompt', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: #831843;
+            margin: 0;
+        }
+
+        .quiz-badge {
+            background: #dcfce7;
+            color: #15803d;
+            font-weight: 800;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 13px;
+            border: 2px solid #86efac;
+        }
+
+        .q-card {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 14px;
+            margin-bottom: 12px;
+        }
+
+        .q-text {
+            font-family: 'Prompt', sans-serif;
+            font-size: clamp(15px, 4vw, 17px);
+            font-weight: 700;
+            margin: 0 0 10px 0;
+            color: var(--ink);
+        }
+
+        .tf-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .tf-btn {
+            padding: 11px 10px;
+            border-radius: 12px;
+            border: 2px solid #cbd5e1;
+            background: #ffffff;
+            font-family: 'Fredoka One', 'Prompt', sans-serif;
+            font-size: 16px;
+            color: #334155;
+            cursor: pointer;
+            box-shadow: 0 4px 0 #cbd5e1;
+            transition: 0.15s;
+        }
+
+        .tf-btn:active:not(:disabled) { transform: translateY(3px); box-shadow: none; }
+        .tf-btn.selected { border-color: var(--amber-dark); background: #fef3c7; color: #92400e; box-shadow: 0 4px 0 var(--amber-dark); }
+        .tf-btn.correct { border-color: var(--success); background: #dcfce7; color: #14532d; box-shadow: 0 4px 0 var(--success); }
+        .tf-btn.wrong { border-color: var(--danger); background: #fee2e2; color: #7f1d1d; box-shadow: 0 4px 0 var(--danger); }
+
+        .correction-note {
+            display: none;
+            margin-top: 10px;
+            padding: 8px 12px;
+            border-radius: 10px;
+            background: #fffbeb;
+            border-left: 4px solid var(--amber);
+            font-size: 14px;
+            font-weight: 600;
+            color: #78350f;
+        }
+
+        .btn-primary {
+            width: 100%;
+            max-width: 380px;
+            margin: 14px auto 0 auto;
+            display: block;
+            padding: 13px 18px;
+            background: var(--magenta);
+            color: #fff;
+            border: none;
+            border-radius: 16px;
+            font-family: 'Prompt', sans-serif;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 5px 0 var(--magenta-dark);
+            transition: 0.1s;
+        }
+
+        .btn-primary:active:not(:disabled) { transform: translateY(4px); box-shadow: none; }
+        .btn-primary:disabled {
+            background: #94a3b8;
+            box-shadow: 0 5px 0 #64748b;
+            cursor: not-allowed;
+            opacity: 0.75;
+        }
+
+        /* Modals */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+            visibility: hidden;
+            opacity: 0;
+            transition: 0.25s;
+            padding: 15px;
+        }
+
+        .modal-overlay.active { visibility: visible; opacity: 1; }
+
+        .modal-box {
+            background: #fff;
+            padding: 26px 20px;
+            border-radius: 26px;
+            text-align: center;
+            width: 100%;
+            max-width: 340px;
+            border: 4px solid var(--magenta);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-box input {
+            width: 100%;
+            padding: 11px;
+            margin-bottom: 10px;
+            border: 2px solid #fbcfe8;
+            border-radius: 14px;
+            text-align: center;
+            font-family: 'Sarabun', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            outline: none;
+        }
+
+        .modal-box input:focus { border-color: var(--magenta); }
+
+        .score-num {
+            font-family: 'Fredoka One', cursive;
+            font-size: 58px;
+            color: var(--magenta);
+            margin: 8px 0;
+            display: block;
+            line-height: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- User Profile Bar -->
+    <div id="userProfile" class="profile-bar" style="display:none;">
+        <span>👤 <span id="p_name"></span> | 🏫 <span id="p_room"></span> | 🆔 <span id="p_id"></span></span>
+        <button class="btn-switch" onclick="switchAccount()">🔄 สลับบัญชี</button>
+    </div>
+
+    <!-- Reading Card -->
+    <div class="card">
+        <div class="header-center">
+            <div class="badge-unit">Unit 8a • Reading (Listen & Read)</div>
+            <h1>🌸 Spring Celebrations</h1>
+        </div>
+
+        <!-- Intro Section -->
+        <div class="intro-box">
+            <p class="intro-text">
+                "Are you planning a trip to the UK and Ireland next spring? Don't miss out on these celebrations. You are sure to have the time of your life."
+            </p>
+            <div class="audio-bar" style="margin-bottom:0; background:#fff; border-color:#fbcfe8;">
+                <span class="audio-label" style="color:#be185d;">🎧 Intro</span>
+                <audio class="lesson-audio" controls preload="metadata" src="intro.mp3"></audio>
+            </div>
+        </div>
+
+        <!-- 3 Festival Tabs -->
+        <div class="fest-tabs">
+            <button class="fest-tab active" onclick="openFest(0, this)">🏴󠁧󠁢󠁷󠁬󠁳󠁿 1. St David's Day (Hugh)</button>
+            <button class="fest-tab" onclick="openFest(1, this)">☘️ 2. St Patrick's Day (James)</button>
+            <button class="fest-tab" onclick="openFest(2, this)">⚔️ 3. St George's Day (Sam)</button>
+        </div>
+
+        <!-- Panel 1: Hugh -->
+        <div class="reading-panel active" id="fest-0">
+            <div class="gallery-grid cols-3">
+                <div class="img-frame"><img src="2wear.jpg" alt="Traditional Welsh costumes"></div>
+                <div class="img-frame"><img src="6fly.jpg" alt="Flying the national flag"></div>
+                <div class="img-frame"><img src="3play.jpg" alt="Playing the Welsh bagpipes"></div>
+            </div>
+            <div class="audio-bar">
+                <span class="audio-label">🎧 ฟังเสียง Hugh</span>
+                <audio class="lesson-audio" controls preload="metadata" src="Hugh.mp3"></audio>
+            </div>
+            <div class="passage-box">
+                Why not come to Wales for St David's Day? It is on 1st March and last year's celebrations in Cardiff were <span class="vocab-word" onclick="showVocab(event,'brilliant')">brilliant</span>. All the girls and boys wore traditional Welsh costumes and sang songs, danced and read <span class="vocab-word" onclick="showVocab(event,'poetry')">poetry</span>. All the buildings in town flew the national flag. We had street parades where people played the Welsh bagpipes. In the evening, I went home for a family dinner. We ate some juicy <span class="vocab-word" onclick="showVocab(event,'roast lamb')">roast lamb</span> with potatoes. Delicious!
+                <div><span class="speaker-tag">👦 Hugh, 13 (Wales)</span></div>
+            </div>
+        </div>
+
+        <!-- Panel 2: James -->
+        <div class="reading-panel" id="fest-1">
+            <div class="gallery-grid cols-2">
+                <div class="img-frame"><img src="1paint.jpg" alt="Painting faces"></div>
+                <div class="img-frame"><img src="4have.jpg" alt="Street parade in Dublin"></div>
+            </div>
+            <div class="audio-bar">
+                <span class="audio-label">🎧 ฟังเสียง James</span>
+                <audio class="lesson-audio" controls preload="metadata" src="James.mp3"></audio>
+            </div>
+            <div class="passage-box">
+                Don't forget, St Patrick's Day! Try to pop over to Dublin, on 17th of March because the whole city goes crazy. I celebrated with my <span class="vocab-word" onclick="showVocab(event,'schoolmates')">schoolmates</span> last year and everyone wore <span class="vocab-word" onclick="showVocab(event,'shamrocks')">shamrocks</span>, green clothes and painted their faces. In the evening people let off <span class="vocab-word" onclick="showVocab(event,'fireworks')">fireworks</span>. My mum made some special food. We all ate Irish soda bread, bacon and <span class="vocab-word" onclick="showVocab(event,'cabbage')">cabbage</span>. It was yummy. You must come and see for yourself.
+                <div><span class="speaker-tag">👦 James, 12 (Ireland)</span></div>
+            </div>
+        </div>
+
+        <!-- Panel 3: Sam -->
+        <div class="reading-panel" id="fest-2">
+            <div class="gallery-grid">
+                <div class="img-frame" style="max-width:480px; margin:0 auto;"><img src="5wearknight.jpg" alt="Medieval knight costumes"></div>
+            </div>
+            <div class="audio-bar">
+                <span class="audio-label">🎧 ฟังเสียง Sam</span>
+                <audio class="lesson-audio" controls preload="metadata" src="Sam.mp3"></audio>
+            </div>
+            <div class="passage-box">
+                If you are still in the UK on 23rd April, why not visit London for St George's Day. Last year I was in Covent Garden and it was great fun. We watched some <span class="vocab-word" onclick="showVocab(event,'medieval')">medieval</span> street theatre and some people wore dragon costumes. There was even a <span class="vocab-word" onclick="showVocab(event,'stall')">stall</span> that served <span class="vocab-word" onclick="showVocab(event,'roast beef')">roast beef</span> and Yorkshire puddings. We had a great time! Make it a date in your diary!
+                <div><span class="speaker-tag">👦 Sam, 14 (UK)</span></div>
+            </div>
+        </div>
+
+        <div class="vocab-hint-bar">💡 แตะคำสีชมพูเส้นประเพื่อดูคำแปลภาษาไทย</div>
+    </div>
+
+    <!-- True / False Quiz Card -->
+    <div class="card" id="quizSection">
+        <div class="quiz-header">
+            <h2 class="quiz-title">📝 Mark T (True) or F (False)</h2>
+            <span class="quiz-badge">4 คะแนน</span>
+        </div>
+        <div id="quizContainer"></div>
+        <button id="btnCheckQuiz" class="btn-primary" onclick="checkAndSubmitQuiz()">✅ ตรวจคำตอบและส่งคะแนน</button>
+    </div>
+
+    <!-- Vocab Popover -->
+    <div id="vocab-popover">
+        <div class="pop-eng" id="pop-eng"></div>
+        <div class="pop-thai" id="pop-thai"></div>
+    </div>
+
+    <!-- Login Modal -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal-box">
+            <h2 id="modalTitle" style="color:#831843; margin:0 0 6px 0; font-family:'Prompt';">📝 ลงชื่อเข้าเรียน</h2>
+            <p id="modalSub" style="color:#64748b; font-weight:600; margin:0 0 12px 0; font-size:14px;">กรอกข้อมูลเพื่อบันทึกคะแนน</p>
+            <input type="text" id="in_name" placeholder="ชื่อ - นามสกุล">
+            <input type="text" id="in_room" placeholder="ชั้น/ห้อง (เช่น 1/1)">
+            <input type="text" id="in_id" placeholder="รหัสนักเรียน (5 หลัก)" maxlength="5">
+            <button class="btn-primary" style="margin-top:4px;" onclick="confirmUser()">🚀 ยืนยันข้อมูล</button>
+        </div>
+    </div>
+
+    <!-- Score Modal -->
+    <div class="modal-overlay" id="scoreModal">
+        <div class="modal-box">
+            <h2 style="color:#831843; margin:0; font-family:'Prompt';">🎉 สรุปผลคะแนน</h2>
+            <p style="color:#64748b; font-weight:600; margin:6px 0 0 0;">คะแนนของคุณคือ</p>
+            <span class="score-num"><span id="finalScoreText">0</span><span style="font-size:28px; color:#94a3b8;">/4</span></span>
+            <div id="saveStatus" style="font-weight:700; font-size:15px; margin-bottom:14px; color:#15803d; min-height:22px;"></div>
+            <button class="btn-primary" style="background:var(--emerald); box-shadow:0 5px 0 var(--emerald-dark); margin-top:0;" onclick="closeScoreModal()">👀 ดูเฉลยและคำแก้ไข</button>
+            <button id="playAgainBtn" class="btn-primary" style="margin-top:10px;" onclick="resetQuiz()" disabled>🔄 ทำแบบทดสอบอีกครั้ง</button>
+        </div>
+    </div>
+
+<script>
+    const TOPIC_NAME = 'ม.1 Unit 8 Celebrations Reading T or F';
+
+    const dictionary = {
+        "brilliant": "ยอดเยี่ยมมาก, สุดยอด",
+        "poetry": "บทกวี, กลอน",
+        "roast lamb": "เนื้อแกะย่าง",
+        "schoolmates": "เพื่อนร่วมโรงเรียน",
+        "shamrocks": "ใบแชมร็อก (ใบไม้สามแฉกสัญลักษณ์ไอร์แลนด์)",
+        "fireworks": "ดอกไม้ไฟ, พลุ",
+        "cabbage": "กะหล่ำปลี",
+        "medieval": "ยุคกลาง",
+        "stall": "แผงลอย, ซุ้มขายอาหาร",
+        "roast beef": "เนื้อวัวย่าง"
+    };
+
+    const quizData = [
+        {
+            q: "1. St David's Day is on 17th March.",
+            answer: "F",
+            correction: "❌ False — แก้ไข: St David's Day is on 1st March. (วันที่ 17 มี.ค. คือวัน St Patrick's Day)"
+        },
+        {
+            q: "2. People play bagpipes on St George's Day.",
+            answer: "F",
+            correction: "❌ False — แก้ไข: People play the Welsh bagpipes on St David's Day."
+        },
+        {
+            q: "3. Hugh had roast lamb and potatoes on St David's Day.",
+            answer: "T",
+            correction: "✅ True — ถูกต้อง (Hugh กินเนื้อแกะย่างกับมันฝรั่งในมื้อเย็นกับครอบครัว)"
+        },
+        {
+            q: "4. Sam watched a concert on St George's Day.",
+            answer: "F",
+            correction: "❌ False — แก้ไข: Sam watched some medieval street theatre. (ชมละครข้างถนนยุคกลาง)"
+        }
+    ];
+
+    let userAnswers = {};
+    let isQuizGraded = false;
+    let latestScore = 0;
+    let isPendingSubmit = false;
+
+    document.addEventListener("DOMContentLoaded", () => {
+        renderQuiz();
+        loadStudentProfile();
+
+        // ป้องกันไฟล์เสียง 4 ไฟล์เล่นซ้อนกัน
+        const allAudios = document.querySelectorAll('.lesson-audio');
+        allAudios.forEach(audio => {
+            audio.addEventListener('play', () => {
+                allAudios.forEach(other => {
+                    if (other !== audio && !other.paused) other.pause();
+                });
+            });
+        });
+    });
+
+    // ================= WEB AUDIO API SFX =================
+    function playSFX(type) {
+        try {
+            const AudioCtx = window.AudioContext || window.webkitAudioContext;
+            if (!AudioCtx) return;
+            const ctx = new AudioCtx();
+            if (ctx.state === 'suspended') ctx.resume();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain); gain.connect(ctx.destination);
+            const now = ctx.currentTime;
+
+            if (type === 'tap') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(520, now);
+                gain.gain.setValueAtTime(0.08, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.07);
+                osc.start(now); osc.stop(now + 0.07);
+            } else if (type === 'done') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(523.25, now);
+                osc.frequency.setValueAtTime(659.25, now + 0.1);
+                osc.frequency.setValueAtTime(783.99, now + 0.2);
+                gain.gain.setValueAtTime(0.12, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.42);
+                osc.start(now); osc.stop(now + 0.42);
+            }
+            setTimeout(() => ctx.close().catch(() => {}), 600);
+        } catch (e) {}
+    }
+
+    // ================= TABS & VOCAB POPOVER =================
+    function openFest(idx, btnEl) {
+        playSFX('tap');
+        document.querySelectorAll('.lesson-audio').forEach(a => a.pause());
+        document.querySelectorAll('.fest-tab').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.reading-panel').forEach(p => p.classList.remove('active'));
+        btnEl.classList.add('active');
+        document.getElementById(`fest-${idx}`).classList.add('active');
+    }
+
+    function showVocab(event, word) {
+        event.stopPropagation();
+        playSFX('tap');
+        const pop = document.getElementById('vocab-popover');
+        document.getElementById('pop-eng').innerText = word;
+        document.getElementById('pop-thai').innerText = dictionary[word] || '';
+
+        pop.style.display = 'block';
+        const popW = pop.offsetWidth;
+        const popH = pop.offsetHeight;
+        let leftPos = event.clientX - (popW / 2);
+        let topPos = event.clientY + 14;
+
+        if (leftPos < 10) leftPos = 10;
+        if (leftPos + popW > window.innerWidth - 10) leftPos = window.innerWidth - popW - 10;
+        if (topPos + popH > window.innerHeight - 10) topPos = event.clientY - popH - 14;
+
+        pop.style.left = leftPos + 'px';
+        pop.style.top = topPos + 'px';
+    }
+
+    document.addEventListener('click', () => {
+        document.getElementById('vocab-popover').style.display = 'none';
+    });
+
+    // ================= QUIZ SYSTEM =================
+    function renderQuiz() {
+        const container = document.getElementById('quizContainer');
+        container.innerHTML = '';
+        userAnswers = {};
+        isQuizGraded = false;
+
+        const btnCheck = document.getElementById('btnCheckQuiz');
+        btnCheck.innerText = '✅ ตรวจคำตอบและส่งคะแนน';
+        btnCheck.style.background = '';
+        btnCheck.style.boxShadow = '';
+        btnCheck.onclick = checkAndSubmitQuiz;
+
+        quizData.forEach((item, idx) => {
+            const card = document.createElement('div');
+            card.className = 'q-card';
+            card.innerHTML = `
+                <p class="q-text">${item.q}</p>
+                <div class="tf-grid">
+                    <button type="button" class="tf-btn" id="q-${idx}-T" onclick="selectTF(${idx}, 'T')">T (True / ถูก)</button>
+                    <button type="button" class="tf-btn" id="q-${idx}-F" onclick="selectTF(${idx}, 'F')">F (False / ผิด)</button>
+                </div>
+                <div class="correction-note" id="corr-${idx}">${item.correction}</div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    function selectTF(idx, val) {
+        if (isQuizGraded) return;
+        playSFX('tap');
+        userAnswers[idx] = val;
+        document.getElementById(`q-${idx}-T`).classList.toggle('selected', val === 'T');
+        document.getElementById(`q-${idx}-F`).classList.toggle('selected', val === 'F');
+    }
+
+    function checkAndSubmitQuiz() {
+        if (Object.keys(userAnswers).length < quizData.length) {
+            Swal.fire({ icon: 'warning', title: 'ยังตอบไม่ครบ!', text: 'กรุณาเลือก T หรือ F ให้ครบทั้ง 4 ข้อก่อนส่งนะครับ', confirmButtonColor: '#ec4899' });
+            return;
+        }
+
+        isQuizGraded = true;
+        let score = 0;
+
+        quizData.forEach((item, idx) => {
+            const chosen = userAnswers[idx];
+            const btnT = document.getElementById(`q-${idx}-T`);
+            const btnF = document.getElementById(`q-${idx}-F`);
+            btnT.disabled = true;
+            btnF.disabled = true;
+            btnT.classList.remove('selected');
+            btnF.classList.remove('selected');
+
+            document.getElementById(`q-${idx}-${item.answer}`).classList.add('correct');
+            if (chosen === item.answer) {
+                score++;
+            } else {
+                document.getElementById(`q-${idx}-${chosen}`).classList.add('wrong');
+            }
+            document.getElementById(`corr-${idx}`).style.display = 'block';
+        });
+
+        latestScore = score;
+        playSFX('done');
+
+        const btnCheck = document.getElementById('btnCheckQuiz');
+        btnCheck.innerText = '🔄 ทำแบบทดสอบอีกครั้ง';
+        btnCheck.style.background = '#10b981';
+        btnCheck.style.boxShadow = '0 5px 0 #059669';
+        btnCheck.onclick = resetQuiz;
+
+        if (!localStorage.getItem('studentId')) {
+            isPendingSubmit = true;
+            document.getElementById('modalTitle').innerText = '📝 ลงชื่อเพื่อบันทึกคะแนน';
+            document.getElementById('modalSub').innerText = `คุณได้ ${latestScore}/4 คะแนน กรอกข้อมูลเพื่อส่งครู`;
+            document.getElementById('loginModal').classList.add('active');
+        } else {
+            submitScoreToSheet();
+        }
+    }
+
+    // ================= LOGIN & GOOGLE SHEETS =================
+    function formatRoomValue(val) {
+        const nums = val.match(/\d+/g);
+        if (nums && nums.length >= 2) return `ม.${nums[0]}/${nums[1]}`;
+        if (nums && nums.length === 1) return `ม.1/${nums[0]}`;
+        return val.trim();
+    }
+
+    document.getElementById('in_room').addEventListener('blur', function() {
+        this.value = formatRoomValue(this.value);
+    });
+
+    function loadStudentProfile() {
+        if (localStorage.getItem('studentId')) {
+            document.getElementById('userProfile').style.display = 'flex';
+            document.getElementById('p_name').innerText = localStorage.getItem('studentName');
+            document.getElementById('p_room').innerText = localStorage.getItem('studentRoom');
+            document.getElementById('p_id').innerText = localStorage.getItem('studentId');
+        }
+    }
+
+    function switchAccount() {
+        Swal.fire({
+            title: '⚠️ สลับบัญชีนักเรียน?',
+            text: 'ระบบจะล้างข้อมูลเดิมเพื่อลงชื่อคนใหม่',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ec4899',
+            cancelButtonColor: '#94a3b8',
+            confirmButtonText: 'ตกลง',
+            cancelButtonText: 'ยกเลิก'
+        }).then((res) => {
+            if (res.isConfirmed) {
+                localStorage.clear();
+                isPendingSubmit = false;
+                document.getElementById('userProfile').style.display = 'none';
+                document.getElementById('in_name').value = '';
+                document.getElementById('in_room').value = '';
+                document.getElementById('in_id').value = '';
+                document.getElementById('modalTitle').innerText = '🔄 ลงชื่อบัญชีใหม่';
+                document.getElementById('modalSub').innerText = 'กรอกข้อมูลนักเรียนคนใหม่';
+                document.getElementById('loginModal').classList.add('active');
+            }
+        });
+    }
+
+    function confirmUser() {
+        const n = document.getElementById('in_name').value.trim();
+        const r = formatRoomValue(document.getElementById('in_room').value);
+        document.getElementById('in_room').value = r;
+        const id = document.getElementById('in_id').value.trim();
+
+        if (!n || !r || id.length !== 5) {
+            Swal.fire('ข้อมูลไม่ครบ!', 'กรุณากรอกชื่อ ห้อง และรหัสนักเรียน 5 หลัก', 'warning');
+            return;
+        }
+
+        localStorage.setItem('studentName', n);
+        localStorage.setItem('studentRoom', r);
+        localStorage.setItem('studentId', id);
+
+        document.getElementById('loginModal').classList.remove('active');
+        loadStudentProfile();
+
+        if (isPendingSubmit) {
+            isPendingSubmit = false;
+            submitScoreToSheet();
+        }
+    }
+
+    function submitScoreToSheet() {
+        document.getElementById('scoreModal').classList.add('active');
+        document.getElementById('finalScoreText').innerText = latestScore;
+        const stat = document.getElementById('saveStatus');
+        const playAgainBtn = document.getElementById('playAgainBtn');
+
+        // ล็อกปุ่มทำใหม่ระหว่างส่งคะแนน
+        playAgainBtn.disabled = true;
+
+        if (typeof QUIZ_CONFIG === 'undefined' || !QUIZ_CONFIG.SCRIPT_URL) {
+            stat.innerText = '❌ ไม่พบไฟล์ตั้งค่า (quiz-config.js)';
+            stat.style.color = '#b91c1c';
+            playAgainBtn.disabled = false;
+            return;
+        }
+
+        stat.innerText = '⏳ กำลังบันทึกคะแนนลงระบบ...';
+        stat.style.color = '#d97706';
+
+        const payload = {
+            name: localStorage.getItem('studentName'),
+            room: localStorage.getItem('studentRoom'),
+            studentId: "'" + localStorage.getItem('studentId'),
+            lesson: TOPIC_NAME,
+            score: latestScore,
+            maxScore: quizData.length
+        };
+
+        fetch(QUIZ_CONFIG.SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            body: JSON.stringify(payload)
+        }).catch(e => console.error(e));
+
+        setTimeout(() => {
+            stat.innerText = '✅ บันทึกคะแนนลงระบบเรียบร้อย!';
+            stat.style.color = '#15803d';
+            playAgainBtn.disabled = false;
+        }, 1500);
+    }
+
+    function closeScoreModal() {
+        document.getElementById('scoreModal').classList.remove('active');
+    }
+
+    function resetQuiz() {
+        document.getElementById('scoreModal').classList.remove('active');
+        renderQuiz();
+        document.getElementById('quizSection').scrollIntoView({ behavior: 'smooth' });
+    }
+</script>
+</body>
+</html>

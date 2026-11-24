@@ -188,6 +188,26 @@
         .media-stage.pseudo-fs .btn-exit-fs {
             display: block;
         }
+        .btn-fs-play {
+            display: none;
+            position: absolute;
+            top: 14px;
+            left: 14px;
+            z-index: 20;
+            background: rgba(16, 185, 129, 0.92);
+            color: #fff;
+            border: 2px solid rgba(255, 255, 255, 0.7);
+            padding: 6px 14px;
+            border-radius: 12px;
+            font-family: 'Prompt', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .media-stage:fullscreen .btn-fs-play,
+        .media-stage.pseudo-fs .btn-fs-play {
+            display: block;
+        }
 
         /* Overlay Subtitle on Image Stage */
         .sub-overlay {
@@ -511,6 +531,7 @@
         <!-- Image Stage with Overlay Subtitles -->
         <div class="media-stage" id="mediaStage">
             <button class="btn-exit-fs" onclick="exitFullscreenMode()">✕ Exit (Esc)</button>
+            <button id="btnFsPlay" class="btn-fs-play" onclick="toggleFsPlay()">▶ Play</button>
             <img id="stageImage" src="4have.jpg" alt="Festival Scene">
             <div id="subOverlay" class="sub-overlay">
                 <div id="subBox" class="sub-box"></div>
@@ -859,6 +880,14 @@
             activeFlatIdx = -1;
         }
     });
+
+        function toggleFsPlay() {
+        if (audio.paused) audio.play();
+        else audio.pause();
+    }
+    audio.addEventListener('play', () => { document.getElementById('btnFsPlay').innerText = '⏸ Pause'; });
+    audio.addEventListener('pause', () => { document.getElementById('btnFsPlay').innerText = '▶ Play'; });
+    audio.addEventListener('ended', () => { document.getElementById('btnFsPlay').innerText = '▶ Play'; });
 
     function toggleCC() {
         ccEnabled = !ccEnabled;

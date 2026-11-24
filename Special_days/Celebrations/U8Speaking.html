@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Speaking Role-Play - Unit 8a Celebrations</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Prompt:wght@500;700&family=Sarabun:wght@400;600;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://kruyanisa.github.io/classroom-core/quiz-config.js"></script>
+
+    <style>
+        :root {
+            --emerald: #10b981;
+            --emerald-dark: #059669;
+            --magenta: #ec4899;
+            --magenta-dark: #be185d;
+            --amber: #f59e0b;
+            --amber-dark: #d97706;
+            --indigo: #6366f1;
+            --indigo-dark: #4f46e5;
+            --ink: #1e293b;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: 'Sarabun', sans-serif;
+            margin: 0;
+            padding: 12px 12px 40px 12px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--ink);
+            background: linear-gradient(160deg, #eef2ff 0%, #fdf2f8 50%, #fefce8 100%);
+        }
+
+        /* Profile Bar */
+        .profile-bar {
+            width: 100%;
+            max-width: 640px;
+            font-size: clamp(12px, 3.2vw, 14px);
+            background: rgba(255, 255, 255, 0.94);
+            border: 2px solid #a7f3d0;
+            padding: 8px 14px;
+            border-radius: 20px;
+            color: #065f46;
+            font-weight: 700;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.12);
+        }
+
+        .btn-switch {
+            background: var(--magenta);
+            color: #fff;
+            border: none;
+            padding: 4px 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-family: 'Prompt', sans-serif;
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        /* Main Card */
+        .card {
+            width: 100%;
+            max-width: 640px;
+            background: rgba(255, 255, 255, 0.96);
+            border: 3px solid #c7d2fe;
+            border-radius: 26px;
+            padding: 20px 16px 24px;
+            box-shadow: 0 14px 30px rgba(99, 102, 241, 0.12);
+        }
+
+        .header-center { text-align: center; margin-bottom: 16px; }
+
+        .badge-unit {
+            display: inline-block;
+            background: linear-gradient(90deg, var(--indigo), var(--magenta));
+            color: #fff;
+            font-family: 'Prompt', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 4px 14px;
+            border-radius: 20px;
+            margin-bottom: 6px;
+        }
+
+        h1 {
+            font-family: 'Fredoka One', cursive;
+            color: #3730a3;
+            font-size: clamp(22px, 5.8vw, 30px);
+            margin: 0 0 6px 0;
+        }
+
+        .sub-txt { font-size: 14px; color: #475569; font-weight: 600; margin: 0; }
+
+        /* Role Selection Screen */
+        .role-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-top: 16px;
+        }
+        @media (min-width: 480px) {
+            .role-grid { grid-template-columns: 1fr 1fr; }
+        }
+
+        .role-card {
+            background: #f8fafc;
+            border: 3px solid #cbd5e1;
+            border-radius: 20px;
+            padding: 18px 14px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.15s;
+            box-shadow: 0 6px 0 #cbd5e1;
+        }
+        .role-card:hover { transform: translateY(-2px); border-color: var(--indigo); }
+        .role-card:active { transform: translateY(4px); box-shadow: none; }
+        .role-card.role-a { background: #eff6ff; border-color: #93c5fd; box-shadow: 0 6px 0 #60a5fa; }
+        .role-card.role-b { background: #fdf2f8; border-color: #f9a8d4; box-shadow: 0 6px 0 #f472b6; }
+
+        .role-icon { font-size: 42px; margin-bottom: 6px; }
+        .role-title { font-family: 'Prompt', sans-serif; font-size: 18px; font-weight: 700; color: var(--ink); }
+        .role-desc { font-size: 13px; color: #475569; font-weight: 600; margin-top: 4px; }
+
+        /* Step Tabs */
+        .step-tabs {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .step-tab {
+            text-align: center;
+            padding: 7px 4px;
+            border-radius: 12px;
+            background: #f1f5f9;
+            border: 2px solid #cbd5e1;
+            font-family: 'Prompt', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            color: #64748b;
+        }
+        .step-tab.active { background: #e0e7ff; border-color: var(--indigo); color: #3730a3; }
+        .step-tab.passed { background: #dcfce7; border-color: #16a34a; color: #166534; }
+        .step-tab.skipped { background: #fef3c7; border-color: #f59e0b; color: #92400e; }
+
+        /* Chat Dialogue Box */
+        .chat-stage {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 16px 14px;
+            margin-bottom: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .msg-row { display: flex; align-items: flex-start; gap: 10px; }
+        .msg-row.you { flex-direction: row-reverse; }
+
+        .avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+        .avatar.ai { background: #dbeafe; border: 2px solid #60a5fa; }
+        .avatar.you { background: #fce7f3; border: 2px solid #f472b6; }
+
+        .bubble {
+            flex: 1;
+            padding: 12px 14px;
+            border-radius: 18px;
+            font-size: clamp(16px, 4.2vw, 19px);
+            font-weight: 700;
+            line-height: 1.5;
+            position: relative;
+        }
+        .msg-row.ai .bubble { background: #eff6ff; border: 2px solid #93c5fd; color: #1e3a8a; }
+        .msg-row.you .bubble { background: #fdf2f8; border: 2px solid #f9a8d4; color: #831843; }
+
+        .lbl-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+        .spk-lbl { font-family: 'Prompt', sans-serif; font-size: 11px; font-weight: 700; color: #64748b; }
+
+        .btn-mini-listen {
+            background: #ffffff;
+            border: 1.5px solid #94a3b8;
+            border-radius: 10px;
+            padding: 2px 9px;
+            font-family: 'Prompt', sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            color: #334155;
+            cursor: pointer;
+        }
+        .btn-mini-listen:active { transform: scale(0.95); }
+
+        /* Mic & Feedback Area */
+        .mic-panel {
+            text-align: center;
+            padding: 8px 0 4px;
+        }
+
+        .btn-mic {
+            width: 86px;
+            height: 86px;
+            border-radius: 50%;
+            border: none;
+            background: linear-gradient(135deg, var(--magenta), var(--indigo));
+            color: #fff;
+            font-size: 36px;
+            cursor: pointer;
+            box-shadow: 0 7px 0 #4338ca, 0 12px 24px rgba(99, 102, 241, 0.35);
+            transition: transform 0.12s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-mic:active:not(:disabled) { transform: translateY(4px); box-shadow: 0 3px 0 #4338ca; }
+        .btn-mic.listening {
+            background: #ef4444;
+            box-shadow: 0 0 0 12px rgba(239, 68, 68, 0.25);
+            animation: pulseMic 1s infinite;
+        }
+        .btn-mic:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        @keyframes pulseMic {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.45); }
+            70% { box-shadow: 0 0 0 18px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+
+        .mic-status {
+            margin-top: 12px;
+            font-family: 'Prompt', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            color: #475569;
+            min-height: 22px;
+        }
+
+        .heard-box {
+            margin: 10px auto 0;
+            max-width: 460px;
+            background: #f1f5f9;
+            border-radius: 12px;
+            padding: 8px 12px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #334155;
+            min-height: 38px;
+        }
+        .heard-box.ok { background: #dcfce7; color: #166534; border: 2px solid #86efac; }
+        .heard-box.try { background: #fee2e2; color: #991b1b; border: 2px solid #fca5a5; }
+
+        .action-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-top: 16px;
+            padding-top: 12px;
+            border-top: 2px dashed #e2e8f0;
+        }
+
+        .btn-sec {
+            background: #e2e8f0;
+            color: #334155;
+            border: none;
+            padding: 9px 14px;
+            border-radius: 12px;
+            font-family: 'Prompt', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .btn-skip {
+            background: #fef3c7;
+            color: #92400e;
+            border: 2px solid #f59e0b;
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-family: 'Prompt', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            width: 100%;
+            max-width: 340px;
+            margin: 10px auto 0;
+            display: block;
+            padding: 12px 18px;
+            background: var(--indigo);
+            color: #fff;
+            border: none;
+            border-radius: 16px;
+            font-family: 'Prompt', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 5px 0 var(--indigo-dark);
+        }
+        .btn-primary:active:not(:disabled) { transform: translateY(3px); box-shadow: none; }
+        .btn-primary:disabled { background: #94a3b8; box-shadow: 0 5px 0 #64748b; cursor: not-allowed; opacity: 0.75; }
+
+        /* Modals */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+            visibility: hidden;
+            opacity: 0;
+            transition: 0.25s;
+            padding: 15px;
+        }
+        .modal-overlay.active { visibility: visible; opacity: 1; }
+        .modal-box {
+            background: #fff;
+            padding: 26px 20px;
+            border-radius: 26px;
+            text-align: center;
+            width: 100%;
+            max-width: 340px;
+            border: 4px solid var(--indigo);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+        .modal-box input {
+            width: 100%;
+            padding: 11px;
+            margin-bottom: 10px;
+            border: 2px solid #c7d2fe;
+            border-radius: 14px;
+            text-align: center;
+            font-family: 'Sarabun', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            outline: none;
+        }
+        .score-num { font-family: 'Fredoka One', cursive; font-size: 58px; color: var(--indigo); margin: 8px 0; display: block; line-height: 1; }
+    </style>
+</head>
+<body>
+
+    <!-- User Profile Bar -->
+    <div id="userProfile" class="profile-bar" style="display:none;">
+        <span>👤 <span id="p_name"></span> | 🏫 <span id="p_room"></span> | 🆔 <span id="p_id"></span></span>
+        <button class="btn-switch" onclick="switchAccount()">🔄 สลับบัญชี</button>
+    </div>
+
+    <!-- Main Card -->
+    <div class="card">
+        <div class="header-center">
+            <div class="badge-unit">Unit 8a • Speaking Role-Play</div>
+            <h1>🎙️ Ask & Answer</h1>
+            <p class="sub-txt" id="topSub">เลือกบทบาทที่ต้องการฝึกพูด (4 ข้อ = 4 คะแนน)</p>
+        </div>
+
+        <!-- Screen 1: Role Selection -->
+        <div id="roleScreen">
+            <div class="role-grid">
+                <div class="role-card role-a" onclick="startRole('A')">
+                    <div class="role-icon">🙋‍♂️</div>
+                    <div class="role-title">เป็นคนถาม (Role A)</div>
+                    <div class="role-desc">คุณพูดคำถาม ➔ ระบบตอบกลับ</div>
+                </div>
+                <div class="role-card role-b" onclick="startRole('B')">
+                    <div class="role-icon">🙋‍♀️</div>
+                    <div class="role-title">เป็นคนตอบ (Role B)</div>
+                    <div class="role-desc">ระบบถามมา ➔ คุณพูดคำตอบ</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Screen 2: Practice Stage -->
+        <div id="practiceScreen" style="display:none;">
+            <div class="step-tabs" id="stepTabs"></div>
+
+            <div class="chat-stage" id="chatStage"></div>
+
+            <div class="mic-panel">
+                <button id="btnMic" class="btn-mic" onclick="toggleMic()">🎤</button>
+                <div id="micStatus" class="mic-status">แตะปุ่มไมค์แล้วอ่านประโยคของคุณ</div>
+                <div id="heardBox" class="heard-box">เสียงที่ระบบได้ยินจะแสดงที่นี่...</div>
+            </div>
+
+            <div class="action-row">
+                <button class="btn-sec" onclick="backToRoles()">↩ เปลี่ยนบทบาท</button>
+                <button id="btnSkip" class="btn-skip" onclick="skipQuestion()">ข้ามข้อนี้ ⏭</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal-box">
+            <h2 id="modalTitle" style="color:#3730a3; margin:0 0 6px 0; font-family:'Prompt';">📝 ลงชื่อเข้าเรียน</h2>
+            <p id="modalSub" style="color:#64748b; font-weight:600; margin:0 0 12px 0; font-size:14px;">กรอกข้อมูลเพื่อเริ่มฝึกพูดและบันทึกคะแนน</p>
+            <input type="text" id="in_name" placeholder="ชื่อ - นามสกุล">
+            <input type="text" id="in_room" placeholder="ชั้น/ห้อง (เช่น 1/1)">
+            <input type="text" id="in_id" placeholder="รหัสนักเรียน (5 หลัก)" maxlength="5">
+            <button class="btn-primary" onclick="confirmUser()">🚀 เริ่มฝึกพูด</button>
+        </div>
+    </div>
+
+    <!-- Score Modal -->
+    <div class="modal-overlay" id="scoreModal">
+        <div class="modal-box">
+            <h2 style="color:#3730a3; margin:0; font-family:'Prompt';">🎉 ฝึกพูดครบแล้ว!</h2>
+            <p style="color:#64748b; font-weight:600; margin:6px 0 0 0;">คะแนนการพูดของคุณคือ</p>
+            <span class="score-num"><span id="finalScoreText">0</span><span style="font-size:28px; color:#94a3b8;">/4</span></span>
+            <div id="saveStatus" style="font-weight:700; font-size:14px; margin-bottom:14px; color:#15803d; min-height:20px;"></div>
+            <button id="playAgainBtn" class="btn-primary" style="background:var(--emerald); box-shadow:0 5px 0 var(--emerald-dark);" onclick="restartAll()" disabled>🔄 ฝึกพูดอีกครั้ง / เปลี่ยนบทบาท</button>
+        </div>
+    </div>
+
+<script>
+    const TOPIC_NAME = 'ม.1 Unit 8 Celebrations Speaking';
+
+    const dialogues = [
+        {
+            a: "When is St Patrick's Day?",
+            b: "On 17th March.",
+            aKeys: ["when", "saint", "patrick", "day"],
+            bKeys: ["17", "march"]
+        },
+        {
+            a: "When is St George's Day?",
+            b: "On 23rd April.",
+            aKeys: ["when", "saint", "george", "day"],
+            bKeys: ["23", "april"]
+        },
+        {
+            a: "What do they wear on St David's Day?",
+            b: "They wear traditional Welsh costumes.",
+            aKeys: ["what", "wear", "saint", "david", "day"],
+            bKeys: ["wear", "traditional", "welsh", "costume"]
+        },
+        {
+            a: "Where do people celebrate St David's Day?",
+            b: "In Wales.",
+            aKeys: ["where", "people", "celebrate", "saint", "david"],
+            bKeys: ["wales"]
+        }
+    ];
+
+    let userRole = 'B';
+    let curIdx = 0;
+    let results = []; // 'passed' | 'skipped'
+    let isListening = false;
+    let isBusy = false;
+    let recognition = null;
+    let isPendingSubmit = false;
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    document.addEventListener("DOMContentLoaded", () => {
+        checkLoginStatus();
+    });
+
+    // ================= WEB AUDIO SFX =================
+    function playSFX(type) {
+        try {
+            const AudioCtx = window.AudioContext || window.webkitAudioContext;
+            if (!AudioCtx) return;
+            const ctx = new AudioCtx();
+            if (ctx.state === 'suspended') ctx.resume();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain); gain.connect(ctx.destination);
+            const now = ctx.currentTime;
+            if (type === 'pass') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(523.25, now);
+                osc.frequency.setValueAtTime(659.25, now + 0.09);
+                osc.frequency.setValueAtTime(783.99, now + 0.18);
+                gain.gain.setValueAtTime(0.12, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.38);
+                osc.start(now); osc.stop(now + 0.38);
+            } else {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(260, now);
+                gain.gain.setValueAtTime(0.1, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+                osc.start(now); osc.stop(now + 0.15);
+            }
+            setTimeout(() => ctx.close().catch(() => {}), 500);
+        } catch (e) {}
+    }
+
+    // ================= AI TTS =================
+    function speakText(text, onEndCallback) {
+        if (!('speechSynthesis' in window)) {
+            if (onEndCallback) onEndCallback();
+            return;
+        }
+        window.speechSynthesis.cancel();
+        const cleanText = text.replace(/\bSt\b/g, 'Saint');
+        const utter = new SpeechSynthesisUtterance(cleanText);
+        utter.lang = 'en-GB';
+        utter.rate = 0.9;
+        utter.onend = () => { if (onEndCallback) onEndCallback(); };
+        utter.onerror = () => { if (onEndCallback) onEndCallback(); };
+        window.speechSynthesis.speak(utter);
+    }
+
+    // ================= FLOW CONTROL =================
+    function startRole(role) {
+        if (!SpeechRecognition) {
+            Swal.fire({
+                icon: 'info',
+                title: 'เบราว์เซอร์ไม่รองรับไมค์',
+                text: 'แนะนำให้เปิดผ่าน Google Chrome หรือ Safari เพื่อใช้งานระบบฝึกพูดครับ (หรือสามารถกดข้ามได้)',
+                confirmButtonColor: '#6366f1'
+            });
+        }
+        userRole = role;
+        curIdx = 0;
+        results = [];
+        document.getElementById('roleScreen').style.display = 'none';
+        document.getElementById('practiceScreen').style.display = 'block';
+        document.getElementById('topSub').innerText = role === 'A'
+            ? 'บทบาทของคุณ: คนถาม (Role A) — แตะไมค์เพื่อถาม AI'
+            : 'บทบาทของคุณ: คนตอบ (Role B) — ฟังคำถามแล้วแตะไมค์ตอบ';
+        loadStep();
+    }
+
+    function backToRoles() {
+        stopMic();
+        if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+        document.getElementById('practiceScreen').style.display = 'none';
+        document.getElementById('roleScreen').style.display = 'block';
+        document.getElementById('topSub').innerText = 'เลือกบทบาทที่ต้องการฝึกพูด (4 ข้อ = 4 คะแนน)';
+    }
+
+    function renderTabs() {
+        const wrap = document.getElementById('stepTabs');
+        wrap.innerHTML = '';
+        for (let i = 0; i < dialogues.length; i++) {
+            const tab = document.createElement('div');
+            let cls = 'step-tab';
+            let mark = `ข้อ ${i + 1}`;
+            if (results[i] === 'passed') { cls += ' passed'; mark = `✅ ${i + 1}`; }
+            else if (results[i] === 'skipped') { cls += ' skipped'; mark = `⏭ ${i + 1}`; }
+            else if (i === curIdx) { cls += ' active'; }
+            tab.className = cls;
+            tab.innerText = mark;
+            wrap.appendChild(tab);
+        }
+    }
+
+    function loadStep() {
+        isBusy = false;
+        stopMic();
+        renderTabs();
+
+        const d = dialogues[curIdx];
+        const stage = document.getElementById('chatStage');
+        const heardBox = document.getElementById('heardBox');
+        const micStatus = document.getElementById('micStatus');
+        const btnMic = document.getElementById('btnMic');
+
+        heardBox.className = 'heard-box';
+        heardBox.innerText = 'เสียงที่ระบบได้ยินจะแสดงที่นี่...';
+        btnMic.disabled = false;
+
+        if (userRole === 'B') {
+            stage.innerHTML = `
+                <div class="msg-row ai">
+                    <div class="avatar ai">🤖</div>
+                    <div class="bubble">
+                        <div class="lbl-row">
+                            <span class="spk-lbl">AI (Role A - ถาม)</span>
+                            <button class="btn-mini-listen" onclick="speakText(\`${d.a}\`)">🔊 ฟังอีกครั้ง</button>
+                        </div>
+                        ${d.a}
+                    </div>
+                </div>
+                <div class="msg-row you">
+                    <div class="avatar you">🎤</div>
+                    <div class="bubble">
+                        <div class="lbl-row">
+                            <span class="spk-lbl">คุณ (Role B - พูดตอบ)</span>
+                            <button class="btn-mini-listen" onclick="speakText(\`${d.b}\`)">🔊 ฟังตัวอย่าง</button>
+                        </div>
+                        ${d.b}
+                    </div>
+                </div>
+            `;
+            micStatus.innerText = '🔊 กำลังฟัง AI ถาม... จากนั้นแตะไมค์เพื่อตอบ';
+            speakText(d.a, () => {
+                if (!isListening && !isBusy) micStatus.innerText = 'แตะปุ่มไมค์แล้วอ่านคำตอบของคุณได้เลย';
+            });
+        } else {
+            stage.innerHTML = `
+                <div class="msg-row you">
+                    <div class="avatar you">🎤</div>
+                    <div class="bubble">
+                        <div class="lbl-row">
+                            <span class="spk-lbl">คุณ (Role A - พูดถาม)</span>
+                            <button class="btn-mini-listen" onclick="speakText(\`${d.a}\`)">🔊 ฟังตัวอย่าง</button>
+                        </div>
+                        ${d.a}
+                    </div>
+                </div>
+                <div class="msg-row ai" id="aiReplyRow" style="opacity:0.45;">
+                    <div class="avatar ai">🤖</div>
+                    <div class="bubble">
+                        <div class="lbl-row">
+                            <span class="spk-lbl">AI (Role B - รอตอบกลับ)</span>
+                        </div>
+                        <span id="aiReplyText">... (รอคุณถามก่อน)</span>
+                    </div>
+                </div>
+            `;
+            micStatus.innerText = 'แตะปุ่มไมค์แล้วอ่านคำถามของคุณได้เลย';
+        }
+    }
+
+    // ================= SPEECH RECOGNITION =================
+    function toggleMic() {
+        if (isBusy) return;
+        if (!SpeechRecognition) {
+            Swal.fire('ไม่รองรับไมค์', 'กรุณาเปิดผ่าน Chrome/Safari หรือกดปุ่ม "ข้ามข้อนี้" ครับ', 'warning');
+            return;
+        }
+        if (isListening) {
+            stopMic();
+            return;
+        }
+
+        if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+
+        recognition = new SpeechRecognition();
+        recognition.lang = 'en-US';
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 3;
+
+        const btnMic = document.getElementById('btnMic');
+        const micStatus = document.getElementById('micStatus');
+
+        recognition.onstart = () => {
+            isListening = true;
+            btnMic.classList.add('listening');
+            micStatus.innerText = '🔴 กำลังฟัง... พูดได้เลยครับ';
+        };
+
+        recognition.onresult = (event) => {
+            const transcripts = [];
+            for (let i = 0; i < event.results[0].length; i++) {
+                transcripts.push(event.results[0][i].transcript);
+            }
+            evaluateSpeech(transcripts);
+        };
+
+        recognition.onerror = (event) => {
+            stopMic();
+            if (event.error === 'not-allowed') {
+                micStatus.innerText = '⚠️ กรุณากดอนุญาตใช้ไมโครโฟนที่เบราว์เซอร์';
+            } else {
+                micStatus.innerText = 'ไม่ได้ยินเสียง ลองแตะไมค์แล้วพูดใหม่อีกครั้งครับ';
+            }
+        };
+
+        recognition.onend = () => {
+            isListening = false;
+            btnMic.classList.remove('listening');
+        };
+
+        try { recognition.start(); } catch (e) {}
+    }
+
+    function stopMic() {
+        isListening = false;
+        document.getElementById('btnMic').classList.remove('listening');
+        if (recognition) {
+            try { recognition.abort(); } catch (e) {}
+            recognition = null;
+        }
+    }
+
+    function normalizeSpeech(str) {
+        return str.toLowerCase()
+            .replace(/[^a-z0-9\s]/g, ' ')
+            .replace(/\bst\b/g, 'saint')
+            .replace(/\bseventeenth\b|\b17th\b/g, '17')
+            .replace(/\btwenty third\b|\b23rd\b/g, '23')
+            .replace(/\bwhales\b|\bwells\b|\bwell\b/g, 'wales')
+            .replace(/\bpatricks\b/g, 'patrick')
+            .replace(/\bgeorges\b/g, 'george')
+            .replace(/\bdavids\b/g, 'david')
+            .replace(/\bcostumes\b/g, 'costume')
+            .replace(/\s+/g, ' ').trim();
+    }
+
+    function evaluateSpeech(transcripts) {
+        const d = dialogues[curIdx];
+        const targetKeys = userRole === 'A' ? d.aKeys : d.bKeys;
+        const bestText = transcripts[0] || '';
+        const heardBox = document.getElementById('heardBox');
+        const micStatus = document.getElementById('micStatus');
+
+        let passed = false;
+        for (const raw of transcripts) {
+            const norm = normalizeSpeech(raw);
+            let matchCount = 0;
+            targetKeys.forEach(k => {
+                if (norm.includes(k)) matchCount++;
+            });
+            if (matchCount / targetKeys.length >= 0.6) {
+                passed = true;
+                break;
+            }
+        }
+
+        if (passed) {
+            isBusy = true;
+            document.getElementById('btnMic').disabled = true;
+            playSFX('pass');
+            results[curIdx] = 'passed';
+            renderTabs();
+
+            heardBox.className = 'heard-box ok';
+            heardBox.innerText = `✅ เยี่ยมมาก! ระบบได้ยิน: "${bestText}"`;
+
+            if (userRole === 'A') {
+                micStatus.innerText = '🤖 AI กำลังตอบกลับ...';
+                const row = document.getElementById('aiReplyRow');
+                const txt = document.getElementById('aiReplyText');
+                if (row) row.style.opacity = '1';
+                if (txt) txt.innerText = d.b;
+
+                speakText(d.b, () => {
+                    setTimeout(nextStep, 900);
+                });
+            } else {
+                micStatus.innerText = '🎉 ผ่านแล้ว! กำลังไปข้อต่อไป...';
+                setTimeout(nextStep, 1300);
+            }
+        } else {
+            playSFX('try');
+            heardBox.className = 'heard-box try';
+            heardBox.innerText = `🔁 ระบบได้ยิน: "${bestText}" — ลองพูดให้ชัดขึ้นอีกครั้งนะครับ`;
+            micStatus.innerText = 'แตะปุ่มไมค์เพื่อลองพูดใหม่ (หรือกดฟังตัวอย่าง)';
+        }
+    }
+
+    function skipQuestion() {
+        if (isBusy) return;
+        stopMic();
+        if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+        results[curIdx] = 'skipped';
+        nextStep();
+    }
+
+    function nextStep() {
+        curIdx++;
+        if (curIdx < dialogues.length) {
+            loadStep();
+        } else {
+            finishSpeaking();
+        }
+    }
+
+    function finishSpeaking() {
+        renderTabs();
+        const score = results.filter(r => r === 'passed').length;
+
+        if (!localStorage.getItem('studentId')) {
+            isPendingSubmit = true;
+            document.getElementById('modalTitle').innerText = '📝 ลงชื่อเพื่อบันทึกคะแนน';
+            document.getElementById('modalSub').innerText = `คุณได้ ${score}/4 คะแนน กรอกข้อมูลเพื่อส่งครู`;
+            document.getElementById('loginModal').classList.add('active');
+        } else {
+            submitScoreToSheet(score);
+        }
+    }
+
+    // ================= LOGIN & GOOGLE SHEETS =================
+    function formatRoomValue(val) {
+        const nums = val.match(/\d+/g);
+        if (nums && nums.length >= 2) return `ม.${nums[0]}/${nums[1]}`;
+        if (nums && nums.length === 1) return `ม.1/${nums[0]}`;
+        return val.trim();
+    }
+
+    document.getElementById('in_room').addEventListener('blur', function() {
+        this.value = formatRoomValue(this.value);
+    });
+
+    function checkLoginStatus() {
+        if (localStorage.getItem('studentId')) {
+            document.getElementById('userProfile').style.display = 'flex';
+            document.getElementById('p_name').innerText = localStorage.getItem('studentName');
+            document.getElementById('p_room').innerText = localStorage.getItem('studentRoom');
+            document.getElementById('p_id').innerText = localStorage.getItem('studentId');
+        } else {
+            document.getElementById('userProfile').style.display = 'none';
+            document.getElementById('loginModal').classList.add('active');
+        }
+    }
+
+    function switchAccount() {
+        Swal.fire({
+            title: '⚠️ สลับบัญชีผู้เล่น?',
+            text: 'ระบบจะล้างข้อมูลเดิมและเริ่มใหม่',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#6366f1',
+            cancelButtonColor: '#94a3b8',
+            confirmButtonText: 'ตกลง',
+            cancelButtonText: 'ยกเลิก'
+        }).then((res) => {
+            if (res.isConfirmed) {
+                localStorage.clear();
+                isPendingSubmit = false;
+                document.getElementById('userProfile').style.display = 'none';
+                document.getElementById('in_name').value = '';
+                document.getElementById('in_room').value = '';
+                document.getElementById('in_id').value = '';
+                document.getElementById('modalTitle').innerText = '🔄 ลงชื่อบัญชีใหม่';
+                document.getElementById('modalSub').innerText = 'กรอกข้อมูลนักเรียนคนใหม่เพื่อเริ่มฝึกพูด';
+                document.getElementById('loginModal').classList.add('active');
+            }
+        });
+    }
+
+    function confirmUser() {
+        const n = document.getElementById('in_name').value.trim();
+        const r = formatRoomValue(document.getElementById('in_room').value);
+        document.getElementById('in_room').value = r;
+        const id = document.getElementById('in_id').value.trim();
+
+        if (!n || !r || id.length !== 5) {
+            Swal.fire('ข้อมูลไม่ครบ!', 'กรุณากรอกชื่อ ห้อง และรหัสนักเรียน 5 หลัก', 'warning');
+            return;
+        }
+
+        localStorage.setItem('studentName', n);
+        localStorage.setItem('studentRoom', r);
+        localStorage.setItem('studentId', id);
+
+        document.getElementById('loginModal').classList.remove('active');
+        document.getElementById('userProfile').style.display = 'flex';
+        document.getElementById('p_name').innerText = n;
+        document.getElementById('p_room').innerText = r;
+        document.getElementById('p_id').innerText = id;
+
+        if (isPendingSubmit) {
+            isPendingSubmit = false;
+            const score = results.filter(r => r === 'passed').length;
+            submitScoreToSheet(score);
+        }
+    }
+
+    function submitScoreToSheet(score) {
+        document.getElementById('scoreModal').classList.add('active');
+        document.getElementById('finalScoreText').innerText = score;
+        const stat = document.getElementById('saveStatus');
+        const playAgainBtn = document.getElementById('playAgainBtn');
+
+        playAgainBtn.disabled = true;
+
+        if (typeof QUIZ_CONFIG === 'undefined' || !QUIZ_CONFIG.SCRIPT_URL) {
+            stat.innerText = '❌ ไม่พบไฟล์ตั้งค่า (quiz-config.js)';
+            stat.style.color = '#b91c1c';
+            playAgainBtn.disabled = false;
+            return;
+        }
+
+        stat.innerText = '⏳ กำลังบันทึกคะแนนลงระบบ...';
+        stat.style.color = '#d97706';
+
+        fetch(QUIZ_CONFIG.SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            body: JSON.stringify({
+                name: localStorage.getItem('studentName'),
+                room: localStorage.getItem('studentRoom'),
+                studentId: "'" + localStorage.getItem('studentId'),
+                lesson: TOPIC_NAME,
+                score: score,
+                maxScore: dialogues.length
+            })
+        }).catch(e => console.error(e));
+
+        setTimeout(() => {
+            stat.innerText = '✅ บันทึกคะแนนลงระบบเรียบร้อย!';
+            stat.style.color = '#15803d';
+            playAgainBtn.disabled = false;
+        }, 1500);
+    }
+
+    function restartAll() {
+        document.getElementById('scoreModal').classList.remove('active');
+        backToRoles();
+    }
+</script>
+</body>
+</html>

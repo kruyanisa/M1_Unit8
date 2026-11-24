@@ -1,1 +1,861 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Picnic Basket Challenge - Food & Drinks</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Prompt:wght@500;700&family=Sarabun:wght@400;600;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://kruyanisa.github.io/classroom-core/quiz-config.js"></script>
 
+    <style>
+        :root {
+            --coral: #ff6b6b;
+            --coral-dark: #d94848;
+            --mint: #20c997;
+            --mint-dark: #12b886;
+            --cream: #fff9db;
+            --warm-brown: #5c3a21;
+            --amber: #f59f00;
+            --amber-dark: #d97706;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: 'Sarabun', sans-serif;
+            margin: 0;
+            padding: 12px 12px 30px 12px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--warm-brown);
+            /* ลายผ้าปูปิกนิก Gingham Pastel */
+            background-color: #fff5f5;
+            background-image:
+                linear-gradient(90deg, rgba(255, 135, 135, 0.14) 50%, transparent 50%),
+                linear-gradient(rgba(255, 135, 135, 0.14) 50%, transparent 50%);
+            background-size: 36px 36px;
+        }
+
+        /* Top Bar: Profile + BGM */
+        .top-bar {
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .profile-bar {
+            flex: 1;
+            font-size: clamp(12px, 3.2vw, 14px);
+            background: rgba(255, 255, 255, 0.92);
+            border: 2px solid #ffc9c9;
+            padding: 7px 12px;
+            border-radius: 18px;
+            color: var(--warm-brown);
+            font-weight: 700;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 10px rgba(255, 107, 107, 0.12);
+        }
+
+        .btn-switch {
+            background: var(--coral);
+            color: #fff;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: 'Prompt', sans-serif;
+            font-weight: 700;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .btn-bgm {
+            background: #fff;
+            border: 2px solid var(--mint);
+            color: var(--mint-dark);
+            padding: 7px 12px;
+            border-radius: 18px;
+            font-family: 'Prompt', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 3px 0 var(--mint-dark);
+            transition: 0.1s;
+        }
+        .btn-bgm:active { transform: translateY(2px); box-shadow: none; }
+        .btn-bgm.off { border-color: #adb5bd; color: #868e96; box-shadow: 0 3px 0 #868e96; }
+
+        /* Main Stage Card */
+        .stage-card {
+            width: 100%;
+            max-width: 600px;
+            background: rgba(255, 255, 255, 0.94);
+            backdrop-filter: blur(8px);
+            border: 3px solid #ffe3e3;
+            border-radius: 26px;
+            padding: 18px 16px;
+            box-shadow: 0 14px 30px rgba(92, 58, 33, 0.12);
+            text-align: center;
+            position: relative;
+        }
+
+        .badge-unit {
+            display: inline-block;
+            background: var(--coral);
+            color: #fff;
+            font-family: 'Prompt', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 4px 14px;
+            border-radius: 20px;
+            margin-bottom: 6px;
+        }
+
+        .header-title {
+            font-family: 'Fredoka One', cursive;
+            color: var(--warm-brown);
+            font-size: clamp(24px, 6vw, 32px);
+            margin: 0 0 6px 0;
+            line-height: 1.15;
+        }
+
+        /* Mode Switcher */
+        .mode-tabs {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin: 10px 0 16px 0;
+        }
+        .tab-btn {
+            flex: 1;
+            max-width: 220px;
+            padding: 10px 12px;
+            border-radius: 14px;
+            border: 2px solid #dee2e6;
+            background: #f8f9fa;
+            font-family: 'Prompt', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            color: #495057;
+            cursor: pointer;
+            transition: 0.15s;
+        }
+        .tab-btn.active {
+            background: var(--amber);
+            border-color: var(--amber-dark);
+            color: #fff;
+            box-shadow: 0 4px 0 var(--amber-dark);
+        }
+
+        /* ================= STUDY MODE ================= */
+        .study-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        @media (min-width: 520px) {
+            .study-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+        .study-card {
+            background: #fff;
+            border: 2px solid #ffe8cc;
+            border-radius: 18px;
+            padding: 10px 8px;
+            cursor: pointer;
+            box-shadow: 0 5px 0 #ffd8a8;
+            transition: 0.15s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .study-card:active { transform: translateY(3px); box-shadow: 0 2px 0 #ffd8a8; }
+        .study-card.playing { border-color: var(--mint); background: #e6fcf5; }
+        .study-img-wrap {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            max-width: 110px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 6px;
+        }
+        .study-img-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        .study-word { font-family: 'Fredoka One', cursive; font-size: 17px; color: var(--warm-brown); }
+        .study-thai { font-size: 13px; color: #e8590c; font-weight: 700; }
+
+        /* ================= GAME MODE ================= */
+        .hud-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--cream);
+            border: 2px solid #ffe066;
+            border-radius: 14px;
+            padding: 8px 14px;
+            margin-bottom: 14px;
+            font-family: 'Prompt', sans-serif;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .prompt-box {
+            background: linear-gradient(135deg, #fff4e6, #ffe8cc);
+            border: 2px dashed var(--amber);
+            border-radius: 18px;
+            padding: 14px 12px;
+            margin-bottom: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+        .target-word {
+            font-family: 'Fredoka One', cursive;
+            font-size: clamp(26px, 7vw, 36px);
+            color: var(--warm-brown);
+            letter-spacing: 0.5px;
+        }
+        .btn-listen {
+            background: var(--mint);
+            color: #fff;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-family: 'Prompt', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 0 var(--mint-dark);
+            transition: 0.1s;
+        }
+        .btn-listen:active { transform: translateY(3px); box-shadow: none; }
+
+        /* Food Plates Grid (2x2) */
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .plate-card {
+            background: #ffffff;
+            border: 3px solid #f1f3f5;
+            border-radius: 22px;
+            padding: 12px;
+            cursor: pointer;
+            box-shadow: 0 6px 0 #dee2e6, 0 8px 16px rgba(0,0,0,0.06);
+            transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .plate-card:hover:not(.disabled) {
+            border-color: var(--amber);
+            transform: translateY(-2px);
+        }
+        .plate-card:active:not(.disabled) {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 #dee2e6;
+        }
+        .plate-card.disabled { pointer-events: none; }
+
+        .plate-img-box {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            max-width: 145px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .plate-img-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .plate-card.correct-ans {
+            border-color: #2b8a3e !important;
+            background: #ebfbee !important;
+            box-shadow: 0 6px 0 #2b8a3e !important;
+        }
+        .plate-card.wrong-ans {
+            border-color: #c92a2a !important;
+            background: #fff5f5 !important;
+            box-shadow: 0 6px 0 #c92a2a !important;
+            animation: shake 0.4s;
+        }
+
+        /* Picnic Basket SVG Stage */
+        .basket-stage {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-top: 4px;
+            position: relative;
+        }
+        .basket-svg {
+            width: 150px;
+            height: 105px;
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            filter: drop-shadow(0 8px 10px rgba(92, 58, 33, 0.22));
+        }
+        .basket-svg.bounce {
+            transform: scale(1.16) rotate(-3deg);
+        }
+        .basket-hint {
+            font-size: 13px;
+            font-weight: 700;
+            color: #868e96;
+            margin-top: 2px;
+        }
+
+        /* Flying Food Animation */
+        .flying-food {
+            position: fixed;
+            z-index: 2500;
+            pointer-events: none;
+            object-fit: contain;
+            transition: all 0.55s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-6px); }
+            75% { transform: translateX(6px); }
+        }
+
+        /* Action Buttons */
+        .btn-primary {
+            width: 100%;
+            padding: 13px;
+            background: var(--coral);
+            color: #fff;
+            border: none;
+            border-radius: 16px;
+            font-family: 'Prompt', sans-serif;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 5px 0 var(--coral-dark);
+            transition: 0.1s;
+        }
+        .btn-primary:active:not(:disabled) { transform: translateY(4px); box-shadow: none; }
+        .btn-primary:disabled {
+            background: #adb5bd;
+            box-shadow: 0 5px 0 #868e96;
+            cursor: not-allowed;
+            opacity: 0.75;
+        }
+
+        /* Modals */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(92, 58, 33, 0.65);
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+            visibility: hidden;
+            opacity: 0;
+            transition: 0.25s;
+            padding: 15px;
+        }
+        .modal-overlay.active { visibility: visible; opacity: 1; }
+        .modal-box {
+            background: #fff;
+            padding: 26px 20px;
+            border-radius: 26px;
+            text-align: center;
+            width: 100%;
+            max-width: 340px;
+            border: 4px solid var(--coral);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+        .modal-box input {
+            width: 100%;
+            padding: 11px;
+            margin-bottom: 10px;
+            border: 2px solid #ffc9c9;
+            border-radius: 14px;
+            text-align: center;
+            font-family: 'Sarabun', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            outline: none;
+        }
+        .modal-box input:focus { border-color: var(--coral); }
+        .score-num {
+            font-family: 'Fredoka One', cursive;
+            font-size: 58px;
+            color: var(--coral);
+            margin: 8px 0;
+            display: block;
+            line-height: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div id="userProfile" class="profile-bar" style="display:none;">
+            <span>👤 <span id="p_name"></span> | 🏫 <span id="p_room"></span> | 🆔 <span id="p_id"></span></span>
+            <button class="btn-switch" onclick="switchAccount()">🔄 สลับบัญชี</button>
+        </div>
+        <button id="bgmBtn" class="btn-bgm" onclick="toggleBGM()">🎵 เพลง: เปิด</button>
+    </div>
+
+    <!-- Main Container -->
+    <div class="stage-card">
+        <div class="badge-unit">Unit 8 • Special Days</div>
+        <h1 class="header-title">🧺 Picnic Basket Challenge</h1>
+
+        <!-- Mode Tabs -->
+        <div class="mode-tabs">
+            <button id="tabStudy" class="tab-btn" onclick="switchMode('study')">🎧 ฝึกท่องคำศัพท์</button>
+            <button id="tabGame" class="tab-btn active" onclick="switchMode('game')">🧺 เล่นเกมเก็บคะแนน</button>
+        </div>
+
+        <!-- STUDY VIEW -->
+        <div id="studyView" style="display:none;">
+            <p style="margin:0 0 12px 0; font-size:14px; color:#868e96; font-weight:600;">แตะที่รูปอาหารเพื่อฟังเสียงและฝึกออกเสียงตาม</p>
+            <div class="study-grid" id="studyGrid"></div>
+            <button class="btn-primary" style="background:var(--mint); box-shadow:0 5px 0 var(--mint-dark);" onclick="switchMode('game')">🚀 พร้อมแล้ว! ไปเล่นเกมเก็บคะแนน</button>
+        </div>
+
+        <!-- GAME VIEW -->
+        <div id="gameView">
+            <div class="hud-bar">
+                <span id="progressText">ข้อที่ 1 / 14</span>
+                <span id="scoreText" style="color:var(--mint-dark);">⭐ คะแนน: 0</span>
+            </div>
+
+            <div class="prompt-box">
+                <div class="target-word" id="targetWord">rice</div>
+                <button class="btn-listen" onclick="playCurrentWord()">🔊 ฟังเสียงอีกครั้ง</button>
+            </div>
+
+            <div class="options-grid" id="optionsContainer"></div>
+
+            <!-- SVG Picnic Basket -->
+            <div class="basket-stage">
+                <svg id="picnicBasket" class="basket-svg" viewBox="0 0 160 110" xmlns="http://www.w3.org/2000/svg">
+                    <!-- หูหิ้วตะกร้า -->
+                    <path d="M35 45 C35 5, 125 5, 125 45" fill="none" stroke="#8d5524" stroke-width="8" stroke-linecap="round"/>
+                    <!-- ขอบด้านใน -->
+                    <ellipse cx="80" cy="45" rx="62" ry="12" fill="#5c3a21"/>
+                    <!-- ตัวตะกร้า -->
+                    <path d="M20 45 L32 95 C34 102, 42 105, 50 105 L110 105 C118 105, 126 102, 128 95 L140 45 Z" fill="#d99b52" stroke="#8d5524" stroke-width="3"/>
+                    <!-- ลายสาน -->
+                    <line x1="25" y1="62" x2="135" y2="62" stroke="#b07232" stroke-width="3"/>
+                    <line x1="28" y1="80" x2="132" y2="80" stroke="#b07232" stroke-width="3"/>
+                    <line x1="55" y1="48" x2="60" y2="104" stroke="#b07232" stroke-width="3"/>
+                    <line x1="80" y1="48" x2="80" y2="104" stroke="#b07232" stroke-width="3"/>
+                    <line x1="105" y1="48" x2="100" y2="104" stroke="#b07232" stroke-width="3"/>
+                    <!-- ขอบผ้าปิกนิกห้อยปากตะกร้า -->
+                    <path d="M16 45 Q28 58 40 45 Q52 58 64 45 Q76 58 88 45 Q100 58 112 45 Q124 58 136 45 L144 45 L144 38 L16 38 Z" fill="#ff6b6b"/>
+                    <rect x="16" y="38" width="128" height="7" rx="3" fill="#ffe3e3" opacity="0.6"/>
+                </svg>
+                <div class="basket-hint">แตะอาหารที่ตรงกับเสียงเพื่อหยิบลงตะกร้า!</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal-box">
+            <h2 id="modalTitle" style="color:var(--warm-brown); margin:0 0 6px 0; font-family:'Prompt';">📝 ลงชื่อเข้าเรียน</h2>
+            <p id="modalSub" style="color:#868e96; font-weight:600; margin:0 0 12px 0; font-size:14px;">กรอกข้อมูลเพื่อเริ่มเกมและบันทึกคะแนน</p>
+            <input type="text" id="in_name" placeholder="ชื่อ - นามสกุล">
+            <input type="text" id="in_room" placeholder="ชั้น/ห้อง (เช่น 1/1)">
+            <input type="text" id="in_id" placeholder="รหัสนักเรียน (5 หลัก)" maxlength="5">
+            <button class="btn-primary" onclick="confirmUser()">🚀 เริ่มเล่นเกม</button>
+        </div>
+    </div>
+
+    <!-- Score Modal -->
+    <div class="modal-overlay" id="scoreModal">
+        <div class="modal-box">
+            <h2 style="color:var(--warm-brown); margin:0; font-family:'Prompt';">🎉 เก็บตะกร้าเสร็จแล้ว!</h2>
+            <p style="color:#868e96; font-weight:600; margin:6px 0 0 0;">คะแนนของคุณคือ</p>
+            <span class="score-num"><span id="finalScoreText">0</span><span style="font-size:28px; color:#adb5bd;">/14</span></span>
+            <div id="saveStatus" style="font-weight:700; font-size:15px; margin-bottom:14px; color:#2b8a3e; min-height:22px;"></div>
+            <button id="playAgainBtn" class="btn-primary" onclick="restartGame()" disabled>🔄 เล่นอีกครั้ง</button>
+        </div>
+    </div>
+
+<script>
+    const TOPIC_NAME = 'ม.1 Unit 8 Special days vocab';
+
+    const vocabData = [
+        { word: "rice", thai: "ข้าว", img: "rice.jpg", audio: "rice.mp3" },
+        { word: "eggs", thai: "ไข่", img: "eggs.jpg", audio: "eggs.mp3" },
+        { word: "cherries", thai: "เชอร์รี", img: "cherries.jpg", audio: "cherries.mp3" },
+        { word: "potatoes", thai: "มันฝรั่ง", img: "potatoes.jpg", audio: "potatoes.mp3" },
+        { word: "carrots", thai: "แคร์รอต", img: "carrots.jpg", audio: "carrots.mp3" },
+        { word: "biscuits", thai: "บิสกิต/ขนมปังกรอบ", img: "biscuits.jpg", audio: "biscuits.mp3" },
+        { word: "orange", thai: "ส้ม", img: "orange.jpg", audio: "orange.mp3" },
+        { word: "fish", thai: "ปลา", img: "fish.jpg", audio: "fish.mp3" },
+        { word: "tomatoes", thai: "มะเขือเทศ", img: "tomatoes.jpg", audio: "tomatoes.mp3" },
+        { word: "pineapples", thai: "สับปะรด", img: "pineapples.jpg", audio: "pineapples.mp3" },
+        { word: "bread", thai: "ขนมปัง", img: "bread.jpg", audio: "bread.mp3" },
+        { word: "tea", thai: "ชา", img: "tea.jpg", audio: "tea.mp3" },
+        { word: "meat", thai: "เนื้อสัตว์", img: "meat.jpg", audio: "meat.mp3" },
+        { word: "cheese", thai: "ชีส", img: "cheese.jpg", audio: "cheese.mp3" }
+    ];
+
+    const MAX_Q = vocabData.length;
+    let score = 0;
+    let currentQ = 0;
+    let shuffledQuestions = [];
+    let canClick = true;
+    let isPendingSubmit = false;
+    let currentMode = 'game';
+
+    // Audio Objects
+    const bgmAudio = new Audio('bgm.mp3');
+    bgmAudio.loop = true;
+    bgmAudio.volume = 0.25;
+    let isBgmOn = true;
+
+    const correctAudio = new Audio('correct.mp3');
+    const wrongAudio = new Audio('wrong.mp3');
+    let wordAudio = new Audio();
+
+    window.onload = () => {
+        renderStudyCards();
+        checkLoginStatus();
+    };
+
+    // ================= BGM CONTROL =================
+    function startBGMIfEnabled() {
+        if (isBgmOn && bgmAudio.paused) {
+            bgmAudio.play().catch(() => {});
+        }
+    }
+
+    function toggleBGM() {
+        isBgmOn = !isBgmOn;
+        const btn = document.getElementById('bgmBtn');
+        if (isBgmOn) {
+            bgmAudio.play().catch(() => {});
+            btn.innerText = '🎵 เพลง: เปิด';
+            btn.classList.remove('off');
+        } else {
+            bgmAudio.pause();
+            btn.innerText = '🔇 เพลง: ปิด';
+            btn.classList.add('off');
+        }
+    }
+
+    // ================= MODE SWITCHING =================
+    function switchMode(mode) {
+        currentMode = mode;
+        document.getElementById('tabStudy').classList.toggle('active', mode === 'study');
+        document.getElementById('tabGame').classList.toggle('active', mode === 'game');
+        document.getElementById('studyView').style.display = mode === 'study' ? 'block' : 'none';
+        document.getElementById('gameView').style.display = mode === 'game' ? 'block' : 'none';
+        startBGMIfEnabled();
+        if (mode === 'game') {
+            initGame();
+        }
+    }
+
+    // ================= STUDY MODE =================
+    function renderStudyCards() {
+        const grid = document.getElementById('studyGrid');
+        grid.innerHTML = '';
+        vocabData.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'study-card';
+            card.innerHTML = `
+                <div class="study-img-wrap"><img src="${item.img}" alt="${item.word}"></div>
+                <div class="study-word">${item.word}</div>
+                <div class="study-thai">${item.thai}</div>
+            `;
+            card.onclick = () => {
+                startBGMIfEnabled();
+                document.querySelectorAll('.study-card').forEach(c => c.classList.remove('playing'));
+                card.classList.add('playing');
+                wordAudio.src = item.audio;
+                wordAudio.currentTime = 0;
+                wordAudio.play().catch(() => {});
+                setTimeout(() => card.classList.remove('playing'), 900);
+            };
+            grid.appendChild(card);
+        });
+    }
+
+    // ================= GAME MODE =================
+    function initGame() {
+        score = 0;
+        currentQ = 0;
+        shuffledQuestions = [...vocabData].sort(() => Math.random() - 0.5);
+        document.getElementById('scoreText').innerText = `⭐ คะแนน: 0`;
+        loadQuestion();
+    }
+
+    function playCurrentWord() {
+        if (!shuffledQuestions[currentQ]) return;
+        startBGMIfEnabled();
+        wordAudio.src = shuffledQuestions[currentQ].audio;
+        wordAudio.currentTime = 0;
+        wordAudio.play().catch(() => {});
+    }
+
+    function loadQuestion() {
+        canClick = true;
+        const currentData = shuffledQuestions[currentQ];
+        document.getElementById('progressText').innerText = `ข้อที่ ${currentQ + 1} / ${MAX_Q}`;
+        document.getElementById('targetWord').innerText = currentData.word;
+
+        // เล่นเสียงคำศัพท์อัตโนมัติ
+        setTimeout(() => playCurrentWord(), 250);
+
+        // สุ่มตัวเลือก 4 รูป (ถูก 1 + ผิด 3)
+        let distractors = vocabData.filter(item => item.word !== currentData.word)
+                                   .sort(() => Math.random() - 0.5)
+                                   .slice(0, 3);
+        let options = [currentData, ...distractors].sort(() => Math.random() - 0.5);
+
+        const container = document.getElementById('optionsContainer');
+        container.innerHTML = '';
+
+        options.forEach(opt => {
+            const card = document.createElement('div');
+            card.className = 'plate-card';
+            card.dataset.word = opt.word;
+            card.innerHTML = `<div class="plate-img-box"><img src="${opt.img}" alt="${opt.word}"></div>`;
+            card.onclick = () => checkAnswer(opt.word === currentData.word, card, currentData.word);
+            container.appendChild(card);
+        });
+    }
+
+    function animateToBasket(imgEl) {
+        const basket = document.getElementById('picnicBasket');
+        const imgRect = imgEl.getBoundingClientRect();
+        const basketRect = basket.getBoundingClientRect();
+
+        const clone = imgEl.cloneNode(true);
+        clone.className = 'flying-food';
+        clone.style.left = imgRect.left + 'px';
+        clone.style.top = imgRect.top + 'px';
+        clone.style.width = imgRect.width + 'px';
+        clone.style.height = imgRect.height + 'px';
+        document.body.appendChild(clone);
+
+        requestAnimationFrame(() => {
+            const targetX = basketRect.left + (basketRect.width / 2) - (imgRect.width * 0.25);
+            const targetY = basketRect.top + 15;
+            clone.style.left = targetX + 'px';
+            clone.style.top = targetY + 'px';
+            clone.style.width = (imgRect.width * 0.5) + 'px';
+            clone.style.height = (imgRect.height * 0.5) + 'px';
+            clone.style.opacity = '0.2';
+            clone.style.transform = 'rotate(20deg)';
+        });
+
+        setTimeout(() => {
+            clone.remove();
+            basket.classList.add('bounce');
+            setTimeout(() => basket.classList.remove('bounce'), 250);
+        }, 550);
+    }
+
+    function checkAnswer(isCorrect, selectedCard, correctWord) {
+        if (!canClick) return;
+        canClick = false;
+        startBGMIfEnabled();
+
+        const allCards = document.querySelectorAll('.plate-card');
+        allCards.forEach(c => c.classList.add('disabled'));
+
+        if (isCorrect) {
+            score++;
+            document.getElementById('scoreText').innerText = `⭐ คะแนน: ${score}`;
+            selectedCard.classList.add('correct-ans');
+            correctAudio.currentTime = 0;
+            correctAudio.play().catch(() => {});
+            animateToBasket(selectedCard.querySelector('img'));
+        } else {
+            selectedCard.classList.add('wrong-ans');
+            wrongAudio.currentTime = 0;
+            wrongAudio.play().catch(() => {});
+            // เฉลยข้อที่ถูกให้เด็กจำได้
+            allCards.forEach(c => {
+                if (c.dataset.word === correctWord) c.classList.add('correct-ans');
+            });
+        }
+
+        setTimeout(() => {
+            currentQ++;
+            if (currentQ < MAX_Q) {
+                loadQuestion();
+            } else {
+                endGame();
+            }
+        }, 1200);
+    }
+
+    function endGame() {
+        if (!localStorage.getItem('studentId')) {
+            isPendingSubmit = true;
+            document.getElementById('modalTitle').innerText = "👋 จบเกมแล้ว!";
+            document.getElementById('modalSub').innerText = `คุณได้ ${score}/${MAX_Q} คะแนน กรอกข้อมูลเพื่อบันทึก`;
+            document.getElementById('loginModal').classList.add('active');
+        } else {
+            submitScore();
+        }
+    }
+
+    // ================= LOGIN & GOOGLE SHEETS =================
+    function formatRoomValue(val) {
+        const nums = val.match(/\d+/g);
+        if (nums && nums.length >= 2) return `ม.${nums[0]}/${nums[1]}`;
+        if (nums && nums.length === 1) return `ม.1/${nums[0]}`;
+        return val.trim();
+    }
+
+    document.getElementById('in_room').addEventListener('blur', function() {
+        this.value = formatRoomValue(this.value);
+    });
+
+    function checkLoginStatus() {
+        if (localStorage.getItem('studentId')) {
+            document.getElementById('userProfile').style.display = 'flex';
+            document.getElementById('p_name').innerText = localStorage.getItem('studentName');
+            document.getElementById('p_room').innerText = localStorage.getItem('studentRoom');
+            document.getElementById('p_id').innerText = localStorage.getItem('studentId');
+            initGame();
+        } else {
+            document.getElementById('userProfile').style.display = 'none';
+            document.getElementById('loginModal').classList.add('active');
+        }
+    }
+
+    function switchAccount() {
+        Swal.fire({
+            title: '⚠️ เปลี่ยนคนเล่น?',
+            text: 'ข้อมูลเดิมจะถูกสลับออกและเริ่มเกมใหม่นะ',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ff6b6b',
+            cancelButtonColor: '#adb5bd',
+            confirmButtonText: 'ตกลง',
+            cancelButtonText: 'ยกเลิก'
+        }).then((res) => {
+            if (res.isConfirmed) {
+                localStorage.clear();
+                isPendingSubmit = false;
+                document.getElementById('userProfile').style.display = 'none';
+                document.getElementById('in_name').value = '';
+                document.getElementById('in_room').value = '';
+                document.getElementById('in_id').value = '';
+                document.getElementById('modalTitle').innerText = "🔄 ลงชื่อบัญชีใหม่";
+                document.getElementById('modalSub').innerText = "กรอกข้อมูลนักเรียนคนใหม่เพื่อเริ่มเล่น";
+                document.getElementById('loginModal').classList.add('active');
+            }
+        });
+    }
+
+    function confirmUser() {
+        const n = document.getElementById('in_name').value.trim();
+        const r = formatRoomValue(document.getElementById('in_room').value);
+        document.getElementById('in_room').value = r;
+        const id = document.getElementById('in_id').value.trim();
+
+        if (!n || !r || id.length !== 5) {
+            Swal.fire('ข้อมูลไม่ครบ!', 'กรุณากรอกชื่อ ห้อง และรหัสนักเรียน 5 หลัก', 'warning');
+            return;
+        }
+
+        localStorage.setItem('studentName', n);
+        localStorage.setItem('studentRoom', r);
+        localStorage.setItem('studentId', id);
+
+        document.getElementById('loginModal').classList.remove('active');
+        document.getElementById('userProfile').style.display = 'flex';
+        document.getElementById('p_name').innerText = n;
+        document.getElementById('p_room').innerText = r;
+        document.getElementById('p_id').innerText = id;
+
+        startBGMIfEnabled();
+
+        if (isPendingSubmit) {
+            isPendingSubmit = false;
+            submitScore();
+        } else {
+            initGame();
+        }
+    }
+
+    function submitScore() {
+        document.getElementById('scoreModal').classList.add('active');
+        document.getElementById('finalScoreText').innerText = score;
+        const stat = document.getElementById('saveStatus');
+        const playAgainBtn = document.getElementById('playAgainBtn');
+
+        // ล็อกปุ่มเล่นใหม่ระหว่างส่งคะแนน
+        playAgainBtn.disabled = true;
+
+        if (typeof QUIZ_CONFIG === 'undefined' || !QUIZ_CONFIG.SCRIPT_URL) {
+            stat.innerText = "❌ ไม่พบไฟล์ตั้งค่า (quiz-config.js)";
+            stat.style.color = "#c92a2a";
+            playAgainBtn.disabled = false;
+            return;
+        }
+
+        stat.innerText = "⏳ กำลังบันทึกคะแนนลงระบบ...";
+        stat.style.color = "#d97706";
+
+        const payload = {
+            name: localStorage.getItem('studentName'),
+            room: localStorage.getItem('studentRoom'),
+            studentId: "'" + localStorage.getItem('studentId'),
+            lesson: TOPIC_NAME,
+            score: score,
+            maxScore: MAX_Q
+        };
+
+        fetch(QUIZ_CONFIG.SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            body: JSON.stringify(payload)
+        }).catch(e => console.error(e));
+
+        setTimeout(() => {
+            stat.innerText = "✅ บันทึกคะแนนลงระบบเรียบร้อย!";
+            stat.style.color = "#2b8a3e";
+            playAgainBtn.disabled = false;
+        }, 1500);
+    }
+
+    function restartGame() {
+        document.getElementById('scoreModal').classList.remove('active');
+        initGame();
+    }
+</script>
+</body>
+</html>

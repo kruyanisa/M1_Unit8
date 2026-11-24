@@ -660,6 +660,18 @@
         const badge = document.getElementById('quotaBadge');
         badge.innerText = `เลือกแล้ว: ${count} / ${MAX_SELECT}`;
         badge.classList.toggle('ready', count === MAX_SELECT);
+
+        // อัปเดตเครื่องหมาย ✔️ ที่ป้ายคำกริยาช่อง 1 ทันทีเมื่อหาเจอ
+        const currentNorms = new Set([...selectedMap.values()].map(item => item.normWord));
+        targetVerbs.forEach(v => {
+            const pill = document.getElementById(`vpill-${v.v1}`);
+            if (!pill) return;
+            if (currentNorms.has(v.v2)) {
+                pill.innerHTML = `<span>✔️ ${v.v1}</span>`;
+            } else {
+                pill.innerHTML = `<span>${v.v1}</span>`;
+            }
+        });
     }
 
     // ================= GRADING & SUBMISSION =================
@@ -672,10 +684,16 @@
         if (selectedMap.size < MAX_SELECT) {
             playSFX('warn');
             Swal.fire({
-                icon: 'warning',
-                title: `ยังเลือกไม่ครบ 14 คำ`,
-                text: `ตอนนี้เลือกไปแล้ว ${selectedMap.size} คำ กรุณาหาให้ครบ 14 คำก่อนส่งคะแนนนะครับ`,
-                confirmButtonColor: '#ec4899'
+                icon: 'question',
+                title: `เลือกไป ${selectedMap.size} / ${MAX_SELECT} คำ`,
+                text: 'ยังเลือกไม่ครบ 14 คำ ต้องการส่งคะแนนเท่าที่ทำได้เลยไหม?',
+                showCancelButton: true,
+                confirmButtonColor: '#ec4899',
+                cancelButtonColor: '#94a3b8',
+                confirmButtonText: 'ส่งคะแนนเลย',
+                cancelButtonText: 'กลับไปหาต่อ'
+            }).then((res) => {
+                if (res.isConfirmed) gradeAndSubmit();
             });
             return;
         }

@@ -38,7 +38,7 @@
         /* Profile Bar */
         .profile-bar {
             width: 100%;
-            max-width: 740px;
+            max-width: 760px;
             font-size: clamp(12px, 3.2vw, 14px);
             background: rgba(255, 255, 255, 0.94);
             border: 2px solid #a7f3d0;
@@ -67,10 +67,10 @@
             font-size: 12px;
         }
 
-        /* Card Layout */
+        /* Main Card */
         .card {
             width: 100%;
-            max-width: 740px;
+            max-width: 760px;
             background: rgba(255, 255, 255, 0.96);
             border: 3px solid #fbcfe8;
             border-radius: 24px;
@@ -79,8 +79,7 @@
             margin-bottom: 16px;
         }
 
-        /* Header & Intro Banner */
-        .header-center { text-align: center; margin-bottom: 14px; }
+        .header-center { text-align: center; margin-bottom: 12px; }
 
         .badge-unit {
             display: inline-block;
@@ -98,51 +97,33 @@
             font-family: 'Fredoka One', cursive;
             color: #831843;
             font-size: clamp(24px, 6vw, 34px);
-            margin: 0 0 6px 0;
+            margin: 0;
         }
 
-        .intro-box {
-            background: linear-gradient(135deg, #fdf2f8, #fffbeb);
-            border: 2px dashed #f472b6;
-            border-radius: 16px;
-            padding: 14px;
-            margin-bottom: 16px;
-        }
-
-        .intro-text {
-            font-size: clamp(15px, 3.8vw, 17px);
-            font-weight: 600;
-            color: #831843;
-            margin: 0 0 10px 0;
-            line-height: 1.5;
-        }
-
-        /* Festival Tabs */
+        /* Tabs (Intro + 3 Festivals) */
         .fest-tabs {
             display: grid;
-            grid-template-columns: 1fr;
+            grid-template-columns: 1fr 1fr;
             gap: 8px;
             margin-bottom: 14px;
         }
-
-        @media (min-width: 540px) {
-            .fest-tabs { grid-template-columns: repeat(3, 1fr); }
+        @media (min-width: 600px) {
+            .fest-tabs { grid-template-columns: repeat(4, 1fr); }
         }
 
         .fest-tab {
-            padding: 10px 10px;
+            padding: 9px 8px;
             border-radius: 14px;
             border: 2px solid #e2e8f0;
             background: #f8fafc;
             font-family: 'Prompt', sans-serif;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 700;
             color: #475569;
             cursor: pointer;
             transition: 0.15s;
             text-align: center;
         }
-
         .fest-tab.active {
             background: var(--emerald);
             border-color: var(--emerald-dark);
@@ -150,85 +131,224 @@
             box-shadow: 0 4px 0 var(--emerald-dark);
         }
 
-        /* Reading Panel */
-        .reading-panel { display: none; animation: fadeIn 0.25s ease; }
-        .reading-panel.active { display: block; }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* Image Gallery (16:9) */
-        .gallery-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 10px;
-            margin-bottom: 14px;
-        }
-
-        @media (min-width: 540px) {
-            .gallery-grid.cols-2 { grid-template-columns: 1fr 1fr; }
-            .gallery-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
-        }
-
-        .img-frame {
+        /* Media Stage (16:9 + Overlay Subtitles + Fullscreen) */
+        .media-stage {
+            position: relative;
             width: 100%;
             aspect-ratio: 16 / 9;
             background: #0f172a;
-            border-radius: 14px;
+            border-radius: 16px;
             border: 3px solid #fde68a;
             overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
+            box-shadow: 0 8px 18px rgba(15, 23, 42, 0.15);
         }
 
-        .img-frame img {
+        .media-stage img {
             width: 100%;
             height: 100%;
             object-fit: contain;
             display: block;
         }
 
-        /* Audio Player Bar */
-        .audio-bar {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: #f0fdf4;
-            border: 2px solid #86efac;
-            border-radius: 14px;
-            padding: 8px 12px;
-            margin-bottom: 12px;
-            flex-wrap: wrap;
+        /* Pseudo-fullscreen fallback for mobile */
+        .media-stage.pseudo-fs {
+            position: fixed !important;
+            inset: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            aspect-ratio: auto !important;
+            border: none !important;
+            border-radius: 0 !important;
+            z-index: 4000 !important;
         }
 
-        .audio-label {
+        .media-stage:fullscreen { border: none; border-radius: 0; }
+
+        .btn-exit-fs {
+            display: none;
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            z-index: 20;
+            background: rgba(15, 23, 42, 0.8);
+            color: #fff;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            padding: 6px 14px;
+            border-radius: 12px;
             font-family: 'Prompt', sans-serif;
             font-size: 13px;
             font-weight: 700;
-            color: #166534;
-            white-space: nowrap;
+            cursor: pointer;
         }
 
-        audio {
+        .media-stage:fullscreen .btn-exit-fs,
+        .media-stage.pseudo-fs .btn-exit-fs {
+            display: block;
+        }
+
+        /* Overlay Subtitle on Image Stage */
+        .sub-overlay {
+            position: absolute;
+            left: 50%;
+            bottom: 14px;
+            transform: translateX(-50%);
+            width: 94%;
+            text-align: center;
+            pointer-events: none;
+            z-index: 15;
+        }
+
+        .sub-overlay.hidden { display: none; }
+
+        .sub-box {
+            display: inline-block;
+            background: rgba(15, 23, 42, 0.84);
+            color: #f8fafc;
+            font-family: 'Prompt', sans-serif;
+            font-size: clamp(13px, 3vw, 19px);
+            font-weight: 500;
+            padding: 6px 14px;
+            border-radius: 12px;
+            line-height: 1.45;
+            text-shadow: 0 1px 2px #000;
+        }
+
+        .sub-box:empty { display: none; }
+
+        .media-stage:fullscreen .sub-box,
+        .media-stage.pseudo-fs .sub-box {
+            font-size: clamp(18px, 3.2vw, 28px);
+            padding: 10px 18px;
+        }
+
+        .sub-word {
+            display: inline-block;
+            padding: 0 3px;
+            margin: 0 1px;
+            border-radius: 5px;
+            transition: background-color 0.08s, color 0.08s;
+        }
+
+        .sub-word.active {
+            background-color: #fde047;
+            color: #1e293b;
+            font-weight: 700;
+            text-shadow: none;
+        }
+
+        .sub-word.is-vocab {
+            pointer-events: auto;
+            cursor: pointer;
+            border-bottom: 2px dashed #f472b6;
+            color: #fbcfe8;
+        }
+
+        .sub-word.is-vocab.active {
+            color: #9d174d;
+        }
+
+        /* Stage Controls & Thumbnails */
+        .thumb-strip {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .thumb-btn {
+            width: 72px;
+            aspect-ratio: 16 / 9;
+            padding: 0;
+            border: 2px solid #cbd5e1;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #0f172a;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: 0.15s;
+        }
+        .thumb-btn.active { border-color: var(--magenta); opacity: 1; transform: scale(1.06); }
+        .thumb-btn img { width: 100%; height: 100%; object-fit: contain; display: block; }
+
+        .stage-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+            margin-top: 12px;
+            background: #f0fdf4;
+            border: 2px solid #86efac;
+            border-radius: 14px;
+            padding: 8px 10px;
+        }
+
+        .stage-toolbar audio {
             flex: 1;
-            min-width: 200px;
+            min-width: 190px;
             height: 36px;
         }
 
-        /* Passage Box */
+        .btn-tool {
+            background: var(--ink);
+            color: #fff;
+            border: none;
+            padding: 7px 12px;
+            border-radius: 10px;
+            font-family: 'Prompt', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .btn-tool.off { background: #94a3b8; }
+        .btn-tool.fs { background: var(--amber-dark); }
+
+        /* Full Synced Passage Box */
         .passage-box {
+            margin-top: 12px;
             background: #ffffff;
             border: 2px solid #e2e8f0;
             border-radius: 16px;
-            padding: 16px;
-            font-size: clamp(16px, 4vw, 18px);
-            line-height: 1.75;
+            padding: 14px 16px;
+            font-size: clamp(15px, 3.8vw, 18px);
+            line-height: 1.85;
             color: #1e293b;
         }
 
-        .speaker-tag {
+        .p-word {
             display: inline-block;
-            margin-top: 8px;
+            padding: 0 2px;
+            border-radius: 5px;
+            transition: background-color 0.08s;
+        }
+        .p-word.active {
+            background-color: #fef08a;
+            color: #831843;
+            font-weight: 800;
+        }
+        .p-word.is-vocab {
+            color: #be185d;
+            font-weight: 800;
+            border-bottom: 2px dashed #f472b6;
+            cursor: pointer;
+        }
+
+        .speaker-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 10px;
+            padding-top: 8px;
+            border-top: 1px dashed #e2e8f0;
+        }
+
+        .speaker-tag {
             background: #fef3c7;
             color: #92400e;
             font-family: 'Prompt', sans-serif;
@@ -238,24 +358,7 @@
             border-radius: 10px;
         }
 
-        .vocab-hint-bar {
-            font-size: 13px;
-            color: #be185d;
-            font-weight: 700;
-            margin-top: 10px;
-            text-align: right;
-        }
-
-        .vocab-word {
-            color: #be185d;
-            font-weight: 800;
-            border-bottom: 2px dashed #f472b6;
-            cursor: pointer;
-            padding: 0 2px;
-            border-radius: 4px;
-            transition: background 0.15s;
-        }
-        .vocab-word:hover { background: #fce7f3; }
+        .vocab-hint { font-size: 12px; color: #be185d; font-weight: 700; }
 
         /* Vocab Popover */
         #vocab-popover {
@@ -263,16 +366,17 @@
             position: fixed;
             background: #fff;
             border: 2px solid var(--magenta);
-            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 12px 26px rgba(0, 0, 0, 0.28);
             padding: 10px 14px;
             border-radius: 14px;
             text-align: center;
-            z-index: 2500;
-            min-width: 160px;
-            max-width: 230px;
+            z-index: 5000;
+            min-width: 170px;
+            max-width: 240px;
         }
         .pop-eng { font-family: 'Prompt', sans-serif; font-size: 16px; font-weight: 700; color: #831843; }
-        .pop-thai { font-size: 15px; font-weight: 800; color: #059669; margin-top: 3px; }
+        .pop-pos { display: inline-block; font-size: 11px; font-weight: 700; background: #fce7f3; color: #be185d; padding: 1px 8px; border-radius: 8px; margin: 3px 0; }
+        .pop-thai { font-size: 15px; font-weight: 800; color: #059669; margin-top: 2px; }
 
         /* Quiz Section */
         .quiz-header {
@@ -284,46 +388,13 @@
             margin-bottom: 14px;
         }
 
-        .quiz-title {
-            font-family: 'Prompt', sans-serif;
-            font-size: 18px;
-            font-weight: 700;
-            color: #831843;
-            margin: 0;
-        }
+        .quiz-title { font-family: 'Prompt', sans-serif; font-size: 18px; font-weight: 700; color: #831843; margin: 0; }
+        .quiz-badge { background: #dcfce7; color: #15803d; font-weight: 800; padding: 4px 12px; border-radius: 12px; font-size: 13px; border: 2px solid #86efac; }
 
-        .quiz-badge {
-            background: #dcfce7;
-            color: #15803d;
-            font-weight: 800;
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-size: 13px;
-            border: 2px solid #86efac;
-        }
+        .q-card { background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 16px; padding: 14px; margin-bottom: 12px; }
+        .q-text { font-family: 'Prompt', sans-serif; font-size: clamp(15px, 4vw, 17px); font-weight: 700; margin: 0 0 10px 0; }
 
-        .q-card {
-            background: #f8fafc;
-            border: 2px solid #e2e8f0;
-            border-radius: 16px;
-            padding: 14px;
-            margin-bottom: 12px;
-        }
-
-        .q-text {
-            font-family: 'Prompt', sans-serif;
-            font-size: clamp(15px, 4vw, 17px);
-            font-weight: 700;
-            margin: 0 0 10px 0;
-            color: var(--ink);
-        }
-
-        .tf-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-
+        .tf-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .tf-btn {
             padding: 11px 10px;
             border-radius: 12px;
@@ -336,7 +407,6 @@
             box-shadow: 0 4px 0 #cbd5e1;
             transition: 0.15s;
         }
-
         .tf-btn:active:not(:disabled) { transform: translateY(3px); box-shadow: none; }
         .tf-btn.selected { border-color: var(--amber-dark); background: #fef3c7; color: #92400e; box-shadow: 0 4px 0 var(--amber-dark); }
         .tf-btn.correct { border-color: var(--success); background: #dcfce7; color: #14532d; box-shadow: 0 4px 0 var(--success); }
@@ -371,14 +441,8 @@
             box-shadow: 0 5px 0 var(--magenta-dark);
             transition: 0.1s;
         }
-
         .btn-primary:active:not(:disabled) { transform: translateY(4px); box-shadow: none; }
-        .btn-primary:disabled {
-            background: #94a3b8;
-            box-shadow: 0 5px 0 #64748b;
-            cursor: not-allowed;
-            opacity: 0.75;
-        }
+        .btn-primary:disabled { background: #94a3b8; box-shadow: 0 5px 0 #64748b; cursor: not-allowed; opacity: 0.75; }
 
         /* Modals */
         .modal-overlay {
@@ -389,15 +453,13 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 3000;
+            z-index: 6000;
             visibility: hidden;
             opacity: 0;
             transition: 0.25s;
             padding: 15px;
         }
-
         .modal-overlay.active { visibility: visible; opacity: 1; }
-
         .modal-box {
             background: #fff;
             padding: 26px 20px;
@@ -408,7 +470,6 @@
             border: 4px solid var(--magenta);
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
         }
-
         .modal-box input {
             width: 100%;
             padding: 11px;
@@ -421,17 +482,7 @@
             font-weight: 600;
             outline: none;
         }
-
-        .modal-box input:focus { border-color: var(--magenta); }
-
-        .score-num {
-            font-family: 'Fredoka One', cursive;
-            font-size: 58px;
-            color: var(--magenta);
-            margin: 8px 0;
-            display: block;
-            line-height: 1;
-        }
+        .score-num { font-family: 'Fredoka One', cursive; font-size: 58px; color: var(--magenta); margin: 8px 0; display: block; line-height: 1; }
     </style>
 </head>
 <body>
@@ -442,80 +493,48 @@
         <button class="btn-switch" onclick="switchAccount()">🔄 สลับบัญชี</button>
     </div>
 
-    <!-- Reading Card -->
+    <!-- Reading + Synced Subtitle Card -->
     <div class="card">
         <div class="header-center">
             <div class="badge-unit">Unit 8a • Reading (Listen & Read)</div>
             <h1>🌸 Spring Celebrations</h1>
         </div>
 
-        <!-- Intro Section -->
-        <div class="intro-box">
-            <p class="intro-text">
-                "Are you planning a trip to the UK and Ireland next spring? Don't miss out on these celebrations. You are sure to have the time of your life."
-            </p>
-            <div class="audio-bar" style="margin-bottom:0; background:#fff; border-color:#fbcfe8;">
-                <span class="audio-label" style="color:#be185d;">🎧 Intro</span>
-                <audio class="lesson-audio" controls preload="metadata" src="intro.mp3"></audio>
-            </div>
-        </div>
-
-        <!-- 3 Festival Tabs -->
+        <!-- 4 Tabs -->
         <div class="fest-tabs">
-            <button class="fest-tab active" onclick="openFest(0, this)">🐉 1. St David's Day (Hugh)</button>
-            <button class="fest-tab" onclick="openFest(1, this)">☘️ 2. St Patrick's Day (James)</button>
-            <button class="fest-tab" onclick="openFest(2, this)">⚔️ 3. St George's Day (Sam)</button>
+            <button class="fest-tab active" onclick="selectTrack('intro', this)">✨ Intro</button>
+            <button class="fest-tab" onclick="selectTrack('hugh', this)">🐉 1. St David's</button>
+            <button class="fest-tab" onclick="selectTrack('james', this)">☘️ 2. St Patrick's</button>
+            <button class="fest-tab" onclick="selectTrack('sam', this)">⚔️ 3. St George's</button>
         </div>
 
-        <!-- Panel 1: Hugh -->
-        <div class="reading-panel active" id="fest-0">
-            <div class="gallery-grid cols-3">
-                <div class="img-frame"><img src="2wear.jpg" alt="Traditional Welsh costumes"></div>
-                <div class="img-frame"><img src="6fly.jpg" alt="Flying the national flag"></div>
-                <div class="img-frame"><img src="3play.jpg" alt="Playing the Welsh bagpipes"></div>
-            </div>
-            <div class="audio-bar">
-                <span class="audio-label">🎧 ฟังเสียง Hugh</span>
-                <audio class="lesson-audio" controls preload="metadata" src="Hugh.mp3"></audio>
-            </div>
-            <div class="passage-box">
-                Why not come to Wales for St David's Day? It is on 1st March and last year's celebrations in Cardiff were <span class="vocab-word" onclick="showVocab(event,'brilliant')">brilliant</span>. All the girls and boys wore traditional Welsh costumes and sang songs, danced and read <span class="vocab-word" onclick="showVocab(event,'poetry')">poetry</span>. All the buildings in town flew the national flag. We had street parades where people played the Welsh bagpipes. In the evening, I went home for a family dinner. We ate some juicy <span class="vocab-word" onclick="showVocab(event,'roast lamb')">roast lamb</span> with potatoes. Delicious!
-                <div><span class="speaker-tag">👦 Hugh, 13 (Wales)</span></div>
+        <!-- Image Stage with Overlay Subtitles -->
+        <div class="media-stage" id="mediaStage">
+            <button class="btn-exit-fs" onclick="exitFullscreenMode()">✕ Exit (Esc)</button>
+            <img id="stageImage" src="4have.jpg" alt="Festival Scene">
+            <div id="subOverlay" class="sub-overlay">
+                <div id="subBox" class="sub-box"></div>
             </div>
         </div>
 
-        <!-- Panel 2: James -->
-        <div class="reading-panel" id="fest-1">
-            <div class="gallery-grid cols-2">
-                <div class="img-frame"><img src="1paint.jpg" alt="Painting faces"></div>
-                <div class="img-frame"><img src="4have.jpg" alt="Street parade in Dublin"></div>
-            </div>
-            <div class="audio-bar">
-                <span class="audio-label">🎧 ฟังเสียง James</span>
-                <audio class="lesson-audio" controls preload="metadata" src="James.mp3"></audio>
-            </div>
-            <div class="passage-box">
-                Don't forget, St Patrick's Day! Try to pop over to Dublin, on 17th of March because the whole city goes crazy. I celebrated with my <span class="vocab-word" onclick="showVocab(event,'schoolmates')">schoolmates</span> last year and everyone wore <span class="vocab-word" onclick="showVocab(event,'shamrocks')">shamrocks</span>, green clothes and painted their faces. In the evening people let off <span class="vocab-word" onclick="showVocab(event,'fireworks')">fireworks</span>. My mum made some special food. We all ate Irish soda bread, bacon and <span class="vocab-word" onclick="showVocab(event,'cabbage')">cabbage</span>. It was yummy. You must come and see for yourself.
-                <div><span class="speaker-tag">👦 James, 12 (Ireland)</span></div>
-            </div>
+        <!-- Thumbnail Switcher -->
+        <div class="thumb-strip" id="thumbStrip"></div>
+
+        <!-- Audio + CC + Fullscreen Toolbar -->
+        <div class="stage-toolbar">
+            <audio id="mainAudio" controls preload="metadata" src="intro.mp3"></audio>
+            <button id="btnCC" class="btn-tool" onclick="toggleCC()">CC: ON</button>
+            <button class="btn-tool fs" onclick="toggleFullscreenMode()">⛶ Fullscreen</button>
         </div>
 
-        <!-- Panel 3: Sam -->
-        <div class="reading-panel" id="fest-2">
-            <div class="gallery-grid">
-                <div class="img-frame" style="max-width:480px; margin:0 auto;"><img src="5wearknight.jpg" alt="Medieval knight costumes"></div>
-            </div>
-            <div class="audio-bar">
-                <span class="audio-label">🎧 ฟังเสียง Sam</span>
-                <audio class="lesson-audio" controls preload="metadata" src="Sam.mp3"></audio>
-            </div>
-            <div class="passage-box">
-                If you are still in the UK on 23rd April, why not visit London for St George's Day. Last year I was in Covent Garden and it was great fun. We watched some <span class="vocab-word" onclick="showVocab(event,'medieval')">medieval</span> street theatre and some people wore dragon costumes. There was even a <span class="vocab-word" onclick="showVocab(event,'stall')">stall</span> that served <span class="vocab-word" onclick="showVocab(event,'roast beef')">roast beef</span> and Yorkshire puddings. We had a great time! Make it a date in your diary!
-                <div><span class="speaker-tag">👦 Sam, 14 (UK)</span></div>
+        <!-- Synced Full Passage -->
+        <div class="passage-box">
+            <div id="passageWords"></div>
+            <div class="speaker-row">
+                <span class="speaker-tag" id="speakerTag">🎙️ Intro: Spring Celebrations</span>
+                <span class="vocab-hint">💡 แตะคำสีชมพูเส้นประเพื่อดูคำแปล</span>
             </div>
         </div>
-
-        <div class="vocab-hint-bar">💡 แตะคำสีชมพูเส้นประเพื่อดูคำแปลภาษาไทย</div>
     </div>
 
     <!-- True / False Quiz Card -->
@@ -528,9 +547,10 @@
         <button id="btnCheckQuiz" class="btn-primary" onclick="checkAndSubmitQuiz()">✅ ตรวจคำตอบและส่งคะแนน</button>
     </div>
 
-    <!-- Vocab Popover -->
+    <!-- Vocabulary Popover -->
     <div id="vocab-popover">
         <div class="pop-eng" id="pop-eng"></div>
+        <div class="pop-pos" id="pop-pos"></div>
         <div class="pop-thai" id="pop-thai"></div>
     </div>
 
@@ -561,127 +581,353 @@
 <script>
     const TOPIC_NAME = 'ม.1 Unit 8 Celebrations Reading T or F';
 
+    // พจนานุกรมคำศัพท์ 34 คำ/วลี ตามหนังสือเรียน
     const dictionary = {
-        "brilliant": "ยอดเยี่ยมมาก, สุดยอด",
-        "poetry": "บทกวี, กลอน",
-        "roast lamb": "เนื้อแกะย่าง",
-        "schoolmates": "เพื่อนร่วมโรงเรียน",
-        "shamrocks": "ใบแชมร็อก (ใบไม้สามแฉกสัญลักษณ์ไอร์แลนด์)",
-        "fireworks": "ดอกไม้ไฟ, พลุ",
-        "cabbage": "กะหล่ำปลี",
-        "medieval": "ยุคกลาง",
-        "stall": "แผงลอย, ซุ้มขายอาหาร",
-        "roast beef": "เนื้อวัวย่าง"
+        "forget": { label: "forget", pos: "v.", thai: "ลืม" },
+        "served": { label: "serve (served)", pos: "v.", thai: "เสิร์ฟ, ให้บริการอาหาร" },
+        "bacon": { label: "bacon", pos: "n.", thai: "เบคอน" },
+        "bagpipes": { label: "bagpipes", pos: "n.", thai: "ปี่สกอต (แบกไปป์)" },
+        "celebrations": { label: "celebration", pos: "n.", thai: "การเฉลิมฉลอง, งานฉลอง" },
+        "costumes": { label: "costume", pos: "n.", thai: "ชุดแต่งกาย, ชุดประจำชาติ" },
+        "covent": { label: "Covent Garden", pos: "n.", thai: "โคเวนต์การ์เดน (ย่านท่องเที่ยวในลอนดอน)" },
+        "garden": { label: "Covent Garden", pos: "n.", thai: "โคเวนต์การ์เดน (ย่านท่องเที่ยวในลอนดอน)" },
+        "date": { label: "Make it a date in your diary.", pos: "phr.", thai: "จดวันนัดลงในไดอารีไว้เลย (ห้ามพลาด)" },
+        "diary": { label: "diary", pos: "n.", thai: "สมุดบันทึก, ไดอารี" },
+        "dinner": { label: "dinner", pos: "n.", thai: "อาหารมื้อเย็น" },
+        "dublin": { label: "Dublin", pos: "n.", thai: "ดับลิน (เมืองหลวงของไอร์แลนด์)" },
+        "lamb": { label: "lamb", pos: "n.", thai: "เนื้อแกะ" },
+        "schoolmates": { label: "schoolmate", pos: "n.", thai: "เพื่อนร่วมโรงเรียน" },
+        "soda": { label: "soda bread", pos: "n.", thai: "ขนมปังโซดา (ขนมปังพื้นเมืองไอร์แลนด์)" },
+        "bread": { label: "soda bread", pos: "n.", thai: "ขนมปังโซดา (ขนมปังพื้นเมืองไอร์แลนด์)" },
+        "stall": { label: "stall", pos: "n.", thai: "แผงลอย, ซุ้มขายอาหาร" },
+        "street": { label: "street / street parade / street theatre", pos: "n.", thai: "ถนน / ขบวนพาเหรดบนถนน / ละครข้างถนน" },
+        "parades": { label: "street parade", pos: "n.", thai: "ขบวนพาเหรดบนถนน" },
+        "theatre": { label: "street theatre / theatre", pos: "n.", thai: "ละครข้างถนน / โรงละคร" },
+        "trip": { label: "trip", pos: "n.", thai: "การเดินทาง, ทริปท่องเที่ยว" },
+        "yorkshire": { label: "Yorkshire pudding", pos: "n.", thai: "ยอร์กเชอร์พุดดิ้ง (แป้งอบพื้นเมืองอังกฤษ)" },
+        "puddings": { label: "Yorkshire pudding", pos: "n.", thai: "ยอร์กเชอร์พุดดิ้ง (แป้งอบพื้นเมืองอังกฤษ)" },
+        "crazy": { label: "crazy", pos: "adj.", thai: "คึกคักสุดเหวี่ยง, บ้าคลั่ง" },
+        "delicious": { label: "delicious", pos: "adj.", thai: "อร่อยมาก" },
+        "juicy": { label: "juicy", pos: "adj.", thai: "ฉ่ำ, นุ่มชุ่มฉ่ำ" },
+        "medieval": { label: "mediaeval (medieval)", pos: "adj.", thai: "เกี่ยวกับยุคกลาง" },
+        "national": { label: "national", pos: "adj.", thai: "ประจำชาติ" },
+        "roast": { label: "roast", pos: "adj.", thai: "ที่อบ, ที่ย่าง" },
+        "traditional": { label: "traditional", pos: "adj.", thai: "แบบดั้งเดิม, พื้นเมือง" },
+        "yummy": { label: "yummy", pos: "adj.", thai: "อร่อย (ภาษาพูด)" },
+        "yourself": { label: "see for yourself", pos: "phr.", thai: "มาดูด้วยตาตัวเอง" },
+        "life": { label: "have the time of your life", pos: "phr.", thai: "มีช่วงเวลาที่สนุกสุดๆ ในชีวิต" },
+        "miss": { label: "miss out on", pos: "phr v.", thai: "พลาดโอกาส" },
+        "pop": { label: "pop over", pos: "phr v.", thai: "แวะไป, แวะมาเยี่ยม" }
+    };
+
+    // ข้อมูล 4 แทร็กพร้อม Timestamp คำต่อคำจาก WhisperX
+    const tracks = {
+        intro: {
+            audio: "intro.mp3",
+            speaker: "🎙️ Intro: Spring Celebrations (UK & Ireland)",
+            images: ["4have.jpg", "2wear.jpg", "5wearknight.jpg"],
+            segments: [
+                { s: 0.372, e: 1.876, w: [["Spring",0.372,0.934],["celebrations.",1.034,1.876]] },
+                { s: 2.398, e: 6.209, w: [["Are",2.398,2.498],["you",2.538,2.739],["planning",2.799,3.18],["a",3.241,3.281],["trip",3.401,3.702],["to",3.822,3.943],["the",3.963,4.063],["UK",4.264,4.645],["and",4.705,4.805],["Ireland",5.026,5.387],["next",5.547,5.788],["spring?",5.828,6.209]] },
+                { s: 6.691, e: 8.917, w: [["Don't",6.691,6.952],["miss",7.032,7.232],["out",7.353,7.493],["on",7.593,7.654],["these",7.774,8.075],["celebrations.",8.155,8.917]] },
+                { s: 9.339, e: 12.127, w: [["You",9.339,9.579],["are",9.72,9.82],["sure",10.001,10.261],["to",10.342,10.442],["have",10.482,10.743],["the",10.823,10.943],["time",11.084,11.465],["of",11.505,11.565],["your",11.625,11.806],["life.",11.866,12.127]] }
+            ]
+        },
+        hugh: {
+            audio: "Hugh.mp3",
+            speaker: "👦 Hugh, 13 — St David's Day (Wales)",
+            images: ["2wear.jpg", "6fly.jpg", "3play.jpg"],
+            segments: [
+                { s: 0.331, e: 3.353, w: [["Why",0.331,0.531],["not",0.591,0.751],["come",0.832,1.032],["to",1.092,1.192],["Wales",1.292,1.692],["for",1.792,1.932],["St",2.052,2.332],["David's",2.493,3.013],["Day?",3.073,3.353]] },
+                { s: 3.813, e: 9.337, w: [["It",3.813,3.873],["is",3.953,4.034],["on",4.114,4.214],["1st",4.354,4.714],["March",4.834,5.214],["and",5.615,5.735],["last",5.815,6.135],["year's",6.195,6.475],["celebrations",6.515,7.336],["in",7.416,7.516],["Cardiff",7.616,8.156],["were",8.356,8.576],["brilliant.",8.737,9.337]] },
+                { s: 9.997, e: 17.562, w: [["All",9.997,10.197],["the",10.257,10.338],["girls",10.438,10.858],["and",10.938,11.038],["boys",11.138,11.538],["wore",11.618,11.838],["traditional",11.919,12.599],["Welsh",12.719,13.059],["costumes",13.139,13.82],["and",14.16,14.26],["sang",14.38,14.72],["songs,",14.82,15.321],["danced",15.761,16.261],["and",16.401,16.521],["read",16.602,16.802],["poetry.",16.922,17.562]] },
+                { s: 18.263, e: 21.525, w: [["All",18.263,18.423],["the",18.483,18.563],["buildings",18.663,19.163],["in",19.263,19.343],["town",19.423,19.824],["flew",19.944,20.264],["the",20.324,20.424],["national",20.484,20.964],["flag.",21.064,21.525]] },
+                { s: 22.005, e: 26.288, w: [["We",22.005,22.165],["had",22.205,22.405],["street",22.525,22.885],["parades",22.966,23.546],["where",23.806,23.986],["people",24.046,24.446],["played",24.547,24.847],["the",24.907,25.007],["Welsh",25.067,25.407],["bagpipes.",25.547,26.288]] },
+                { s: 26.949, e: 29.943, w: [["In",26.949,27.029],["the",27.069,27.17],["evening,",27.29,27.632],["I",27.994,28.054],["went",28.094,28.315],["home",28.376,28.617],["for",28.697,28.878],["a",28.918,28.959],["family",29.079,29.521],["dinner.",29.622,29.943]] },
+                { s: 30.325, e: 33.722, w: [["We",30.325,30.506],["ate",30.607,30.788],["some",30.868,31.049],["juicy",31.189,31.672],["roast",31.833,32.194],["lamb",32.255,32.596],["with",32.657,32.818],["potatoes.",32.918,33.722]] },
+                { s: 34.204, e: 34.988, w: [["Delicious!",34.204,34.988]] }
+            ]
+        },
+        james: {
+            audio: "James.mp3",
+            speaker: "👦 James, 12 — St Patrick's Day (Ireland)",
+            images: ["1paint.jpg", "4have.jpg"],
+            segments: [
+                { s: 0.251, e: 9.175, w: [["Don't",0.251,0.491],["forget",0.571,0.951],["St",1.212,1.472],["Patrick's",1.572,2.132],["Day,",2.172,2.492],["try",2.952,3.232],["to",3.272,3.372],["pop",3.473,3.733],["over",3.853,4.053],["to",4.113,4.233],["Dublin",4.313,4.733],["on",5.053,5.133],["17th",5.153,6.054],["March",6.154,6.474],["because",6.714,7.014],["the",7.074,7.194],["whole",7.294,7.614],["city",7.754,8.075],["goes",8.135,8.415],["crazy.",8.595,9.175]] },
+                { s: 9.875, e: 17.699, w: [["I",9.875,9.995],["celebrated",10.055,10.676],["with",10.736,10.856],["my",10.916,11.076],["schoolmates",11.196,11.856],["last",11.916,12.176],["year",12.236,12.476],["and",12.837,12.937],["everyone",13.177,13.657],["wore",13.717,13.997],["shamrocks,",14.117,14.717],["green",15.138,15.498],["clothes",15.598,16.098],["and",16.378,16.478],["painted",16.578,16.978],["their",17.018,17.199],["faces.",17.279,17.699]] },
+                { s: 18.359, e: 21.046, w: [["In",18.359,18.419],["the",18.46,18.56],["evening,",18.76,19.101],["people",19.402,19.743],["let",19.843,20.043],["off",20.124,20.224],["fireworks.",20.364,21.046]] },
+                { s: 21.567, e: 23.612, w: [["My",21.567,21.788],["mum",21.888,22.148],["made",22.189,22.389],["some",22.429,22.59],["special",22.71,23.151],["food.",23.251,23.612]] },
+                { s: 23.993, e: 27.822, w: [["We",23.993,24.113],["all",24.334,24.494],["ate",24.654,24.815],["Irish",25.176,25.436],["soda",25.557,25.898],["bread,",25.918,26.178],["bacon",26.539,26.94],["and",27.181,27.281],["cabbage.",27.361,27.822]] },
+                { s: 28.243, e: 29.145, w: [["It",28.243,28.323],["was",28.384,28.564],["yummy.",28.764,29.145]] },
+                { s: 29.526, e: 31.892, w: [["You",29.526,29.707],["must",29.847,30.108],["come",30.228,30.489],["and",30.629,30.729],["see",30.849,31.09],["for",31.17,31.311],["yourself.",31.351,31.892]] }
+            ]
+        },
+        sam: {
+            audio: "Sam.mp3",
+            speaker: "👦 Sam, 14 — St George's Day (UK)",
+            images: ["5wearknight.jpg"],
+            segments: [
+                { s: 0.452, e: 6.761, w: [["If",0.452,0.552],["you",0.592,0.712],["were",0.732,0.872],["still",0.972,1.233],["in",1.273,1.333],["the",1.373,1.453],["UK",1.653,2.154],["on",2.294,2.375],["23rd",2.575,3.316],["April,",3.436,3.777],["why",4.217,4.418],["not",4.478,4.598],["visit",4.658,4.978],["London",5.099,5.579],["for",5.659,5.78],["St",5.84,6.04],["George's",6.06,6.481],["Day?",6.521,6.761]] },
+                { s: 7.402, e: 10.747, w: [["Last",7.402,7.723],["year",7.783,8.003],["I",8.223,8.303],["was",8.343,8.464],["in",8.524,8.604],["Covent",8.704,9.045],["Garden",9.085,9.505],["and",9.605,9.706],["it",9.726,9.786],["was",9.826,9.926],["great",10.086,10.407],["fun.",10.507,10.747]] },
+                { s: 11.268, e: 16.055, w: [["We",11.268,11.408],["watched",11.448,11.769],["some",11.849,11.989],["medieval",12.029,12.57],["street",12.65,12.95],["theatre",12.99,13.411],["and",13.692,13.772],["some",13.852,14.072],["people",14.132,14.473],["wore",14.533,14.773],["dragon",14.893,15.414],["costumes.",15.494,16.055]] },
+                { s: 16.556, e: 20.622, w: [["There",16.556,16.696],["was",16.736,16.836],["even",16.996,17.197],["a",17.237,17.277],["stall",17.417,17.858],["that",18.018,18.158],["served",18.238,18.579],["roast",18.699,18.999],["beef",19.1,19.4],["and",19.6,19.721],["Yorkshire",19.761,20.161],["puddings.",20.181,20.622]] },
+                { s: 21.223, e: 22.465, w: [["We",21.223,21.383],["had",21.423,21.543],["a",21.583,21.603],["great",21.764,22.124],["time!",22.164,22.465]] },
+                { s: 22.965, e: 24.368, w: [["Make",22.965,23.186],["it",23.226,23.286],["a",23.326,23.366],["date",23.426,23.707],["in",23.767,23.827],["your",23.847,23.987],["diary!",24.007,24.368]] }
+            ]
+        }
     };
 
     const quizData = [
-        {
-            q: "1. St David's Day is on 17th March.",
-            answer: "F",
-            correction: "❌ False — แก้ไข: St David's Day is on 1st March. (วันที่ 17 มี.ค. คือวัน St Patrick's Day)"
-        },
-        {
-            q: "2. People play bagpipes on St George's Day.",
-            answer: "F",
-            correction: "❌ False — แก้ไข: People play the Welsh bagpipes on St David's Day."
-        },
-        {
-            q: "3. Hugh had roast lamb and potatoes on St David's Day.",
-            answer: "T",
-            correction: "✅ True — ถูกต้อง (Hugh กินเนื้อแกะย่างกับมันฝรั่งในมื้อเย็นกับครอบครัว)"
-        },
-        {
-            q: "4. Sam watched a concert on St George's Day.",
-            answer: "F",
-            correction: "❌ False — แก้ไข: Sam watched some medieval street theatre. (ชมละครข้างถนนยุคกลาง)"
-        }
+        { q: "1. St David's Day is on 17th March.", answer: "F", correction: "❌ False — แก้ไข: St David's Day is on 1st March. (17 มี.ค. คือวัน St Patrick's Day)" },
+        { q: "2. People play bagpipes on St George's Day.", answer: "F", correction: "❌ False — แก้ไข: People play the Welsh bagpipes on St David's Day." },
+        { q: "3. Hugh had roast lamb and potatoes on St David's Day.", answer: "T", correction: "✅ True — ถูกต้อง (Hugh กินเนื้อแกะย่างกับมันฝรั่งในมื้อเย็นกับครอบครัว)" },
+        { q: "4. Sam watched a concert on St George's Day.", answer: "F", correction: "❌ False — แก้ไข: Sam watched some medieval street theatre." }
     ];
+
+    const audio = document.getElementById('mainAudio');
+    const subOverlay = document.getElementById('subOverlay');
+    const subBox = document.getElementById('subBox');
+    const popover = document.getElementById('vocab-popover');
+    const stage = document.getElementById('mediaStage');
+
+    let activeTrackKey = 'intro';
+    let ccEnabled = true;
+    let curSegIdx = -1;
+    let curWordIdx = -1;
+    let flatWords = [];
+    let activeFlatIdx = -1;
 
     let userAnswers = {};
     let isQuizGraded = false;
     let latestScore = 0;
     let isPendingSubmit = false;
 
-    document.addEventListener("DOMContentLoaded", () => {
+    document.addEventListener('DOMContentLoaded', () => {
+        loadTrack('intro');
         renderQuiz();
         loadStudentProfile();
-
-        // ป้องกันไฟล์เสียง 4 ไฟล์เล่นซ้อนกัน
-        const allAudios = document.querySelectorAll('.lesson-audio');
-        allAudios.forEach(audio => {
-            audio.addEventListener('play', () => {
-                allAudios.forEach(other => {
-                    if (other !== audio && !other.paused) other.pause();
-                });
-            });
-        });
     });
 
-    // ================= WEB AUDIO API SFX =================
-    function playSFX(type) {
-        try {
-            const AudioCtx = window.AudioContext || window.webkitAudioContext;
-            if (!AudioCtx) return;
-            const ctx = new AudioCtx();
-            if (ctx.state === 'suspended') ctx.resume();
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-            osc.connect(gain); gain.connect(ctx.destination);
-            const now = ctx.currentTime;
-
-            if (type === 'tap') {
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(520, now);
-                gain.gain.setValueAtTime(0.08, now);
-                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.07);
-                osc.start(now); osc.stop(now + 0.07);
-            } else if (type === 'done') {
-                osc.type = 'triangle';
-                osc.frequency.setValueAtTime(523.25, now);
-                osc.frequency.setValueAtTime(659.25, now + 0.1);
-                osc.frequency.setValueAtTime(783.99, now + 0.2);
-                gain.gain.setValueAtTime(0.12, now);
-                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.42);
-                osc.start(now); osc.stop(now + 0.42);
-            }
-            setTimeout(() => ctx.close().catch(() => {}), 600);
-        } catch (e) {}
-    }
-
-    // ================= TABS & VOCAB POPOVER =================
-    function openFest(idx, btnEl) {
-        playSFX('tap');
-        document.querySelectorAll('.lesson-audio').forEach(a => a.pause());
+    // ================= TRACK & SUBTITLE ENGINE =================
+    function selectTrack(key, btnEl) {
         document.querySelectorAll('.fest-tab').forEach(b => b.classList.remove('active'));
-        document.querySelectorAll('.reading-panel').forEach(p => p.classList.remove('active'));
         btnEl.classList.add('active');
-        document.getElementById(`fest-${idx}`).classList.add('active');
+        loadTrack(key);
     }
 
-    function showVocab(event, word) {
-        event.stopPropagation();
-        playSFX('tap');
-        const pop = document.getElementById('vocab-popover');
-        document.getElementById('pop-eng').innerText = word;
-        document.getElementById('pop-thai').innerText = dictionary[word] || '';
+    function loadTrack(key) {
+        activeTrackKey = key;
+        const t = tracks[key];
+        audio.pause();
+        audio.src = t.audio;
+        audio.currentTime = 0;
+        curSegIdx = -1;
+        curWordIdx = -1;
+        activeFlatIdx = -1;
+        subBox.innerHTML = '';
 
-        pop.style.display = 'block';
-        const popW = pop.offsetWidth;
-        const popH = pop.offsetHeight;
+        document.getElementById('speakerTag').innerText = t.speaker;
+        document.getElementById('stageImage').src = t.images[0];
+
+        // Render thumbnails
+        const strip = document.getElementById('thumbStrip');
+        strip.innerHTML = '';
+        if (t.images.length > 1) {
+            t.images.forEach((imgSrc, i) => {
+                const b = document.createElement('button');
+                b.type = 'button';
+                b.className = 'thumb-btn' + (i === 0 ? ' active' : '');
+                b.innerHTML = `<img src="${imgSrc}" alt="Scene ${i + 1}">`;
+                b.onclick = () => {
+                    document.getElementById('stageImage').src = imgSrc;
+                    strip.querySelectorAll('.thumb-btn').forEach(x => x.classList.remove('active'));
+                    b.classList.add('active');
+                };
+                strip.appendChild(b);
+            });
+        }
+
+        // Render full passage with clickable vocab
+        const pWrap = document.getElementById('passageWords');
+        pWrap.innerHTML = '';
+        flatWords = [];
+        let fIdx = 0;
+
+        t.segments.forEach(seg => {
+            seg.w.forEach(item => {
+                const span = document.createElement('span');
+                span.className = 'p-word';
+                span.id = `pw-${fIdx}`;
+                span.innerText = item[0];
+
+                const clean = item[0].replace(/[^a-zA-Z]/g, '').toLowerCase();
+                if (dictionary[clean]) {
+                    span.classList.add('is-vocab');
+                    span.onclick = (e) => showPopover(e, clean);
+                }
+
+                pWrap.appendChild(span);
+                pWrap.appendChild(document.createTextNode(' '));
+                flatWords.push({ s: item[1], e: item[2], id: fIdx });
+                fIdx++;
+            });
+        });
+    }
+
+    function syncSubtitle() {
+        const time = audio.currentTime;
+        const t = tracks[activeTrackKey];
+
+        // 1. Sync Overlay Subtitle
+        if (ccEnabled) {
+            const segIdx = t.segments.findIndex(seg => time >= seg.s && time <= seg.e + 0.35);
+            if (segIdx !== curSegIdx) {
+                curSegIdx = segIdx;
+                curWordIdx = -1;
+                subBox.innerHTML = '';
+
+                if (segIdx !== -1) {
+                    t.segments[segIdx].w.forEach((item, wIdx) => {
+                        const span = document.createElement('span');
+                        span.className = 'sub-word';
+                        span.id = `sw-${wIdx}`;
+                        span.innerText = item[0];
+
+                        const clean = item[0].replace(/[^a-zA-Z]/g, '').toLowerCase();
+                        if (dictionary[clean]) {
+                            span.classList.add('is-vocab');
+                            span.onclick = (e) => showPopover(e, clean);
+                        }
+                        subBox.appendChild(span);
+                    });
+                }
+            }
+
+            if (segIdx !== -1) {
+                const words = t.segments[segIdx].w;
+                const wIdx = words.findIndex((item, i) => {
+                    const next = words[i + 1];
+                    const endT = next ? next[1] : item[2] + 0.35;
+                    return time >= item[1] && time < endT;
+                });
+
+                if (wIdx !== curWordIdx) {
+                    if (curWordIdx !== -1) {
+                        const oldW = document.getElementById(`sw-${curWordIdx}`);
+                        if (oldW) oldW.classList.remove('active');
+                    }
+                    if (wIdx !== -1) {
+                        const newW = document.getElementById(`sw-${wIdx}`);
+                        if (newW) newW.classList.add('active');
+                    }
+                    curWordIdx = wIdx;
+                }
+            }
+        }
+
+        // 2. Sync Full Passage Highlight
+        const fIdx = flatWords.findIndex((item, i) => {
+            const next = flatWords[i + 1];
+            const endT = next ? next.s : item.e + 0.35;
+            return time >= item.s && time < endT;
+        });
+
+        if (fIdx !== activeFlatIdx) {
+            if (activeFlatIdx !== -1) {
+                const oldP = document.getElementById(`pw-${activeFlatIdx}`);
+                if (oldP) oldP.classList.remove('active');
+            }
+            if (fIdx !== -1) {
+                const newP = document.getElementById(`pw-${fIdx}`);
+                if (newP) newP.classList.add('active');
+            }
+            activeFlatIdx = fIdx;
+        }
+
+        if (!audio.paused && !audio.ended) {
+            requestAnimationFrame(syncSubtitle);
+        }
+    }
+
+    audio.addEventListener('play', () => requestAnimationFrame(syncSubtitle));
+    audio.addEventListener('seeked', () => syncSubtitle());
+    audio.addEventListener('ended', () => {
+        curSegIdx = -1; curWordIdx = -1; subBox.innerHTML = '';
+        if (activeFlatIdx !== -1) {
+            const oldP = document.getElementById(`pw-${activeFlatIdx}`);
+            if (oldP) oldP.classList.remove('active');
+            activeFlatIdx = -1;
+        }
+    });
+
+    function toggleCC() {
+        ccEnabled = !ccEnabled;
+        const btn = document.getElementById('btnCC');
+        btn.innerText = ccEnabled ? 'CC: ON' : 'CC: OFF';
+        btn.classList.toggle('off', !ccEnabled);
+        subOverlay.classList.toggle('hidden', !ccEnabled);
+        if (ccEnabled) syncSubtitle();
+    }
+
+    // ================= FULLSCREEN (WITH MOBILE FALLBACK) =================
+    function toggleFullscreenMode() {
+        if (document.fullscreenElement || document.webkitFullscreenElement || stage.classList.contains('pseudo-fs')) {
+            exitFullscreenMode();
+        } else {
+            if (stage.requestFullscreen) {
+                stage.requestFullscreen().catch(() => stage.classList.add('pseudo-fs'));
+            } else if (stage.webkitRequestFullscreen) {
+                stage.webkitRequestFullscreen();
+            } else {
+                stage.classList.add('pseudo-fs');
+            }
+        }
+    }
+
+    function exitFullscreenMode() {
+        if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+        else if (document.webkitFullscreenElement) document.webkitExitFullscreen();
+        stage.classList.remove('pseudo-fs');
+    }
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && stage.classList.contains('pseudo-fs')) {
+            exitFullscreenMode();
+        }
+    });
+
+    // ================= FULLSCREEN-SAFE VOCAB POPOVER =================
+    function showPopover(event, wordKey) {
+        event.stopPropagation();
+        audio.pause();
+
+        const container = document.fullscreenElement || document.webkitFullscreenElement || document.body;
+        if (popover.parentNode !== container) container.appendChild(popover);
+
+        const data = dictionary[wordKey];
+        if (!data) return;
+
+        document.getElementById('pop-eng').innerText = data.label;
+        document.getElementById('pop-pos').innerText = data.pos;
+        document.getElementById('pop-thai').innerText = data.thai;
+
+        popover.style.position = 'fixed';
+        popover.style.display = 'block';
+
+        const popW = popover.offsetWidth;
+        const popH = popover.offsetHeight;
         let leftPos = event.clientX - (popW / 2);
-        let topPos = event.clientY + 14;
+        let topPos = event.clientY - popH - 16;
 
         if (leftPos < 10) leftPos = 10;
         if (leftPos + popW > window.innerWidth - 10) leftPos = window.innerWidth - popW - 10;
-        if (topPos + popH > window.innerHeight - 10) topPos = event.clientY - popH - 14;
+        if (topPos < 10) topPos = event.clientY + 18;
 
-        pop.style.left = leftPos + 'px';
-        pop.style.top = topPos + 'px';
+        popover.style.left = leftPos + 'px';
+        popover.style.top = topPos + 'px';
     }
 
-    document.addEventListener('click', () => {
-        document.getElementById('vocab-popover').style.display = 'none';
-    });
+    document.addEventListener('click', () => { popover.style.display = 'none'; });
 
     // ================= QUIZ SYSTEM =================
     function renderQuiz() {
@@ -713,7 +959,6 @@
 
     function selectTF(idx, val) {
         if (isQuizGraded) return;
-        playSFX('tap');
         userAnswers[idx] = val;
         document.getElementById(`q-${idx}-T`).classList.toggle('selected', val === 'T');
         document.getElementById(`q-${idx}-F`).classList.toggle('selected', val === 'F');
@@ -732,22 +977,17 @@
             const chosen = userAnswers[idx];
             const btnT = document.getElementById(`q-${idx}-T`);
             const btnF = document.getElementById(`q-${idx}-F`);
-            btnT.disabled = true;
-            btnF.disabled = true;
-            btnT.classList.remove('selected');
-            btnF.classList.remove('selected');
+            btnT.disabled = true; btnF.disabled = true;
+            btnT.classList.remove('selected'); btnF.classList.remove('selected');
 
             document.getElementById(`q-${idx}-${item.answer}`).classList.add('correct');
-            if (chosen === item.answer) {
-                score++;
-            } else {
-                document.getElementById(`q-${idx}-${chosen}`).classList.add('wrong');
-            }
+            if (chosen === item.answer) score++;
+            else document.getElementById(`q-${idx}-${chosen}`).classList.add('wrong');
+
             document.getElementById(`corr-${idx}`).style.display = 'block';
         });
 
         latestScore = score;
-        playSFX('done');
 
         const btnCheck = document.getElementById('btnCheckQuiz');
         btnCheck.innerText = '🔄 ทำแบบทดสอบอีกครั้ง';
@@ -788,14 +1028,9 @@
 
     function switchAccount() {
         Swal.fire({
-            title: '⚠️ สลับบัญชีนักเรียน?',
-            text: 'ระบบจะล้างข้อมูลเดิมเพื่อลงชื่อคนใหม่',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#ec4899',
-            cancelButtonColor: '#94a3b8',
-            confirmButtonText: 'ตกลง',
-            cancelButtonText: 'ยกเลิก'
+            title: '⚠️ สลับบัญชีนักเรียน?', text: 'ระบบจะล้างข้อมูลเดิมเพื่อลงชื่อคนใหม่', icon: 'warning',
+            showCancelButton: true, confirmButtonColor: '#ec4899', cancelButtonColor: '#94a3b8',
+            confirmButtonText: 'ตกลง', cancelButtonText: 'ยกเลิก'
         }).then((res) => {
             if (res.isConfirmed) {
                 localStorage.clear();
@@ -825,14 +1060,10 @@
         localStorage.setItem('studentName', n);
         localStorage.setItem('studentRoom', r);
         localStorage.setItem('studentId', id);
-
         document.getElementById('loginModal').classList.remove('active');
         loadStudentProfile();
 
-        if (isPendingSubmit) {
-            isPendingSubmit = false;
-            submitScoreToSheet();
-        }
+        if (isPendingSubmit) { isPendingSubmit = false; submitScoreToSheet(); }
     }
 
     function submitScoreToSheet() {
@@ -841,7 +1072,6 @@
         const stat = document.getElementById('saveStatus');
         const playAgainBtn = document.getElementById('playAgainBtn');
 
-        // ล็อกปุ่มทำใหม่ระหว่างส่งคะแนน
         playAgainBtn.disabled = true;
 
         if (typeof QUIZ_CONFIG === 'undefined' || !QUIZ_CONFIG.SCRIPT_URL) {
@@ -854,19 +1084,17 @@
         stat.innerText = '⏳ กำลังบันทึกคะแนนลงระบบ...';
         stat.style.color = '#d97706';
 
-        const payload = {
-            name: localStorage.getItem('studentName'),
-            room: localStorage.getItem('studentRoom'),
-            studentId: "'" + localStorage.getItem('studentId'),
-            lesson: TOPIC_NAME,
-            score: latestScore,
-            maxScore: quizData.length
-        };
-
         fetch(QUIZ_CONFIG.SCRIPT_URL, {
             method: 'POST',
             mode: 'no-cors',
-            body: JSON.stringify(payload)
+            body: JSON.stringify({
+                name: localStorage.getItem('studentName'),
+                room: localStorage.getItem('studentRoom'),
+                studentId: "'" + localStorage.getItem('studentId'),
+                lesson: TOPIC_NAME,
+                score: latestScore,
+                maxScore: quizData.length
+            })
         }).catch(e => console.error(e));
 
         setTimeout(() => {
@@ -876,10 +1104,7 @@
         }, 1500);
     }
 
-    function closeScoreModal() {
-        document.getElementById('scoreModal').classList.remove('active');
-    }
-
+    function closeScoreModal() { document.getElementById('scoreModal').classList.remove('active'); }
     function resetQuiz() {
         document.getElementById('scoreModal').classList.remove('active');
         renderQuiz();

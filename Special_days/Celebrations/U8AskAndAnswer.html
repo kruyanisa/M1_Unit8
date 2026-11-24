@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ask and Answer (Past Simple) - Unit 8a</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Prompt:wght@500;700&family=Sarabun:wght@400;600;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- เชื่อมต่อระบบบันทึกคะแนน Google Sheets -->
+    <script src="https://kruyanisa.github.io/classroom-core/quiz-config.js"></script>
+
+    <style>
+        :root {
+            --emerald: #10b981;
+            --emerald-dark: #059669;
+            --magenta: #ec4899;
+            --magenta-dark: #be185d;
+            --amber: #f59e0b;
+            --amber-dark: #d97706;
+            --sky: #0ea5e9;
+            --sky-dark: #0284c7;
+            --ink: #1e293b;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: 'Sarabun', sans-serif;
+            margin: 0;
+            padding: 12px 12px 40px 12px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--ink);
+            background: linear-gradient(160deg, #f0f9ff 0%, #fdf2f8 50%, #fefce8 100%);
+        }
+
+        /* Profile Bar */
+        .profile-bar {
+            width: 100%;
+            max-width: 700px;
+            font-size: clamp(12px, 3.2vw, 14px);
+            background: rgba(255, 255, 255, 0.94);
+            border: 2px solid #a7f3d0;
+            padding: 8px 14px;
+            border-radius: 20px;
+            color: #065f46;
+            font-weight: 700;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.12);
+        }
+
+        .btn-switch {
+            background: var(--magenta);
+            color: #fff;
+            border: none;
+            padding: 4px 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-family: 'Prompt', sans-serif;
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        /* Main Card */
+        .card {
+            width: 100%;
+            max-width: 700px;
+            background: rgba(255, 255, 255, 0.96);
+            border: 3px solid #bae6fd;
+            border-radius: 24px;
+            padding: 18px 16px 22px;
+            box-shadow: 0 12px 28px rgba(14, 165, 233, 0.1);
+        }
+
+        .header-center { text-align: center; margin-bottom: 14px; }
+
+        .badge-unit {
+            display: inline-block;
+            background: linear-gradient(90deg, var(--sky), var(--magenta));
+            color: #fff;
+            font-family: 'Prompt', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 4px 14px;
+            border-radius: 20px;
+            margin-bottom: 6px;
+        }
+
+        h1 {
+            font-family: 'Fredoka One', cursive;
+            color: #0369a1;
+            font-size: clamp(22px, 5.5vw, 30px);
+            margin: 0 0 6px 0;
+        }
+
+        .sub-instruction {
+            font-size: 14px;
+            color: #475569;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        /* Example Box */
+        .example-box {
+            background: #fffbeb;
+            border: 2px dashed #f59e0b;
+            border-radius: 16px;
+            padding: 12px 14px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            line-height: 1.65;
+        }
+
+        .ex-tag {
+            display: inline-block;
+            background: #fed7aa;
+            color: #9a3412;
+            font-family: 'Prompt', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 2px 10px;
+            border-radius: 8px;
+            margin-bottom: 4px;
+        }
+
+        /* Q&A Chat Card */
+        .qa-card {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 18px;
+            padding: 14px;
+            margin-bottom: 14px;
+        }
+
+        .prompt-tag {
+            display: inline-block;
+            background: #e0f2fe;
+            color: #0369a1;
+            font-family: 'Prompt', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+        /* Chat Bubbles */
+        .bubble-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .bubble-row.b-side { flex-direction: row-reverse; margin-bottom: 0; }
+
+        .avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+        .avatar.a { background: #bae6fd; border: 2px solid #38bdf8; }
+        .avatar.b { background: #fbcfe8; border: 2px solid #f472b6; }
+
+        .bubble {
+            flex: 1;
+            padding: 10px 13px;
+            border-radius: 16px;
+            font-size: clamp(15px, 3.8vw, 17px);
+            line-height: 1.85;
+            background: #ffffff;
+            border: 2px solid #cbd5e1;
+        }
+
+        .bubble-row.a-side .bubble { border-color: #7dd3fc; background: #f0f9ff; }
+        .bubble-row.b-side .bubble { border-color: #f9a8d4; background: #fdf2f8; }
+
+        .speaker-lbl {
+            font-family: 'Prompt', sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            color: #64748b;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        /* Inline Choice Buttons */
+        .choice-group {
+            display: inline-flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin: 0 4px;
+            vertical-align: middle;
+        }
+
+        .c-btn {
+            padding: 3px 11px;
+            border-radius: 10px;
+            border: 2px solid #cbd5e1;
+            background: #ffffff;
+            font-family: 'Prompt', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            color: #334155;
+            cursor: pointer;
+            box-shadow: 0 3px 0 #cbd5e1;
+            transition: 0.12s;
+        }
+
+        .c-btn:active:not(:disabled) { transform: translateY(2px); box-shadow: none; }
+
+        .c-btn.selected {
+            background: #fef3c7;
+            border-color: var(--amber-dark);
+            color: #92400e;
+            box-shadow: 0 3px 0 var(--amber-dark);
+        }
+
+        .c-btn.correct {
+            background: #dcfce7 !important;
+            border-color: #16a34a !important;
+            color: #15803d !important;
+            box-shadow: 0 3px 0 #16a34a !important;
+        }
+
+        .c-btn.wrong {
+            background: #fee2e2 !important;
+            border-color: #ef4444 !important;
+            color: #b91c1c !important;
+            box-shadow: 0 3px 0 #ef4444 !important;
+        }
+
+        .feedback-line {
+            display: none;
+            margin-top: 10px;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 6px 12px;
+            border-radius: 10px;
+        }
+        .feedback-line.ok { display: block; background: #dcfce7; color: #166534; }
+        .feedback-line.no { display: block; background: #fee2e2; color: #991b1b; }
+
+        /* Action Button */
+        .btn-primary {
+            width: 100%;
+            max-width: 380px;
+            margin: 14px auto 0;
+            display: block;
+            padding: 13px 18px;
+            background: var(--sky);
+            color: #fff;
+            border: none;
+            border-radius: 16px;
+            font-family: 'Prompt', sans-serif;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 5px 0 var(--sky-dark);
+            transition: 0.1s;
+        }
+
+        .btn-primary:active:not(:disabled) { transform: translateY(4px); box-shadow: none; }
+        .btn-primary:disabled {
+            background: #94a3b8;
+            box-shadow: 0 5px 0 #64748b;
+            cursor: not-allowed;
+            opacity: 0.75;
+        }
+
+        /* Modals */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+            visibility: hidden;
+            opacity: 0;
+            transition: 0.25s;
+            padding: 15px;
+        }
+
+        .modal-overlay.active { visibility: visible; opacity: 1; }
+
+        .modal-box {
+            background: #fff;
+            padding: 26px 20px;
+            border-radius: 26px;
+            text-align: center;
+            width: 100%;
+            max-width: 340px;
+            border: 4px solid var(--sky);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-box input {
+            width: 100%;
+            padding: 11px;
+            margin-bottom: 10px;
+            border: 2px solid #bae6fd;
+            border-radius: 14px;
+            text-align: center;
+            font-family: 'Sarabun', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            outline: none;
+        }
+
+        .score-num {
+            font-family: 'Fredoka One', cursive;
+            font-size: 58px;
+            color: var(--sky-dark);
+            margin: 8px 0;
+            display: block;
+            line-height: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- User Profile Bar -->
+    <div id="userProfile" class="profile-bar" style="display:none;">
+        <span>👤 <span id="p_name"></span> | 🏫 <span id="p_room"></span> | 🆔 <span id="p_id"></span></span>
+        <button class="btn-switch" onclick="switchAccount()">🔄 สลับบัญชี</button>
+    </div>
+
+    <!-- Main Card -->
+    <div class="card">
+        <div class="header-center">
+            <div class="badge-unit">Unit 8a • Past Simple Questions & Short Answers</div>
+            <h1>💬 Ask and Answer</h1>
+            <p class="sub-instruction">เลือกกริยาหลัง Did และเลือกคำสรรพนามตอบสั้นให้ถูกต้อง (ข้อละ 2 คะแนน รวม 8 คะแนน)</p>
+        </div>
+
+        <!-- Example -->
+        <div class="example-box">
+            <span class="ex-tag">ตัวอย่าง (1. go to a party / yesterday?)</span><br>
+            <b>A:</b> <i>Did you <u>go</u> to a party yesterday?</i><br>
+            <b>B:</b> <i>Yes, <u>I</u> did. / No, <u>I</u> didn't.</i>
+        </div>
+
+        <!-- 4 Chat Questions -->
+        <div id="quizContainer"></div>
+
+        <button id="btnSubmit" class="btn-primary" onclick="handleSubmit()">✅ ตรวจคำตอบและส่งคะแนน</button>
+    </div>
+
+    <!-- Login Modal -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal-box">
+            <h2 id="modalTitle" style="color:#0369a1; margin:0 0 6px 0; font-family:'Prompt';">📝 ลงชื่อเข้าเรียน</h2>
+            <p id="modalSub" style="color:#64748b; font-weight:600; margin:0 0 12px 0; font-size:14px;">กรอกข้อมูลเพื่อเริ่มทำกิจกรรมและบันทึกคะแนน</p>
+            <input type="text" id="in_name" placeholder="ชื่อ - นามสกุล">
+            <input type="text" id="in_room" placeholder="ชั้น/ห้อง (เช่น 1/1)">
+            <input type="text" id="in_id" placeholder="รหัสนักเรียน (5 หลัก)" maxlength="5">
+            <button class="btn-primary" style="margin-top:4px;" onclick="confirmUser()">🚀 เริ่มทำกิจกรรม</button>
+        </div>
+    </div>
+
+    <!-- Score Modal -->
+    <div class="modal-overlay" id="scoreModal">
+        <div class="modal-box">
+            <h2 style="color:#0369a1; margin:0; font-family:'Prompt';">🎉 สรุปผลคะแนน</h2>
+            <p style="color:#64748b; font-weight:600; margin:6px 0 0 0;">คะแนนของคุณคือ</p>
+            <span class="score-num"><span id="finalScoreText">0</span><span style="font-size:28px; color:#94a3b8;">/8</span></span>
+            <div id="saveStatus" style="font-weight:700; font-size:14px; margin-bottom:14px; color:#15803d; min-height:20px;"></div>
+            <button class="btn-primary" style="background:var(--emerald); box-shadow:0 5px 0 var(--emerald-dark); margin-top:0;" onclick="closeScoreModal()">👀 ดูเฉลย</button>
+            <button id="playAgainBtn" class="btn-primary" style="margin-top:10px;" onclick="resetQuiz()" disabled>🔄 ทำใหม่อีกครั้ง</button>
+        </div>
+    </div>
+
+<script>
+    const TOPIC_NAME = 'ม.1 Unit 8 Celebrations Ask and answer';
+
+    const questions = [
+        {
+            num: 2,
+            prompt: "your mum / make a pizza / last night",
+            aBefore: "Did your mum",
+            aOpts: ["make", "made"],
+            aAns: "make",
+            aAfter: "a pizza last night?",
+            bOpts: ["she", "he", "I"],
+            bAns: "she",
+            fullAns: "A: Did your mum make a pizza last night? | B: Yes, she did. / No, she didn't."
+        },
+        {
+            num: 3,
+            prompt: "your dad / go to bed early / last Sunday",
+            aBefore: "Did your dad",
+            aOpts: ["went", "go"],
+            aAns: "go",
+            aAfter: "to bed early last Sunday?",
+            bOpts: ["she", "he", "they"],
+            bAns: "he",
+            fullAns: "A: Did your dad go to bed early last Sunday? | B: Yes, he did. / No, he didn't."
+        },
+        {
+            num: 4,
+            prompt: "your friend / send you an email / yesterday",
+            aBefore: "Did your friend",
+            aOpts: ["send", "sent"],
+            aAns: "send",
+            aAfter: "you an email yesterday?",
+            bOpts: ["I", "he", "they"],
+            bAns: "he",
+            fullAns: "A: Did your friend send you an email yesterday? | B: Yes, he did. / No, he didn't."
+        },
+        {
+            num: 5,
+            prompt: "you / drink a glass of milk / yesterday",
+            aBefore: "Did you",
+            aOpts: ["drank", "drink"],
+            aAns: "drink",
+            aAfter: "a glass of milk yesterday?",
+            bOpts: ["I", "he", "she"],
+            bAns: "I",
+            fullAns: "A: Did you drink a glass of milk yesterday? | B: Yes, I did. / No, I didn't."
+        }
+    ];
+
+    let answers = {}; // { "0-a": "make", "0-b": "she" }
+    let isGraded = false;
+    let latestScore = 0;
+    let isPendingSubmit = false;
+
+    document.addEventListener("DOMContentLoaded", () => {
+        renderQuiz();
+        checkLoginStatus();
+    });
+
+    function playSFX(type) {
+        try {
+            const AudioCtx = window.AudioContext || window.webkitAudioContext;
+            if (!AudioCtx) return;
+            const ctx = new AudioCtx();
+            if (ctx.state === 'suspended') ctx.resume();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain); gain.connect(ctx.destination);
+            const now = ctx.currentTime;
+            if (type === 'tap') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(560, now);
+                gain.gain.setValueAtTime(0.08, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.07);
+                osc.start(now); osc.stop(now + 0.07);
+            } else if (type === 'done') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(523.25, now);
+                osc.frequency.setValueAtTime(659.25, now + 0.1);
+                osc.frequency.setValueAtTime(783.99, now + 0.2);
+                gain.gain.setValueAtTime(0.12, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+                osc.start(now); osc.stop(now + 0.4);
+            } else {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(280, now);
+                gain.gain.setValueAtTime(0.1, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.16);
+                osc.start(now); osc.stop(now + 0.16);
+            }
+            setTimeout(() => ctx.close().catch(() => {}), 600);
+        } catch (e) {}
+    }
+
+    function renderQuiz() {
+        const container = document.getElementById('quizContainer');
+        container.innerHTML = '';
+        answers = {};
+        isGraded = false;
+
+        questions.forEach((q, idx) => {
+            const aBtns = q.aOpts.map(opt =>
+                `<button type="button" class="c-btn" id="btn-${idx}-a-${opt}" onclick="pick(${idx}, 'a', '${opt}')">${opt}</button>`
+            ).join('');
+
+            const bBtns = q.bOpts.map(opt =>
+                `<button type="button" class="c-btn" id="btn-${idx}-b-${opt}" onclick="pick(${idx}, 'b', '${opt}')">${opt}</button>`
+            ).join('');
+
+            const card = document.createElement('div');
+            card.className = 'qa-card';
+            card.innerHTML = `
+                <div class="prompt-tag">${q.num}. ${q.prompt}</div>
+                <div class="bubble-row a-side">
+                    <div class="avatar a">👦</div>
+                    <div class="bubble">
+                        <span class="speaker-lbl">A (Ask)</span>
+                        ${q.aBefore} <span class="choice-group">${aBtns}</span> ${q.aAfter}
+                    </div>
+                </div>
+                <div class="bubble-row b-side">
+                    <div class="avatar b">👧</div>
+                    <div class="bubble">
+                        <span class="speaker-lbl">B (Short Answer)</span>
+                        Yes, <span class="choice-group">${bBtns}</span> did. / No, <b id="mirror-${idx}" style="color:#be185d;">___</b> didn't.
+                    </div>
+                </div>
+                <div class="feedback-line" id="fb-${idx}"></div>
+            `;
+            container.appendChild(card);
+        });
+
+        const btn = document.getElementById('btnSubmit');
+        btn.innerText = '✅ ตรวจคำตอบและส่งคะแนน';
+        btn.style.background = '';
+        btn.style.boxShadow = '';
+    }
+
+    function pick(idx, part, val) {
+        if (isGraded) return;
+        playSFX('tap');
+        answers[`${idx}-${part}`] = val;
+
+        const opts = part === 'a' ? questions[idx].aOpts : questions[idx].bOpts;
+        opts.forEach(opt => {
+            document.getElementById(`btn-${idx}-${part}-${opt}`).classList.toggle('selected', opt === val);
+        });
+
+        if (part === 'b') {
+            document.getElementById(`mirror-${idx}`).innerText = val;
+        }
+    }
+
+    function handleSubmit() {
+        if (isGraded) {
+            resetQuiz();
+            return;
+        }
+
+        if (Object.keys(answers).length < questions.length * 2) {
+            playSFX('warn');
+            Swal.fire({
+                icon: 'warning',
+                title: 'ยังเลือกไม่ครบ!',
+                text: 'กรุณาเลือกคำตอบให้ครบทั้งช่อง A และช่อง B ทุกข้อก่อนส่งนะครับ',
+                confirmButtonColor: '#0ea5e9'
+            });
+            return;
+        }
+
+        isGraded = true;
+        let score = 0;
+
+        questions.forEach((q, idx) => {
+            const chosenA = answers[`${idx}-a`];
+            const chosenB = answers[`${idx}-b`];
+
+            q.aOpts.forEach(opt => {
+                const b = document.getElementById(`btn-${idx}-a-${opt}`);
+                b.disabled = true; b.classList.remove('selected');
+                if (opt === q.aAns) b.classList.add('correct');
+                else if (opt === chosenA) b.classList.add('wrong');
+            });
+
+            q.bOpts.forEach(opt => {
+                const b = document.getElementById(`btn-${idx}-b-${opt}`);
+                b.disabled = true; b.classList.remove('selected');
+                if (opt === q.bAns) b.classList.add('correct');
+                else if (opt === chosenB) b.classList.add('wrong');
+            });
+
+            const okA = chosenA === q.aAns;
+            const okB = chosenB === q.bAns;
+            if (okA) score++;
+            if (okB) score++;
+
+            const fb = document.getElementById(`fb-${idx}`);
+            if (okA && okB) {
+                fb.className = 'feedback-line ok';
+                fb.innerText = '✅ ถูกต้องทั้งคำถามและคำตอบ!';
+            } else {
+                fb.className = 'feedback-line no';
+                fb.innerText = `❌ เฉลย: ${q.fullAns}`;
+            }
+        });
+
+        latestScore = score;
+        playSFX('done');
+
+        const btn = document.getElementById('btnSubmit');
+        btn.innerText = '🔄 ทำใหม่อีกครั้ง';
+        btn.style.background = '#10b981';
+        btn.style.boxShadow = '0 5px 0 #059669';
+
+        if (!localStorage.getItem('studentId')) {
+            isPendingSubmit = true;
+            document.getElementById('modalTitle').innerText = '📝 ลงชื่อเพื่อบันทึกคะแนน';
+            document.getElementById('modalSub').innerText = `คุณได้ ${latestScore}/8 คะแนน กรอกข้อมูลเพื่อส่งครู`;
+            document.getElementById('loginModal').classList.add('active');
+        } else {
+            submitScoreToSheet();
+        }
+    }
+
+    // ================= LOGIN & GOOGLE SHEETS =================
+    function formatRoomValue(val) {
+        const nums = val.match(/\d+/g);
+        if (nums && nums.length >= 2) return `ม.${nums[0]}/${nums[1]}`;
+        if (nums && nums.length === 1) return `ม.1/${nums[0]}`;
+        return val.trim();
+    }
+
+    document.getElementById('in_room').addEventListener('blur', function() {
+        this.value = formatRoomValue(this.value);
+    });
+
+    function checkLoginStatus() {
+        if (localStorage.getItem('studentId')) {
+            document.getElementById('userProfile').style.display = 'flex';
+            document.getElementById('p_name').innerText = localStorage.getItem('studentName');
+            document.getElementById('p_room').innerText = localStorage.getItem('studentRoom');
+            document.getElementById('p_id').innerText = localStorage.getItem('studentId');
+        } else {
+            document.getElementById('userProfile').style.display = 'none';
+            document.getElementById('loginModal').classList.add('active');
+        }
+    }
+
+    function switchAccount() {
+        Swal.fire({
+            title: '⚠️ สลับบัญชีผู้เล่น?',
+            text: 'ระบบจะล้างข้อมูลเดิมและเริ่มใหม่',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#0ea5e9',
+            cancelButtonColor: '#94a3b8',
+            confirmButtonText: 'ตกลง',
+            cancelButtonText: 'ยกเลิก'
+        }).then((res) => {
+            if (res.isConfirmed) {
+                localStorage.clear();
+                isPendingSubmit = false;
+                document.getElementById('userProfile').style.display = 'none';
+                document.getElementById('in_name').value = '';
+                document.getElementById('in_room').value = '';
+                document.getElementById('in_id').value = '';
+                document.getElementById('modalTitle').innerText = '🔄 ลงชื่อบัญชีใหม่';
+                document.getElementById('modalSub').innerText = 'กรอกข้อมูลนักเรียนคนใหม่เพื่อเริ่มทำกิจกรรม';
+                document.getElementById('loginModal').classList.add('active');
+            }
+        });
+    }
+
+    function confirmUser() {
+        const n = document.getElementById('in_name').value.trim();
+        const r = formatRoomValue(document.getElementById('in_room').value);
+        document.getElementById('in_room').value = r;
+        const id = document.getElementById('in_id').value.trim();
+
+        if (!n || !r || id.length !== 5) {
+            Swal.fire('ข้อมูลไม่ครบ!', 'กรุณากรอกชื่อ ห้อง และรหัสนักเรียน 5 หลัก', 'warning');
+            return;
+        }
+
+        localStorage.setItem('studentName', n);
+        localStorage.setItem('studentRoom', r);
+        localStorage.setItem('studentId', id);
+
+        document.getElementById('loginModal').classList.remove('active');
+        document.getElementById('userProfile').style.display = 'flex';
+        document.getElementById('p_name').innerText = n;
+        document.getElementById('p_room').innerText = r;
+        document.getElementById('p_id').innerText = id;
+
+        if (isPendingSubmit) {
+            isPendingSubmit = false;
+            submitScoreToSheet();
+        }
+    }
+
+    function submitScoreToSheet() {
+        document.getElementById('scoreModal').classList.add('active');
+        document.getElementById('finalScoreText').innerText = latestScore;
+        const stat = document.getElementById('saveStatus');
+        const playAgainBtn = document.getElementById('playAgainBtn');
+
+        playAgainBtn.disabled = true;
+
+        if (typeof QUIZ_CONFIG === 'undefined' || !QUIZ_CONFIG.SCRIPT_URL) {
+            stat.innerText = '❌ ไม่พบไฟล์ตั้งค่า (quiz-config.js)';
+            stat.style.color = '#b91c1c';
+            playAgainBtn.disabled = false;
+            return;
+        }
+
+        stat.innerText = '⏳ กำลังบันทึกคะแนนลงระบบ...';
+        stat.style.color = '#d97706';
+
+        fetch(QUIZ_CONFIG.SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            body: JSON.stringify({
+                name: localStorage.getItem('studentName'),
+                room: localStorage.getItem('studentRoom'),
+                studentId: "'" + localStorage.getItem('studentId'),
+                lesson: TOPIC_NAME,
+                score: latestScore,
+                maxScore: questions.length * 2
+            })
+        }).catch(e => console.error(e));
+
+        setTimeout(() => {
+            stat.innerText = '✅ บันทึกคะแนนลงระบบเรียบร้อย!';
+            stat.style.color = '#15803d';
+            playAgainBtn.disabled = false;
+        }, 1500);
+    }
+
+    function closeScoreModal() {
+        document.getElementById('scoreModal').classList.remove('active');
+    }
+
+    function resetQuiz() {
+        document.getElementById('scoreModal').classList.remove('active');
+        renderQuiz();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+</script>
+</body>
+</html>

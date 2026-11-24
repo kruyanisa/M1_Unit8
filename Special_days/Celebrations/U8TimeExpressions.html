@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Time Expressions - Sentence Scramble (Unit 8a)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Prompt:wght@500;700&family=Sarabun:wght@400;600;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- เชื่อมต่อระบบบันทึกคะแนน Google Sheets -->
+    <script src="https://kruyanisa.github.io/classroom-core/quiz-config.js"></script>
+
+    <style>
+        :root {
+            --emerald: #10b981;
+            --emerald-dark: #059669;
+            --magenta: #ec4899;
+            --magenta-dark: #be185d;
+            --amber: #f59e0b;
+            --amber-dark: #d97706;
+            --indigo: #6366f1;
+            --indigo-dark: #4f46e5;
+            --ink: #1e293b;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: 'Sarabun', sans-serif;
+            margin: 0;
+            padding: 12px 12px 40px 12px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--ink);
+            background: linear-gradient(160deg, #ecfdf5 0%, #fefce8 50%, #fdf2f8 100%);
+        }
+
+        /* Profile Bar */
+        .profile-bar {
+            width: 100%;
+            max-width: 700px;
+            font-size: clamp(12px, 3.2vw, 14px);
+            background: rgba(255, 255, 255, 0.94);
+            border: 2px solid #a7f3d0;
+            padding: 8px 14px;
+            border-radius: 20px;
+            color: #065f46;
+            font-weight: 700;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.12);
+        }
+
+        .btn-switch {
+            background: var(--magenta);
+            color: #fff;
+            border: none;
+            padding: 4px 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-family: 'Prompt', sans-serif;
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        /* Main Card */
+        .card {
+            width: 100%;
+            max-width: 700px;
+            background: rgba(255, 255, 255, 0.96);
+            border: 3px solid #fbcfe8;
+            border-radius: 24px;
+            padding: 18px 16px 22px;
+            box-shadow: 0 12px 28px rgba(190, 24, 93, 0.09);
+        }
+
+        .header-center { text-align: center; margin-bottom: 14px; }
+
+        .badge-unit {
+            display: inline-block;
+            background: linear-gradient(90deg, var(--indigo), var(--magenta));
+            color: #fff;
+            font-family: 'Prompt', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 4px 14px;
+            border-radius: 20px;
+            margin-bottom: 6px;
+        }
+
+        h1 {
+            font-family: 'Fredoka One', cursive;
+            color: #831843;
+            font-size: clamp(22px, 5.5vw, 30px);
+            margin: 0 0 6px 0;
+        }
+
+        .sub-instruction {
+            font-size: 14px;
+            color: #475569;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        /* Example Box */
+        .example-box {
+            background: #fffbeb;
+            border: 2px dashed #f59e0b;
+            border-radius: 16px;
+            padding: 10px 14px;
+            margin-bottom: 16px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+            font-size: 15px;
+        }
+
+        .ex-tag {
+            background: #fed7aa;
+            color: #9a3412;
+            font-family: 'Prompt', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 10px;
+        }
+
+        /* Question Card */
+        .q-card {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 18px;
+            padding: 14px;
+            margin-bottom: 14px;
+        }
+
+        .q-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            gap: 8px;
+        }
+
+        .time-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'Prompt', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 12px;
+        }
+
+        .tp-0 { background: #f3e8ff; color: #6b21a8; border: 2px solid #d8b4fe; }
+        .tp-1 { background: #e0f2fe; color: #0369a1; border: 2px solid #7dd3fc; }
+        .tp-2 { background: #dcfce7; color: #166534; border: 2px solid #86efac; }
+        .tp-3 { background: #fef3c7; color: #92400e; border: 2px solid #fcd34d; }
+
+        .btn-clear {
+            background: #e2e8f0;
+            color: #475569;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 10px;
+            font-family: 'Prompt', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .btn-clear:hover { background: #cbd5e1; }
+
+        /* Answer Drop Zone */
+        .answer-zone {
+            min-height: 54px;
+            background: #ffffff;
+            border: 2px dashed #94a3b8;
+            border-radius: 14px;
+            padding: 8px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 7px;
+            margin-bottom: 10px;
+            transition: 0.2s;
+        }
+
+        .answer-zone.has-words { border-style: solid; border-color: #cbd5e1; }
+        .answer-zone.correct { background: #dcfce7; border-color: #16a34a; border-style: solid; }
+        .answer-zone.wrong { background: #fee2e2; border-color: #ef4444; border-style: solid; }
+
+        .placeholder-txt {
+            color: #94a3b8;
+            font-size: 14px;
+            font-weight: 600;
+            padding-left: 4px;
+            user-select: none;
+        }
+
+        /* Word Bank */
+        .word-bank {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            min-height: 40px;
+        }
+
+        .word-chip {
+            background: #ffffff;
+            border: 2px solid #cbd5e1;
+            border-radius: 12px;
+            padding: 7px 13px;
+            font-family: 'Prompt', 'Sarabun', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--ink);
+            cursor: pointer;
+            box-shadow: 0 3px 0 #cbd5e1;
+            transition: transform 0.1s, background 0.15s;
+            user-select: none;
+        }
+
+        .word-chip:active:not(:disabled) { transform: translateY(2px); box-shadow: none; }
+
+        .word-chip.in-answer {
+            background: #eff6ff;
+            border-color: #60a5fa;
+            color: #1e40af;
+            box-shadow: 0 3px 0 #60a5fa;
+        }
+
+        .word-chip:disabled { cursor: default; opacity: 0.9; }
+
+        .feedback-line {
+            display: none;
+            margin-top: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            padding: 6px 12px;
+            border-radius: 10px;
+        }
+        .feedback-line.ok { display: block; background: #dcfce7; color: #166534; }
+        .feedback-line.no { display: block; background: #fee2e2; color: #991b1b; }
+
+        /* Action Button */
+        .btn-primary {
+            width: 100%;
+            max-width: 380px;
+            margin: 14px auto 0;
+            display: block;
+            padding: 13px 18px;
+            background: var(--magenta);
+            color: #fff;
+            border: none;
+            border-radius: 16px;
+            font-family: 'Prompt', sans-serif;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 5px 0 var(--magenta-dark);
+            transition: 0.1s;
+        }
+
+        .btn-primary:active:not(:disabled) { transform: translateY(4px); box-shadow: none; }
+        .btn-primary:disabled {
+            background: #94a3b8;
+            box-shadow: 0 5px 0 #64748b;
+            cursor: not-allowed;
+            opacity: 0.75;
+        }
+
+        /* Modals */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+            visibility: hidden;
+            opacity: 0;
+            transition: 0.25s;
+            padding: 15px;
+        }
+
+        .modal-overlay.active { visibility: visible; opacity: 1; }
+
+        .modal-box {
+            background: #fff;
+            padding: 26px 20px;
+            border-radius: 26px;
+            text-align: center;
+            width: 100%;
+            max-width: 340px;
+            border: 4px solid var(--magenta);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-box input {
+            width: 100%;
+            padding: 11px;
+            margin-bottom: 10px;
+            border: 2px solid #fbcfe8;
+            border-radius: 14px;
+            text-align: center;
+            font-family: 'Sarabun', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            outline: none;
+        }
+
+        .score-num {
+            font-family: 'Fredoka One', cursive;
+            font-size: 58px;
+            color: var(--magenta);
+            margin: 8px 0;
+            display: block;
+            line-height: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- User Profile Bar -->
+    <div id="userProfile" class="profile-bar" style="display:none;">
+        <span>👤 <span id="p_name"></span> | 🏫 <span id="p_room"></span> | 🆔 <span id="p_id"></span></span>
+        <button class="btn-switch" onclick="switchAccount()">🔄 สลับบัญชี</button>
+    </div>
+
+    <!-- Main Card -->
+    <div class="card">
+        <div class="header-center">
+            <div class="badge-unit">Unit 8a • Past Simple Time Expressions</div>
+            <h1>🧩 Sentence Scramble</h1>
+            <p class="sub-instruction">แตะคำศัพท์ด้านล่างเพื่อเรียงเป็นประโยค Past Simple ที่ถูกต้อง (แตะคำในกรอบเพื่อนำออกได้)</p>
+        </div>
+
+        <!-- Example -->
+        <div class="example-box">
+            <span class="ex-tag">ตัวอย่าง (ago)</span>
+            <span style="font-weight:700; color:#1e293b;">➔ <i>I went to the cinema two days ago.</i></span>
+        </div>
+
+        <!-- 4 Scramble Questions -->
+        <div id="quizContainer"></div>
+
+        <button id="btnSubmit" class="btn-primary" onclick="handleSubmit()">✅ ตรวจคำตอบและส่งคะแนน</button>
+    </div>
+
+    <!-- Login Modal -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal-box">
+            <h2 id="modalTitle" style="color:#831843; margin:0 0 6px 0; font-family:'Prompt';">📝 ลงชื่อเข้าเรียน</h2>
+            <p id="modalSub" style="color:#64748b; font-weight:600; margin:0 0 12px 0; font-size:14px;">กรอกข้อมูลเพื่อเริ่มทำกิจกรรมและบันทึกคะแนน</p>
+            <input type="text" id="in_name" placeholder="ชื่อ - นามสกุล">
+            <input type="text" id="in_room" placeholder="ชั้น/ห้อง (เช่น 1/1)">
+            <input type="text" id="in_id" placeholder="รหัสนักเรียน (5 หลัก)" maxlength="5">
+            <button class="btn-primary" style="margin-top:4px;" onclick="confirmUser()">🚀 เริ่มเล่นเกม</button>
+        </div>
+    </div>
+
+    <!-- Score Modal -->
+    <div class="modal-overlay" id="scoreModal">
+        <div class="modal-box">
+            <h2 style="color:#831843; margin:0; font-family:'Prompt';">🎉 สรุปผลคะแนน</h2>
+            <p style="color:#64748b; font-weight:600; margin:6px 0 0 0;">คะแนนของคุณคือ</p>
+            <span class="score-num"><span id="finalScoreText">0</span><span style="font-size:28px; color:#94a3b8;">/4</span></span>
+            <div id="saveStatus" style="font-weight:700; font-size:14px; margin-bottom:14px; color:#15803d; min-height:20px;"></div>
+            <button class="btn-primary" style="background:var(--emerald); box-shadow:0 5px 0 var(--emerald-dark); margin-top:0;" onclick="closeScoreModal()">👀 ดูเฉลย</button>
+            <button id="playAgainBtn" class="btn-primary" style="margin-top:10px;" onclick="resetQuiz()" disabled>🔄 เล่นอีกครั้ง</button>
+        </div>
+    </div>
+
+<script>
+    const TOPIC_NAME = 'ม.1 Unit 8 Celebrations Use the time expressions';
+
+    const questions = [
+        {
+            timeExp: "yesterday",
+            words: ["I", "made", "a cake", "yesterday."],
+            answer: "I made a cake yesterday."
+        },
+        {
+            timeExp: "yesterday morning",
+            words: ["I", "went", "for a swim", "yesterday morning."],
+            answer: "I went for a swim yesterday morning."
+        },
+        {
+            timeExp: "last Sunday",
+            words: ["Last Sunday,", "I", "visited", "my grandmother."],
+            answer: "Last Sunday, I visited my grandmother."
+        },
+        {
+            timeExp: "last night",
+            words: ["I", "watched", "TV", "last night."],
+            answer: "I watched TV last night."
+        }
+    ];
+
+    let state = []; // [{ bank: [...], picked: [...] }]
+    let isGraded = false;
+    let latestScore = 0;
+    let isPendingSubmit = false;
+
+    document.addEventListener("DOMContentLoaded", () => {
+        initQuiz();
+        checkLoginStatus();
+    });
+
+    function playSFX(type) {
+        try {
+            const AudioCtx = window.AudioContext || window.webkitAudioContext;
+            if (!AudioCtx) return;
+            const ctx = new AudioCtx();
+            if (ctx.state === 'suspended') ctx.resume();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain); gain.connect(ctx.destination);
+            const now = ctx.currentTime;
+
+            if (type === 'tap') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(560, now);
+                gain.gain.setValueAtTime(0.08, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.07);
+                osc.start(now); osc.stop(now + 0.07);
+            } else if (type === 'done') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(523.25, now);
+                osc.frequency.setValueAtTime(659.25, now + 0.1);
+                osc.frequency.setValueAtTime(783.99, now + 0.2);
+                gain.gain.setValueAtTime(0.12, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+                osc.start(now); osc.stop(now + 0.4);
+            } else {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(280, now);
+                gain.gain.setValueAtTime(0.1, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.16);
+                osc.start(now); osc.stop(now + 0.16);
+            }
+            setTimeout(() => ctx.close().catch(() => {}), 600);
+        } catch (e) {}
+    }
+
+    function shuffleArr(arr) {
+        let copy = [...arr];
+        for (let i = copy.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [copy[i], copy[j]] = [copy[j], copy[i]];
+        }
+        // ป้องกันสุ่มแล้วตรงกับเฉลยเป๊ะ
+        if (copy.join(' ') === arr.join(' ')) {
+            [copy[0], copy[copy.length - 1]] = [copy[copy.length - 1], copy[0]];
+        }
+        return copy;
+    }
+
+    function initQuiz() {
+        isGraded = false;
+        state = questions.map(q => ({
+            bank: shuffleArr(q.words).map((text, i) => ({ id: i, text })),
+            picked: []
+        }));
+
+        const container = document.getElementById('quizContainer');
+        container.innerHTML = '';
+
+        questions.forEach((q, qIdx) => {
+            const card = document.createElement('div');
+            card.className = 'q-card';
+            card.innerHTML = `
+                <div class="q-head">
+                    <span class="time-pill tp-${qIdx}">${qIdx + 1}. 🕒 ${q.timeExp}</span>
+                    <button type="button" class="btn-clear" id="clr-${qIdx}" onclick="clearSentence(${qIdx})">↺ ล้างคำ</button>
+                </div>
+                <div class="answer-zone" id="ansZone-${qIdx}"></div>
+                <div class="word-bank" id="bankZone-${qIdx}"></div>
+                <div class="feedback-line" id="fb-${qIdx}"></div>
+            `;
+            container.appendChild(card);
+            renderQuestion(qIdx);
+        });
+
+        const btn = document.getElementById('btnSubmit');
+        btn.innerText = '✅ ตรวจคำตอบและส่งคะแนน';
+        btn.style.background = '';
+        btn.style.boxShadow = '';
+    }
+
+    function renderQuestion(qIdx) {
+        const ansZone = document.getElementById(`ansZone-${qIdx}`);
+        const bankZone = document.getElementById(`bankZone-${qIdx}`);
+        const st = state[qIdx];
+
+        ansZone.innerHTML = '';
+        ansZone.classList.toggle('has-words', st.picked.length > 0);
+
+        if (st.picked.length === 0) {
+            ansZone.innerHTML = `<span class="placeholder-txt">แตะคำด้านล่างเพื่อเรียงประโยค...</span>`;
+        } else {
+            st.picked.forEach((wordObj, idx) => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'word-chip in-answer';
+                btn.innerText = wordObj.text;
+                btn.disabled = isGraded;
+                btn.onclick = () => moveBackToBank(qIdx, idx);
+                ansZone.appendChild(btn);
+            });
+        }
+
+        bankZone.innerHTML = '';
+        st.bank.forEach((wordObj, idx) => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'word-chip';
+            btn.innerText = wordObj.text;
+            btn.disabled = isGraded;
+            btn.onclick = () => moveToAnswer(qIdx, idx);
+            bankZone.appendChild(btn);
+        });
+    }
+
+    function moveToAnswer(qIdx, bankIdx) {
+        if (isGraded) return;
+        playSFX('tap');
+        const [item] = state[qIdx].bank.splice(bankIdx, 1);
+        state[qIdx].picked.push(item);
+        renderQuestion(qIdx);
+    }
+
+    function moveBackToBank(qIdx, pickedIdx) {
+        if (isGraded) return;
+        playSFX('tap');
+        const [item] = state[qIdx].picked.splice(pickedIdx, 1);
+        state[qIdx].bank.push(item);
+        renderQuestion(qIdx);
+    }
+
+    function clearSentence(qIdx) {
+        if (isGraded || state[qIdx].picked.length === 0) return;
+        playSFX('tap');
+        state[qIdx].bank.push(...state[qIdx].picked);
+        state[qIdx].picked = [];
+        renderQuestion(qIdx);
+    }
+
+    function handleSubmit() {
+        if (isGraded) {
+            resetQuiz();
+            return;
+        }
+
+        // ตรวจสอบว่าเรียงครบทุกคำในทุกข้อหรือยัง
+        const incomplete = state.some(st => st.bank.length > 0);
+        if (incomplete) {
+            playSFX('warn');
+            Swal.fire({
+                icon: 'warning',
+                title: 'ยังเรียงคำไม่ครบ!',
+                text: 'กรุณาแตะเรียงคำศัพท์ให้ครบทุกข้อก่อนส่งคะแนนนะครับ',
+                confirmButtonColor: '#ec4899'
+            });
+            return;
+        }
+
+        isGraded = true;
+        let score = 0;
+
+        questions.forEach((q, qIdx) => {
+            const userSentence = state[qIdx].picked.map(w => w.text).join(' ');
+            const ansZone = document.getElementById(`ansZone-${qIdx}`);
+            const fb = document.getElementById(`fb-${qIdx}`);
+            document.getElementById(`clr-${qIdx}`).style.display = 'none';
+            renderQuestion(qIdx);
+
+            if (userSentence === q.answer) {
+                score++;
+                ansZone.classList.add('correct');
+                fb.className = 'feedback-line ok';
+                fb.innerText = '✅ ถูกต้อง! เรียงประโยคได้สมบูรณ์';
+            } else {
+                ansZone.classList.add('wrong');
+                fb.className = 'feedback-line no';
+                fb.innerText = `❌ เฉลยที่ถูกต้อง: ${q.answer}`;
+            }
+        });
+
+        latestScore = score;
+        playSFX('done');
+
+        const btn = document.getElementById('btnSubmit');
+        btn.innerText = '🔄 เล่นอีกครั้ง';
+        btn.style.background = '#10b981';
+        btn.style.boxShadow = '0 5px 0 #059669';
+
+        if (!localStorage.getItem('studentId')) {
+            isPendingSubmit = true;
+            document.getElementById('modalTitle').innerText = '📝 ลงชื่อเพื่อบันทึกคะแนน';
+            document.getElementById('modalSub').innerText = `คุณได้ ${latestScore}/4 คะแนน กรอกข้อมูลเพื่อส่งครู`;
+            document.getElementById('loginModal').classList.add('active');
+        } else {
+            submitScoreToSheet();
+        }
+    }
+
+    // ================= LOGIN & GOOGLE SHEETS =================
+    function formatRoomValue(val) {
+        const nums = val.match(/\d+/g);
+        if (nums && nums.length >= 2) return `ม.${nums[0]}/${nums[1]}`;
+        if (nums && nums.length === 1) return `ม.1/${nums[0]}`;
+        return val.trim();
+    }
+
+    document.getElementById('in_room').addEventListener('blur', function() {
+        this.value = formatRoomValue(this.value);
+    });
+
+    function checkLoginStatus() {
+        if (localStorage.getItem('studentId')) {
+            document.getElementById('userProfile').style.display = 'flex';
+            document.getElementById('p_name').innerText = localStorage.getItem('studentName');
+            document.getElementById('p_room').innerText = localStorage.getItem('studentRoom');
+            document.getElementById('p_id').innerText = localStorage.getItem('studentId');
+        } else {
+            document.getElementById('userProfile').style.display = 'none';
+            document.getElementById('loginModal').classList.add('active');
+        }
+    }
+
+    function switchAccount() {
+        Swal.fire({
+            title: '⚠️ สลับบัญชีผู้เล่น?',
+            text: 'ระบบจะล้างข้อมูลเดิมและเริ่มใหม่',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ec4899',
+            cancelButtonColor: '#94a3b8',
+            confirmButtonText: 'ตกลง',
+            cancelButtonText: 'ยกเลิก'
+        }).then((res) => {
+            if (res.isConfirmed) {
+                localStorage.clear();
+                isPendingSubmit = false;
+                document.getElementById('userProfile').style.display = 'none';
+                document.getElementById('in_name').value = '';
+                document.getElementById('in_room').value = '';
+                document.getElementById('in_id').value = '';
+                document.getElementById('modalTitle').innerText = '🔄 ลงชื่อบัญชีใหม่';
+                document.getElementById('modalSub').innerText = 'กรอกข้อมูลนักเรียนคนใหม่เพื่อเริ่มเล่น';
+                document.getElementById('loginModal').classList.add('active');
+            }
+        });
+    }
+
+    function confirmUser() {
+        const n = document.getElementById('in_name').value.trim();
+        const r = formatRoomValue(document.getElementById('in_room').value);
+        document.getElementById('in_room').value = r;
+        const id = document.getElementById('in_id').value.trim();
+
+        if (!n || !r || id.length !== 5) {
+            Swal.fire('ข้อมูลไม่ครบ!', 'กรุณากรอกชื่อ ห้อง และรหัสนักเรียน 5 หลัก', 'warning');
+            return;
+        }
+
+        localStorage.setItem('studentName', n);
+        localStorage.setItem('studentRoom', r);
+        localStorage.setItem('studentId', id);
+
+        document.getElementById('loginModal').classList.remove('active');
+        document.getElementById('userProfile').style.display = 'flex';
+        document.getElementById('p_name').innerText = n;
+        document.getElementById('p_room').innerText = r;
+        document.getElementById('p_id').innerText = id;
+
+        if (isPendingSubmit) {
+            isPendingSubmit = false;
+            submitScoreToSheet();
+        }
+    }
+
+    function submitScoreToSheet() {
+        document.getElementById('scoreModal').classList.add('active');
+        document.getElementById('finalScoreText').innerText = latestScore;
+        const stat = document.getElementById('saveStatus');
+        const playAgainBtn = document.getElementById('playAgainBtn');
+
+        playAgainBtn.disabled = true;
+
+        if (typeof QUIZ_CONFIG === 'undefined' || !QUIZ_CONFIG.SCRIPT_URL) {
+            stat.innerText = '❌ ไม่พบไฟล์ตั้งค่า (quiz-config.js)';
+            stat.style.color = '#b91c1c';
+            playAgainBtn.disabled = false;
+            return;
+        }
+
+        stat.innerText = '⏳ กำลังบันทึกคะแนนลงระบบ...';
+        stat.style.color = '#d97706';
+
+        fetch(QUIZ_CONFIG.SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            body: JSON.stringify({
+                name: localStorage.getItem('studentName'),
+                room: localStorage.getItem('studentRoom'),
+                studentId: "'" + localStorage.getItem('studentId'),
+                lesson: TOPIC_NAME,
+                score: latestScore,
+                maxScore: questions.length
+            })
+        }).catch(e => console.error(e));
+
+        setTimeout(() => {
+            stat.innerText = '✅ บันทึกคะแนนลงระบบเรียบร้อย!';
+            stat.style.color = '#15803d';
+            playAgainBtn.disabled = false;
+        }, 1500);
+    }
+
+    function closeScoreModal() {
+        document.getElementById('scoreModal').classList.remove('active');
+    }
+
+    function resetQuiz() {
+        document.getElementById('scoreModal').classList.remove('active');
+        initQuiz();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+</script>
+</body>
+</html>

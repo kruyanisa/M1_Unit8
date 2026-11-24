@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Find the Past Forms (V2) - Unit 8a</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Prompt:wght@500;700&family=Sarabun:wght@400;600;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- เชื่อมต่อระบบบันทึกคะแนน Google Sheets -->
+    <script src="https://kruyanisa.github.io/classroom-core/quiz-config.js"></script>
+
+    <style>
+        :root {
+            --emerald: #10b981;
+            --emerald-dark: #059669;
+            --magenta: #ec4899;
+            --magenta-dark: #be185d;
+            --amber: #f59e0b;
+            --amber-dark: #d97706;
+            --blue: #2563eb;
+            --ink: #1e293b;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: 'Sarabun', sans-serif;
+            margin: 0;
+            padding: 12px 12px 96px 12px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--ink);
+            background: linear-gradient(160deg, #ecfdf5 0%, #fefce8 50%, #fdf2f8 100%);
+        }
+
+        /* Profile Bar */
+        .profile-bar {
+            width: 100%;
+            max-width: 780px;
+            font-size: clamp(12px, 3.2vw, 14px);
+            background: rgba(255, 255, 255, 0.94);
+            border: 2px solid #a7f3d0;
+            padding: 8px 14px;
+            border-radius: 20px;
+            color: #065f46;
+            font-weight: 700;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.12);
+        }
+
+        .btn-switch {
+            background: var(--magenta);
+            color: #fff;
+            border: none;
+            padding: 4px 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-family: 'Prompt', sans-serif;
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        /* Main Card */
+        .card {
+            width: 100%;
+            max-width: 780px;
+            background: rgba(255, 255, 255, 0.96);
+            border: 3px solid #fbcfe8;
+            border-radius: 24px;
+            padding: 16px;
+            box-shadow: 0 12px 28px rgba(190, 24, 93, 0.08);
+            margin-bottom: 14px;
+        }
+
+        .header-center { text-align: center; margin-bottom: 12px; }
+
+        .badge-unit {
+            display: inline-block;
+            background: linear-gradient(90deg, var(--magenta), var(--amber));
+            color: #fff;
+            font-family: 'Prompt', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 4px 14px;
+            border-radius: 20px;
+            margin-bottom: 6px;
+        }
+
+        h1 {
+            font-family: 'Fredoka One', cursive;
+            color: #831843;
+            font-size: clamp(22px, 5.5vw, 30px);
+            margin: 0 0 6px 0;
+        }
+
+        .sub-instruction {
+            font-size: 14px;
+            color: #475569;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        /* Target 14 Verbs Grid */
+        .verb-board {
+            background: #f8fafc;
+            border: 2px dashed #cbd5e1;
+            border-radius: 18px;
+            padding: 12px;
+            margin-top: 12px;
+        }
+
+        .verb-board-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 10px;
+            font-family: 'Prompt', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            color: #334155;
+        }
+
+        .verb-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+
+        @media (min-width: 480px) {
+            .verb-grid { grid-template-columns: repeat(4, 1fr); }
+        }
+        @media (min-width: 680px) {
+            .verb-grid { grid-template-columns: repeat(7, 1fr); }
+        }
+
+        .v-pill {
+            padding: 7px 6px;
+            border-radius: 12px;
+            border: 2px solid #cbd5e1;
+            background: #ffffff;
+            text-align: center;
+            font-family: 'Prompt', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            color: #334155;
+            transition: 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+        }
+
+        /* ไล่สีพาสเทลสดใสก่อนตรวจ */
+        .v-pill.c1 { background: #fff1f2; border-color: #fda4af; color: #9f1239; }
+        .v-pill.c2 { background: #eff6ff; border-color: #93c5fd; color: #1e40af; }
+        .v-pill.c3 { background: #fefce8; border-color: #fde047; color: #854d0e; }
+        .v-pill.c4 { background: #f0fdf4; border-color: #86efac; color: #166534; }
+        .v-pill.c5 { background: #faf5ff; border-color: #d8b4fe; color: #6b21a8; }
+
+        /* สถานะหลังตรวจคำตอบ */
+        .v-pill.found-ok {
+            background: #dcfce7 !important;
+            border-color: #16a34a !important;
+            color: #14532d !important;
+            box-shadow: 0 3px 0 #16a34a;
+        }
+
+        .v-pill.missed {
+            background: #fee2e2 !important;
+            border-color: #ef4444 !important;
+            color: #7f1d1d !important;
+        }
+
+        .v2-tag {
+            font-size: 11px;
+            font-weight: 700;
+            padding: 1px 6px;
+            border-radius: 8px;
+            margin-top: 2px;
+        }
+        .v2-tag.reg { background: #dbeafe; color: #1d4ed8; }
+        .v2-tag.irr { background: #fef3c7; color: #b45309; }
+
+        .legend-graded {
+            display: none;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+        .legend-graded.show { display: flex; }
+        .lg-pill { padding: 3px 10px; border-radius: 99px; }
+
+        /* Passage Cards */
+        .passage-card {
+            background: #ffffff;
+            border: 2px solid #e2e8f0;
+            border-radius: 18px;
+            padding: 14px 16px;
+            margin-bottom: 12px;
+        }
+
+        .passage-title {
+            font-family: 'Prompt', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            color: #065f46;
+            background: #d1fae5;
+            display: inline-block;
+            padding: 3px 12px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+        .passage-text {
+            font-size: clamp(16px, 4vw, 18px);
+            line-height: 1.95;
+            color: #1e293b;
+        }
+
+        /* ทุกคำกดได้เหมือนกันหมด ไม่มีคำใบ้จากเมาส์ */
+        .w-tok {
+            display: inline-block;
+            padding: 0 4px;
+            border-radius: 7px;
+            cursor: pointer;
+            transition: background-color 0.12s, transform 0.1s;
+            user-select: none;
+        }
+
+        .w-tok:hover:not(.locked) {
+            background-color: #f1f5f9;
+        }
+
+        .w-tok:active:not(.locked) {
+            transform: scale(0.95);
+        }
+
+        .w-tok.selected {
+            background-color: #fef08a !important;
+            color: #854d0e !important;
+            font-weight: 800;
+            box-shadow: inset 0 -2px 0 #eab308;
+        }
+
+        .w-tok.ans-correct {
+            background-color: #22c55e !important;
+            color: #ffffff !important;
+            font-weight: 800;
+            box-shadow: 0 2px 0 #15803d;
+        }
+
+        .w-tok.ans-wrong {
+            background-color: #ef4444 !important;
+            color: #ffffff !important;
+            font-weight: 800;
+            text-decoration: line-through;
+        }
+
+        .w-tok.ans-missed {
+            background-color: #e0f2fe !important;
+            color: #0369a1 !important;
+            font-weight: 800;
+            border: 2px dashed #0284c7;
+        }
+
+        .w-tok.locked { cursor: default; }
+
+        /* Floating Bottom Bar */
+        .sticky-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(8px);
+            border-top: 3px solid #fbcfe8;
+            padding: 10px 14px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            z-index: 1000;
+            box-shadow: 0 -6px 18px rgba(15, 23, 42, 0.08);
+        }
+
+        .quota-badge {
+            font-family: 'Prompt', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            background: #fef3c7;
+            color: #92400e;
+            border: 2px solid #f59e0b;
+            padding: 8px 14px;
+            border-radius: 14px;
+            white-space: nowrap;
+        }
+
+        .quota-badge.ready {
+            background: #dcfce7;
+            color: #166534;
+            border-color: #16a34a;
+            animation: pulseReady 0.8s infinite alternate;
+        }
+
+        @keyframes pulseReady { from { transform: scale(1); } to { transform: scale(1.04); } }
+
+        .btn-primary {
+            padding: 11px 20px;
+            background: var(--magenta);
+            color: #fff;
+            border: none;
+            border-radius: 14px;
+            font-family: 'Prompt', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 0 var(--magenta-dark);
+            transition: 0.1s;
+        }
+
+        .btn-primary:active:not(:disabled) { transform: translateY(3px); box-shadow: none; }
+        .btn-primary:disabled {
+            background: #94a3b8;
+            box-shadow: 0 4px 0 #64748b;
+            cursor: not-allowed;
+            opacity: 0.75;
+        }
+
+        /* Modals */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+            visibility: hidden;
+            opacity: 0;
+            transition: 0.25s;
+            padding: 15px;
+        }
+
+        .modal-overlay.active { visibility: visible; opacity: 1; }
+
+        .modal-box {
+            background: #fff;
+            padding: 26px 20px;
+            border-radius: 26px;
+            text-align: center;
+            width: 100%;
+            max-width: 340px;
+            border: 4px solid var(--magenta);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-box input {
+            width: 100%;
+            padding: 11px;
+            margin-bottom: 10px;
+            border: 2px solid #fbcfe8;
+            border-radius: 14px;
+            text-align: center;
+            font-family: 'Sarabun', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            outline: none;
+        }
+
+        .score-num {
+            font-family: 'Fredoka One', cursive;
+            font-size: 56px;
+            color: var(--magenta);
+            margin: 6px 0;
+            display: block;
+            line-height: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- User Profile Bar -->
+    <div id="userProfile" class="profile-bar" style="display:none;">
+        <span>👤 <span id="p_name"></span> | 🏫 <span id="p_room"></span> | 🆔 <span id="p_id"></span></span>
+        <button class="btn-switch" onclick="switchAccount()">🔄 สลับบัญชี</button>
+    </div>
+
+    <!-- Header & 14 Target Verbs -->
+    <div class="card">
+        <div class="header-center">
+            <div class="badge-unit">Unit 8a • Past Simple (Regular & Irregular)</div>
+            <h1>🔎 Find the Past Forms (V2)</h1>
+            <p class="sub-instruction">แตะเลือกคำกริยาช่อง 2 ของคำทั้ง 14 คำด้านล่างจากบทความ (แตะซ้ำเพื่อยกเลิกได้)</p>
+        </div>
+
+        <div class="verb-board">
+            <div class="verb-board-head">
+                <span>🎯 กริยาช่อง 1 ที่ต้องหา (14 คำ)</span>
+                <span style="color:#be185d;">เลือกครบ 14 คำ แล้วกดส่งคะแนน</span>
+            </div>
+            <div class="verb-grid" id="verbGrid"></div>
+            <div class="legend-graded" id="legendGraded">
+                <span class="lg-pill" style="background:#dcfce7; color:#166534;">✅ หาเจอถูก</span>
+                <span class="lg-pill" style="background:#fee2e2; color:#991b1b;">❌ ตอบผิด/หาไม่เจอ</span>
+                <span class="lg-pill" style="background:#dbeafe; color:#1d4ed8;">R = Regular (-ed)</span>
+                <span class="lg-pill" style="background:#fef3c7; color:#b45309;">I = Irregular (เปลี่ยนรูป)</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3 Passages -->
+    <div class="card">
+        <div class="passage-card">
+            <div class="passage-title">🐉 1. St David's Day (Hugh, 13)</div>
+            <div class="passage-text" id="p-hugh"></div>
+        </div>
+
+        <div class="passage-card">
+            <div class="passage-title">☘️ 2. St Patrick's Day (James, 12)</div>
+            <div class="passage-text" id="p-james"></div>
+        </div>
+
+        <div class="passage-card" style="margin-bottom:0;">
+            <div class="passage-title">⚔️ 3. St George's Day (Sam, 14)</div>
+            <div class="passage-text" id="p-sam"></div>
+        </div>
+    </div>
+
+    <!-- Sticky Bottom Action Bar -->
+    <div class="sticky-bar">
+        <div id="quotaBadge" class="quota-badge">เลือกแล้ว: 0 / 14</div>
+        <button id="btnSubmit" class="btn-primary" onclick="handleSubmitClick()">✅ ตรวจและส่งคะแนน</button>
+    </div>
+
+    <!-- Login Modal -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal-box">
+            <h2 id="modalTitle" style="color:#831843; margin:0 0 6px 0; font-family:'Prompt';">📝 ลงชื่อเข้าเรียน</h2>
+            <p id="modalSub" style="color:#64748b; font-weight:600; margin:0 0 12px 0; font-size:14px;">กรอกข้อมูลเพื่อเริ่มทำกิจกรรมและบันทึกคะแนน</p>
+            <input type="text" id="in_name" placeholder="ชื่อ - นามสกุล">
+            <input type="text" id="in_room" placeholder="ชั้น/ห้อง (เช่น 1/1)">
+            <input type="text" id="in_id" placeholder="รหัสนักเรียน (5 หลัก)" maxlength="5">
+            <button class="btn-primary" style="width:100%;" onclick="confirmUser()">🚀 เริ่มค้นหา</button>
+        </div>
+    </div>
+
+    <!-- Score Modal -->
+    <div class="modal-overlay" id="scoreModal">
+        <div class="modal-box">
+            <h2 style="color:#831843; margin:0; font-family:'Prompt';">🎉 สรุปผลคะแนน</h2>
+            <p style="color:#64748b; font-weight:600; margin:6px 0 0 0;">คุณหากริยาช่อง 2 เจอทั้งหมด</p>
+            <span class="score-num"><span id="finalScoreText">0</span><span style="font-size:26px; color:#94a3b8;">/14</span></span>
+            <div id="saveStatus" style="font-weight:700; font-size:14px; margin-bottom:14px; color:#15803d; min-height:20px;"></div>
+            <button class="btn-primary" style="width:100%; background:var(--emerald); box-shadow:0 4px 0 var(--emerald-dark);" onclick="closeScoreModal()">👀 ดูเฉลยในบทความ</button>
+            <button id="playAgainBtn" class="btn-primary" style="width:100%; margin-top:10px;" onclick="resetActivity()" disabled>🔄 ลองทำใหม่อีกครั้ง</button>
+        </div>
+    </div>
+
+<script>
+    const TOPIC_NAME = 'ม.1 Unit 8 Celebrations Find V2';
+    const MAX_SELECT = 14;
+
+    // 14 กริยาเป้าหมายจากหนังสือเรียน
+    const targetVerbs = [
+        { v1: "wear", v2: "wore", type: "I", c: "c1" },
+        { v1: "dance", v2: "danced", type: "R", c: "c2" },
+        { v1: "play", v2: "played", type: "R", c: "c3" },
+        { v1: "paint", v2: "painted", type: "R", c: "c4" },
+        { v1: "sing", v2: "sang", type: "I", c: "c5" },
+        { v1: "celebrate", v2: "celebrated", type: "R", c: "c1" },
+        { v1: "go", v2: "went", type: "I", c: "c2" },
+        { v1: "eat", v2: "ate", type: "I", c: "c3" },
+        { v1: "watch", v2: "watched", type: "R", c: "c4" },
+        { v1: "have", v2: "had", type: "I", c: "c5" },
+        { v1: "let", v2: "let", type: "I", c: "c1" },
+        { v1: "fly", v2: "flew", type: "I", c: "c2" },
+        { v1: "make", v2: "made", type: "I", c: "c3" },
+        { v1: "serve", v2: "served", type: "R", c: "c4" }
+    ];
+
+    const v2Map = {};
+    targetVerbs.forEach(v => { v2Map[v.v2] = v; });
+
+    const passages = {
+        "p-hugh": "Why not come to Wales for St David's Day? It is on 1st March and last year's celebrations in Cardiff were brilliant. All the girls and boys wore traditional Welsh costumes and sang songs, danced and read poetry. All the buildings in town flew the national flag. We had street parades where people played the Welsh bagpipes. In the evening, I went home for a family dinner. We ate some juicy roast lamb with potatoes. Delicious!",
+        "p-james": "Don't forget, St Patrick's Day! Try to pop over to Dublin, on 17th of March because the whole city goes crazy. I celebrated with my schoolmates last year and everyone wore shamrocks, green clothes and painted their faces. In the evening people let off fireworks. My mum made some special food. We all ate Irish soda bread, bacon and cabbage. It was yummy. You must come and see for yourself.",
+        "p-sam": "If you are still in the UK on 23rd April, why not visit London for St George's Day. Last year I was in Covent Garden and it was great fun. We watched some medieval street theatre and some people wore dragon costumes. There was even a stall that served roast beef and Yorkshire puddings. We had a great time! Make it a date in your diary!"
+    };
+
+    // เก็บรายการที่เลือก: Map<tokenId, { el, normWord }>
+    let selectedMap = new Map();
+    let isGraded = false;
+    let latestScore = 0;
+    let isPendingSubmit = false;
+    let notifiedFull = false;
+
+    document.addEventListener("DOMContentLoaded", () => {
+        renderVerbBoard();
+        renderPassages();
+        checkLoginStatus();
+    });
+
+    // ================= WEB AUDIO API SFX =================
+    function playSFX(type) {
+        try {
+            const AudioCtx = window.AudioContext || window.webkitAudioContext;
+            if (!AudioCtx) return;
+            const ctx = new AudioCtx();
+            if (ctx.state === 'suspended') ctx.resume();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain); gain.connect(ctx.destination);
+            const now = ctx.currentTime;
+
+            if (type === 'tap') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(540, now);
+                gain.gain.setValueAtTime(0.08, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.07);
+                osc.start(now); osc.stop(now + 0.07);
+            } else if (type === 'warn') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(280, now);
+                gain.gain.setValueAtTime(0.1, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
+                osc.start(now); osc.stop(now + 0.14);
+            } else if (type === 'done') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(523.25, now);
+                osc.frequency.setValueAtTime(659.25, now + 0.1);
+                osc.frequency.setValueAtTime(783.99, now + 0.2);
+                gain.gain.setValueAtTime(0.12, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.42);
+                osc.start(now); osc.stop(now + 0.42);
+            }
+            setTimeout(() => ctx.close().catch(() => {}), 600);
+        } catch (e) {}
+    }
+
+    // ================= RENDER BOARD & PASSAGES =================
+    function renderVerbBoard() {
+        const grid = document.getElementById('verbGrid');
+        grid.innerHTML = '';
+        targetVerbs.forEach(v => {
+            const pill = document.createElement('div');
+            pill.className = `v-pill ${v.c}`;
+            pill.id = `vpill-${v.v1}`;
+            pill.innerHTML = `<span>${v.v1}</span>`;
+            grid.appendChild(pill);
+        });
+        document.getElementById('legendGraded').classList.remove('show');
+    }
+
+    function renderPassages() {
+        let tokCounter = 0;
+        Object.keys(passages).forEach(containerId => {
+            const box = document.getElementById(containerId);
+            box.innerHTML = '';
+            const rawWords = passages[containerId].split(' ');
+
+            rawWords.forEach((raw, idx) => {
+                // แยกเครื่องหมายวรรคตอนท้ายคำออก เพื่อให้ไฮไลท์เฉพาะตัวคำศัพท์สวยงาม
+                const match = raw.match(/^([^a-zA-Z0-9']*)([a-zA-Z0-9'-]+)([^a-zA-Z0-9']*)$/);
+                if (match) {
+                    const [, pre, core, post] = match;
+                    if (pre) box.appendChild(document.createTextNode(pre));
+
+                    const span = document.createElement('span');
+                    span.className = 'w-tok';
+                    const tokId = `tok-${tokCounter++}`;
+                    const norm = core.toLowerCase();
+                    span.id = tokId;
+                    span.dataset.norm = norm;
+                    span.innerText = core;
+                    span.onclick = () => toggleWord(tokId, span, norm);
+                    box.appendChild(span);
+
+                    if (post) box.appendChild(document.createTextNode(post));
+                } else {
+                    box.appendChild(document.createTextNode(raw));
+                }
+
+                if (idx < rawWords.length - 1) {
+                    box.appendChild(document.createTextNode(' '));
+                }
+            });
+        });
+    }
+
+    // ================= WORD SELECTION =================
+    function toggleWord(tokId, el, normWord) {
+        if (isGraded) return;
+
+        // กดซ้ำที่เดิม = ยกเลิก (เปลี่ยนใจได้)
+        if (selectedMap.has(tokId)) {
+            playSFX('tap');
+            selectedMap.delete(tokId);
+            el.classList.remove('selected');
+            notifiedFull = false;
+            updateQuotaUI();
+            return;
+        }
+
+        // เช็กโควต้าครบ 14 คำแล้วหรือยัง
+        if (selectedMap.size >= MAX_SELECT) {
+            playSFX('warn');
+            Swal.fire({
+                toast: true, position: 'top', icon: 'info',
+                title: 'เลือกครบ 14 คำแล้ว! กดส่งคะแนน หรือแตะคำสีเหลืองเพื่อเปลี่ยนใจ',
+                showConfirmButton: false, timer: 2500
+            });
+            return;
+        }
+
+        // เช็กคำซ้ำ (เช่น กด wore 2 ที่ จะไม่ให้เสียโควต้าฟรี)
+        for (const item of selectedMap.values()) {
+            if (item.normWord === normWord) {
+                playSFX('warn');
+                Swal.fire({
+                    toast: true, position: 'top', icon: 'warning',
+                    title: `คุณเลือกคำว่า "${el.innerText}" ไปแล้วครับ`,
+                    showConfirmButton: false, timer: 1800
+                });
+                return;
+            }
+        }
+
+        playSFX('tap');
+        selectedMap.set(tokId, { el, normWord });
+        el.classList.add('selected');
+        updateQuotaUI();
+
+        // แจ้งเตือนเมื่อเลือกครบ 14 คำพอดี
+        if (selectedMap.size === MAX_SELECT && !notifiedFull) {
+            notifiedFull = true;
+            Swal.fire({
+                toast: true, position: 'top', icon: 'success',
+                title: '🎉 เลือกครบ 14 คำแล้ว! กดปุ่ม "ตรวจและส่งคะแนน" ด้านล่างได้เลย',
+                showConfirmButton: false, timer: 3000
+            });
+        }
+    }
+
+    function updateQuotaUI() {
+        const count = selectedMap.size;
+        const badge = document.getElementById('quotaBadge');
+        badge.innerText = `เลือกแล้ว: ${count} / ${MAX_SELECT}`;
+        badge.classList.toggle('ready', count === MAX_SELECT);
+    }
+
+    // ================= GRADING & SUBMISSION =================
+    function handleSubmitClick() {
+        if (isGraded) {
+            resetActivity();
+            return;
+        }
+
+        if (selectedMap.size < MAX_SELECT) {
+            playSFX('warn');
+            Swal.fire({
+                icon: 'warning',
+                title: `ยังเลือกไม่ครบ 14 คำ`,
+                text: `ตอนนี้เลือกไปแล้ว ${selectedMap.size} คำ กรุณาหาให้ครบ 14 คำก่อนส่งคะแนนนะครับ`,
+                confirmButtonColor: '#ec4899'
+            });
+            return;
+        }
+
+        gradeAndSubmit();
+    }
+
+    function gradeAndSubmit() {
+        isGraded = true;
+        let score = 0;
+        const foundV2Set = new Set();
+
+        // ล็อกทุกคำไม่ให้กดเพิ่ม
+        document.querySelectorAll('.w-tok').forEach(el => el.classList.add('locked'));
+
+        // ตรวจ 14 คำที่เด็กเลือก
+        selectedMap.forEach(({ el, normWord }) => {
+            el.classList.remove('selected');
+            if (v2Map[normWord]) {
+                score++;
+                foundV2Set.add(normWord);
+                el.classList.add('ans-correct');
+            } else {
+                el.classList.add('ans-wrong');
+            }
+        });
+
+        // อัปเดตป้าย 14 คำด้านบน + ไฮไลท์คำที่หาไม่เจอในบทความให้ดูเฉลย
+        targetVerbs.forEach(v => {
+            const pill = document.getElementById(`vpill-${v.v1}`);
+            const tagClass = v.type === 'R' ? 'reg' : 'irr';
+            if (foundV2Set.has(v.v2)) {
+                pill.classList.add('found-ok');
+                pill.innerHTML = `<span>✅ ${v.v1}</span><span class="v2-tag ${tagClass}">${v.v2} (${v.type})</span>`;
+            } else {
+                pill.classList.add('missed');
+                pill.innerHTML = `<span>❌ ${v.v1}</span><span class="v2-tag ${tagClass}">${v.v2} (${v.type})</span>`;
+                // ไฮไลท์จุดที่เฉลยในบทความ (แสดงจุดแรกที่พบ)
+                const missedTok = document.querySelector(`.w-tok[data-norm="${v.v2}"]`);
+                if (missedTok) missedTok.classList.add('ans-missed');
+            }
+        });
+
+        document.getElementById('legendGraded').classList.add('show');
+
+        latestScore = score;
+        playSFX('done');
+
+        const btnSubmit = document.getElementById('btnSubmit');
+        btnSubmit.innerText = '🔄 ลองทำใหม่อีกครั้ง';
+        btnSubmit.style.background = '#10b981';
+        btnSubmit.style.boxShadow = '0 4px 0 #059669';
+
+        if (!localStorage.getItem('studentId')) {
+            isPendingSubmit = true;
+            document.getElementById('modalTitle').innerText = '📝 ลงชื่อเพื่อบันทึกคะแนน';
+            document.getElementById('modalSub').innerText = `คุณได้ ${latestScore}/14 คะแนน กรอกข้อมูลเพื่อส่งครู`;
+            document.getElementById('loginModal').classList.add('active');
+        } else {
+            submitScoreToSheet();
+        }
+    }
+
+    // ================= LOGIN & GOOGLE SHEETS =================
+    function formatRoomValue(val) {
+        const nums = val.match(/\d+/g);
+        if (nums && nums.length >= 2) return `ม.${nums[0]}/${nums[1]}`;
+        if (nums && nums.length === 1) return `ม.1/${nums[0]}`;
+        return val.trim();
+    }
+
+    document.getElementById('in_room').addEventListener('blur', function() {
+        this.value = formatRoomValue(this.value);
+    });
+
+    function checkLoginStatus() {
+        if (localStorage.getItem('studentId')) {
+            document.getElementById('userProfile').style.display = 'flex';
+            document.getElementById('p_name').innerText = localStorage.getItem('studentName');
+            document.getElementById('p_room').innerText = localStorage.getItem('studentRoom');
+            document.getElementById('p_id').innerText = localStorage.getItem('studentId');
+        } else {
+            document.getElementById('userProfile').style.display = 'none';
+            document.getElementById('loginModal').classList.add('active');
+        }
+    }
+
+    function switchAccount() {
+        Swal.fire({
+            title: '⚠️ สลับบัญชีผู้เล่น?',
+            text: 'ระบบจะล้างข้อมูลเดิมและเริ่มใหม่',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ec4899',
+            cancelButtonColor: '#94a3b8',
+            confirmButtonText: 'ตกลง',
+            cancelButtonText: 'ยกเลิก'
+        }).then((res) => {
+            if (res.isConfirmed) {
+                localStorage.clear();
+                isPendingSubmit = false;
+                document.getElementById('userProfile').style.display = 'none';
+                document.getElementById('in_name').value = '';
+                document.getElementById('in_room').value = '';
+                document.getElementById('in_id').value = '';
+                document.getElementById('modalTitle').innerText = '🔄 ลงชื่อบัญชีใหม่';
+                document.getElementById('modalSub').innerText = 'กรอกข้อมูลนักเรียนคนใหม่เพื่อเริ่มเล่น';
+                document.getElementById('loginModal').classList.add('active');
+            }
+        });
+    }
+
+    function confirmUser() {
+        const n = document.getElementById('in_name').value.trim();
+        const r = formatRoomValue(document.getElementById('in_room').value);
+        document.getElementById('in_room').value = r;
+        const id = document.getElementById('in_id').value.trim();
+
+        if (!n || !r || id.length !== 5) {
+            Swal.fire('ข้อมูลไม่ครบ!', 'กรุณากรอกชื่อ ห้อง และรหัสนักเรียน 5 หลัก', 'warning');
+            return;
+        }
+
+        localStorage.setItem('studentName', n);
+        localStorage.setItem('studentRoom', r);
+        localStorage.setItem('studentId', id);
+
+        document.getElementById('loginModal').classList.remove('active');
+        document.getElementById('userProfile').style.display = 'flex';
+        document.getElementById('p_name').innerText = n;
+        document.getElementById('p_room').innerText = r;
+        document.getElementById('p_id').innerText = id;
+
+        if (isPendingSubmit) {
+            isPendingSubmit = false;
+            submitScoreToSheet();
+        }
+    }
+
+    function submitScoreToSheet() {
+        document.getElementById('scoreModal').classList.add('active');
+        document.getElementById('finalScoreText').innerText = latestScore;
+        const stat = document.getElementById('saveStatus');
+        const playAgainBtn = document.getElementById('playAgainBtn');
+
+        // ล็อกปุ่มทำใหม่ระหว่างส่งคะแนน
+        playAgainBtn.disabled = true;
+
+        if (typeof QUIZ_CONFIG === 'undefined' || !QUIZ_CONFIG.SCRIPT_URL) {
+            stat.innerText = '❌ ไม่พบไฟล์ตั้งค่า (quiz-config.js)';
+            stat.style.color = '#b91c1c';
+            playAgainBtn.disabled = false;
+            return;
+        }
+
+        stat.innerText = '⏳ กำลังบันทึกคะแนนลงระบบ...';
+        stat.style.color = '#d97706';
+
+        fetch(QUIZ_CONFIG.SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            body: JSON.stringify({
+                name: localStorage.getItem('studentName'),
+                room: localStorage.getItem('studentRoom'),
+                studentId: "'" + localStorage.getItem('studentId'),
+                lesson: TOPIC_NAME,
+                score: latestScore,
+                maxScore: MAX_SELECT
+            })
+        }).catch(e => console.error(e));
+
+        setTimeout(() => {
+            stat.innerText = '✅ บันทึกคะแนนลงระบบเรียบร้อย!';
+            stat.style.color = '#15803d';
+            playAgainBtn.disabled = false;
+        }, 1500);
+    }
+
+    function closeScoreModal() {
+        document.getElementById('scoreModal').classList.remove('active');
+    }
+
+    function resetActivity() {
+        document.getElementById('scoreModal').classList.remove('active');
+        selectedMap.clear();
+        isGraded = false;
+        notifiedFull = false;
+        renderVerbBoard();
+        renderPassages();
+        updateQuotaUI();
+
+        const btnSubmit = document.getElementById('btnSubmit');
+        btnSubmit.innerText = '✅ ตรวจและส่งคะแนน';
+        btnSubmit.style.background = '';
+        btnSubmit.style.boxShadow = '';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+</script>
+</body>
+</html>

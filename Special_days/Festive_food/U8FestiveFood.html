@@ -205,10 +205,31 @@
 
         .stage-container.pseudo-fs .btn-fs-exit,
         .stage-container:fullscreen .btn-fs-exit,
-        .stage-container:-webkit-full-screen .btn-fs-exit {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
+        .stage-container:-webkit-full-screen
+        .fs-controls {
+            display: none;
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            z-index: 10002;
+            gap: 6px;
+        }
+        .fs-btn {
+            background: rgba(15, 23, 42, 0.82);
+            color: #fff;
+            border: 1.5px solid rgba(255, 255, 255, 0.35);
+            border-radius: 10px;
+            padding: 6px 12px;
+            font-family: 'Prompt', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            backdrop-filter: blur(6px);
+        }
+        .stage-container.pseudo-fs .fs-controls,
+        .stage-container:fullscreen .fs-controls,
+        .stage-container:-webkit-full-screen .fs-controls {
+            display: flex;
         }
 
         /* Subtitle Overlay */
@@ -561,7 +582,12 @@
 
         <div class="stage-container" id="stageContainer">
             <div class="stage-viewport">
-                <button class="btn-fs-exit" onclick="exitFullscreen()">✕ Exit (Esc)</button>
+                <div class="fs-controls">
+                    <button class="fs-btn" onclick="changeStory(-1, true)">⏮️</button>
+                    <button id="fsPlayBtn" class="fs-btn" onclick="togglePlay()">▶️ Play</button>
+                    <button class="fs-btn" onclick="changeStory(1, true)">⏭️ Next</button>
+                    <button class="fs-btn" style="background:rgba(220,38,38,0.9);" onclick="exitFullscreen()">✕ Exit</button>
+                </div>
                 <img id="stageImg" class="stage-img" src="ExoticDishes.jpg" alt="Festive Food">
                 <div id="subOverlay" class="sub-overlay pos-bottom">กดปุ่ม ▶️ Play เพื่อเริ่มฟังเรื่องนี้</div>
             </div>
@@ -918,10 +944,26 @@
         renderTabs();
     }
 
-    function changeStory(step) {
+    function changeStory(step, autoPlay = false) {
         const next = currentIdx + step;
-        if (next >= 0 && next < stories.length) loadStory(next);
+        if (next >= 0 && next < stories.length) {
+            loadStory(next);
+            if (autoPlay) audio.play().catch(() => {});
+        }
     }
+
+    audio.addEventListener('play', () => {
+        playPauseBtn.innerText = '⏸️ Pause';
+        document.getElementById('fsPlayBtn').innerText = '⏸️ Pause';
+    });
+    audio.addEventListener('pause', () => {
+        playPauseBtn.innerText = '▶️ Play';
+        document.getElementById('fsPlayBtn').innerText = '▶️ Play';
+    });
+    audio.addEventListener('ended', () => {
+        playPauseBtn.innerText = '▶️ Play';
+        document.getElementById('fsPlayBtn').innerText = '▶️ Play';
+    });
 
     function togglePlay() {
         hidePopover();

@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Festive Food: Listen & Read - Unit 8b</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Prompt:wght@500;600;700&family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://kruyanisa.github.io/classroom-core/quiz-config.js"></script>
+
+    <style>
+        :root {
+            --coral: #f97316;
+            --coral-dark: #c2410c;
+            --rose: #f43f5e;
+            --rose-dark: #be123c;
+            --mint: #10b981;
+            --mint-dark: #059669;
+            --cream: #fffbeb;
+            --ink: #1e293b;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: 'Sarabun', sans-serif;
+            margin: 0;
+            padding: 12px 12px 40px 12px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--ink);
+            background: linear-gradient(160deg, #fff7ed 0%, #fefce8 50%, #fdf2f8 100%);
+        }
+
+        /* Profile Bar */
+        .profile-bar {
+            width: 100%;
+            max-width: 860px;
+            font-size: clamp(12px, 3.2vw, 14px);
+            background: rgba(255, 255, 255, 0.95);
+            border: 2px solid #fed7aa;
+            padding: 8px 14px;
+            border-radius: 20px;
+            color: #9a3412;
+            font-weight: 700;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 12px rgba(249, 115, 22, 0.1);
+        }
+
+        .btn-switch {
+            background: var(--rose);
+            color: #fff;
+            border: none;
+            padding: 4px 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-family: 'Prompt', sans-serif;
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        /* Main Container */
+        .card-shell {
+            width: 100%;
+            max-width: 860px;
+            background: rgba(255, 255, 255, 0.96);
+            border: 3px solid #fed7aa;
+            border-radius: 26px;
+            padding: 16px;
+            box-shadow: 0 12px 28px rgba(249, 115, 22, 0.1);
+            margin-bottom: 18px;
+        }
+
+        .header-top { text-align: center; margin-bottom: 12px; }
+
+        .badge-unit {
+            display: inline-block;
+            background: linear-gradient(90deg, var(--coral), var(--rose));
+            color: #fff;
+            font-family: 'Prompt', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 4px 14px;
+            border-radius: 20px;
+            margin-bottom: 6px;
+        }
+
+        h1 {
+            font-family: 'Fredoka One', cursive;
+            color: #9a3412;
+            font-size: clamp(22px, 5.5vw, 30px);
+            margin: 0 0 4px 0;
+        }
+
+        .sub-note {
+            font-size: 14px;
+            color: #64748b;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        /* Story Selector Tabs */
+        .story-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 6px;
+            margin-bottom: 14px;
+        }
+
+        .s-tab {
+            font-family: 'Prompt', sans-serif;
+            font-size: 12.5px;
+            font-weight: 700;
+            padding: 7px 12px;
+            border-radius: 14px;
+            border: 2px solid #e2e8f0;
+            background: #f8fafc;
+            color: #475569;
+            cursor: pointer;
+            transition: 0.15s;
+        }
+
+        .s-tab.active {
+            background: #ffedd5;
+            border-color: var(--coral);
+            color: #9a3412;
+            box-shadow: 0 3px 0 #fdba74;
+        }
+
+        /* Stage (16:9 Image + Subtitles + Controls) */
+        .stage-container {
+            position: relative;
+            width: 100%;
+            background: #0f172a;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.2);
+        }
+
+        .stage-viewport {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background: #0f172a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .stage-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+            user-select: none;
+        }
+
+        /* Exit Fullscreen Button */
+        .btn-fs-exit {
+            display: none;
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            z-index: 10002;
+            background: rgba(15, 23, 42, 0.85);
+            color: #fff;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            border-radius: 12px;
+            padding: 6px 14px;
+            font-family: 'Prompt', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            backdrop-filter: blur(6px);
+        }
+
+        /* Pseudo-fullscreen & Native Fullscreen */
+        .stage-container.pseudo-fs {
+            position: fixed !important;
+            inset: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            border-radius: 0 !important;
+            z-index: 9999 !important;
+            display: flex;
+            flex-direction: column;
+            background: #000;
+        }
+
+        .stage-container.pseudo-fs .stage-viewport,
+        .stage-container:fullscreen .stage-viewport,
+        .stage-container:-webkit-full-screen .stage-viewport {
+            flex: 1;
+            aspect-ratio: auto;
+            height: 100%;
+        }
+
+        .stage-container.pseudo-fs .btn-fs-exit,
+        .stage-container:fullscreen .btn-fs-exit,
+        .stage-container:-webkit-full-screen .btn-fs-exit {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Subtitle Overlay */
+        .sub-overlay {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 92%;
+            max-width: 740px;
+            background: rgba(15, 23, 42, 0.82);
+            backdrop-filter: blur(6px);
+            color: #f8fafc;
+            padding: 10px 16px;
+            border-radius: 16px;
+            text-align: center;
+            font-family: 'Prompt', sans-serif;
+            font-size: clamp(13px, 3vw, 19px);
+            line-height: 1.55;
+            font-weight: 500;
+            z-index: 20;
+            border: 1.5px solid rgba(255, 255, 255, 0.22);
+            transition: opacity 0.2s;
+        }
+
+        .sub-overlay.pos-bottom { bottom: 12px; top: auto; }
+        .sub-overlay.pos-top { top: 12px; bottom: auto; }
+
+        /* กันซับชนปุ่ม Exit เมื่อเปิดเต็มจอ */
+        .stage-container.pseudo-fs .sub-overlay.pos-top,
+        .stage-container:fullscreen .sub-overlay.pos-top,
+        .stage-container:-webkit-full-screen .sub-overlay.pos-top {
+            top: 56px;
+        }
+
+        .sub-overlay.hidden { opacity: 0; pointer-events: none; }
+
+        .sub-word {
+            display: inline-block;
+            padding: 1px 3px;
+            margin: 0 1px;
+            border-radius: 6px;
+            transition: background-color 0.1s, color 0.1s, transform 0.1s;
+        }
+
+        .sub-word.active-word {
+            background: #facc15;
+            color: #0f172a;
+            font-weight: 700;
+            transform: scale(1.06);
+        }
+
+        .sub-word.vocab-hit {
+            border-bottom: 2px dotted #38bdf8;
+            cursor: pointer;
+        }
+
+        .sub-word.vocab-hit:hover {
+            background: rgba(56, 189, 248, 0.25);
+        }
+
+        /* Player Control Bar */
+        .player-bar {
+            background: #1e293b;
+            color: #fff;
+            padding: 10px 12px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .p-btn {
+            background: #334155;
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            padding: 8px 12px;
+            font-family: 'Prompt', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: 0.12s;
+        }
+
+        .p-btn:hover { background: #475569; }
+        .p-btn.play-main {
+            background: var(--coral);
+            box-shadow: 0 3px 0 var(--coral-dark);
+        }
+        .p-btn.play-main:active { transform: translateY(2px); box-shadow: none; }
+        .p-btn.active-toggle { background: var(--mint); color: #fff; }
+        .p-btn.exit-btn { background: #dc2626; }
+
+        .seek-wrap {
+            flex: 1;
+            min-width: 120px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .seek-bar {
+            flex: 1;
+            accent-color: var(--coral);
+            cursor: pointer;
+            height: 6px;
+        }
+
+        .time-txt {
+            font-family: 'Prompt', sans-serif;
+            font-size: 12px;
+            color: #cbd5e1;
+            min-width: 72px;
+            text-align: right;
+        }
+
+        /* Story Navigation & Translation Box */
+        .nav-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+            gap: 10px;
+        }
+
+        .btn-nav {
+            font-family: 'Prompt', sans-serif;
+            font-size: 13.5px;
+            font-weight: 700;
+            padding: 9px 16px;
+            border-radius: 14px;
+            border: 2px solid #fed7aa;
+            background: #fff7ed;
+            color: #9a3412;
+            cursor: pointer;
+        }
+        .btn-nav:disabled { opacity: 0.4; cursor: not-allowed; }
+
+        .th-box {
+            margin-top: 12px;
+            background: #fefce8;
+            border: 2px dashed #facc15;
+            border-radius: 16px;
+            padding: 12px 14px;
+            font-size: 15px;
+            color: #713f12;
+            line-height: 1.6;
+            display: none;
+        }
+        .th-box.show { display: block; }
+
+        /* Vocab Popover */
+        #vocab-popover {
+            position: fixed;
+            display: none;
+            z-index: 10050;
+            background: #ffffff;
+            color: #1e293b;
+            border: 3px solid var(--coral);
+            border-radius: 16px;
+            padding: 10px 14px;
+            max-width: 240px;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+            font-family: 'Sarabun', sans-serif;
+        }
+        #vocab-popover .vp-word {
+            font-family: 'Prompt', sans-serif;
+            font-weight: 700;
+            color: #c2410c;
+            font-size: 15px;
+        }
+        #vocab-popover .vp-th {
+            font-size: 14px;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+        #vocab-popover .vp-close {
+            position: absolute;
+            top: 6px;
+            right: 8px;
+            border: none;
+            background: none;
+            font-size: 14px;
+            cursor: pointer;
+            color: #94a3b8;
+        }
+
+        /* ================= QUIZ SECTION (5 คะแนน) ================= */
+        .quiz-title {
+            font-family: 'Prompt', sans-serif;
+            font-size: 19px;
+            font-weight: 700;
+            color: #9a3412;
+            margin: 0 0 6px 0;
+        }
+
+        .quiz-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .q-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            background: #fff7ed;
+            border: 2px solid #fed7aa;
+            border-radius: 16px;
+            padding: 12px 14px;
+            transition: 0.2s;
+        }
+
+        .q-row.correct { background: #f0fdf4; border-color: #86efac; }
+        .q-row.wrong { background: #fef2f2; border-color: #fca5a5; }
+
+        .q-dish {
+            font-family: 'Prompt', sans-serif;
+            font-size: 15.5px;
+            font-weight: 700;
+            color: var(--ink);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .q-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: var(--coral);
+            color: #fff;
+            font-size: 13px;
+        }
+
+        .q-select {
+            flex: 1;
+            min-width: 220px;
+            max-width: 340px;
+            padding: 10px 12px;
+            border-radius: 12px;
+            border: 2px solid #cbd5e1;
+            font-family: 'Prompt', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--ink);
+            background: #fff;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .q-select:focus { border-color: var(--coral); }
+
+        .quiz-actions {
+            margin-top: 16px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            padding: 12px 24px;
+            background: var(--rose);
+            color: #fff;
+            border: none;
+            border-radius: 16px;
+            font-family: 'Prompt', sans-serif;
+            font-size: 15.5px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 0 var(--rose-dark);
+            transition: 0.1s;
+        }
+        .btn-primary:active:not(:disabled) { transform: translateY(3px); box-shadow: none; }
+        .btn-primary:disabled { background: #94a3b8; box-shadow: 0 4px 0 #64748b; cursor: not-allowed; opacity: 0.75; }
+
+        /* Modals */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+            visibility: hidden;
+            opacity: 0;
+            transition: 0.25s;
+            padding: 15px;
+        }
+        .modal-overlay.active { visibility: visible; opacity: 1; }
+        .modal-box {
+            background: #fff;
+            padding: 26px 20px;
+            border-radius: 26px;
+            text-align: center;
+            width: 100%;
+            max-width: 340px;
+            border: 4px solid var(--coral);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+        .modal-box input {
+            width: 100%;
+            padding: 11px;
+            margin-bottom: 10px;
+            border: 2px solid #fed7aa;
+            border-radius: 14px;
+            text-align: center;
+            font-family: 'Sarabun', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            outline: none;
+        }
+        .score-num {
+            font-family: 'Fredoka One', cursive;
+            font-size: 56px;
+            color: var(--coral);
+            margin: 8px 0;
+            display: block;
+            line-height: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- User Profile Bar -->
+    <div id="userProfile" class="profile-bar" style="display:none;">
+        <span>👤 <span id="p_name"></span> | 🏫 <span id="p_room"></span> | 🆔 <span id="p_id"></span></span>
+        <button class="btn-switch" onclick="switchAccount()">🔄 สลับบัญชี</button>
+    </div>
+
+    <!-- Part 1: Listen & Read Stage -->
+    <div class="card-shell">
+        <div class="header-top">
+            <div class="badge-unit">Unit 8b • Festive Food</div>
+            <h1>🍽️ Exotic Dishes: Listen & Read</h1>
+            <p class="sub-note">เลือกฟังทีละเรื่อง แตะคำศัพท์ที่มีเส้นใต้ในซับเพื่อดูคำแปล แล้วทำแบบฝึกหัดจับคู่ด้านล่าง</p>
+        </div>
+
+        <div class="story-tabs" id="storyTabs"></div>
+
+        <div class="stage-container" id="stageContainer">
+            <div class="stage-viewport">
+                <button class="btn-fs-exit" onclick="exitFullscreen()">✕ Exit (Esc)</button>
+                <img id="stageImg" class="stage-img" src="ExoticDishes.jpg" alt="Festive Food">
+                <div id="subOverlay" class="sub-overlay pos-bottom">กดปุ่ม ▶️ Play เพื่อเริ่มฟังเรื่องนี้</div>
+            </div>
+
+            <div class="player-bar">
+                <button id="playPauseBtn" class="p-btn play-main" onclick="togglePlay()">▶️ Play</button>
+                <div class="seek-wrap">
+                    <input type="range" id="seekBar" class="seek-bar" min="0" max="100" value="0" step="0.1">
+                    <span id="timeTxt" class="time-txt">0:00 / 0:00</span>
+                </div>
+                <button id="ccBtn" class="p-btn active-toggle" onclick="toggleCC()">CC</button>
+                <button id="thBtn" class="p-btn" onclick="toggleThai()">🇹🇭 คำแปล</button>
+                <button id="fsBtn" class="p-btn" onclick="enterFullscreen()">⛶ เต็มจอ</button>
+                <button id="exitPlayerBtn" class="p-btn exit-btn" onclick="exitLesson()">🚪 Exit</button>
+            </div>
+        </div>
+
+        <div id="thBox" class="th-box"></div>
+
+        <div class="nav-row">
+            <button id="prevBtn" class="btn-nav" onclick="changeStory(-1)">⬅️ เรื่องก่อนหน้า</button>
+            <span id="storyCounter" style="font-family:'Prompt'; font-weight:700; color:#9a3412; font-size:14px;">1 / 6</span>
+            <button id="nextBtn" class="btn-nav" onclick="changeStory(1)">เรื่องถัดไป ➡️</button>
+        </div>
+    </div>
+
+    <!-- Part 2: Matching Quiz (5 คะแนน) -->
+    <div class="card-shell">
+        <h2 class="quiz-title">📝 Exercise 2: Match the dishes with the country & occasion (5 คะแนน)</h2>
+        <p class="sub-note">เลือกประเทศและเทศกาลที่ตรงกับเมนูอาหารแต่ละข้อ แล้วกดส่งคำตอบ</p>
+
+        <div class="quiz-list" id="quizList"></div>
+
+        <div class="quiz-actions">
+            <button id="submitQuizBtn" class="btn-primary" onclick="checkQuiz()">✅ ตรวจคำตอบ & ส่งคะแนน</button>
+        </div>
+    </div>
+
+    <!-- Vocab Popover -->
+    <div id="vocab-popover">
+        <button class="vp-close" onclick="hidePopover()">✕</button>
+        <div class="vp-word" id="vpWord"></div>
+        <div class="vp-th" id="vpTh"></div>
+    </div>
+
+    <!-- Login Modal -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal-box">
+            <h2 id="modalTitle" style="color:#9a3412; margin:0 0 6px 0; font-family:'Prompt';">📝 ลงชื่อเข้าเรียน</h2>
+            <p id="modalSub" style="color:#64748b; font-weight:600; margin:0 0 12px 0; font-size:14px;">กรอกข้อมูลเพื่อเริ่มเรียนและบันทึกคะแนน</p>
+            <input type="text" id="in_name" placeholder="ชื่อ - นามสกุล">
+            <input type="text" id="in_room" placeholder="ชั้น/ห้อง (เช่น 1/1)">
+            <input type="text" id="in_id" placeholder="รหัสนักเรียน (5 หลัก)" maxlength="5">
+            <button class="btn-primary" style="width:100%;" onclick="confirmUser()">🚀 เริ่มเรียนเลย</button>
+        </div>
+    </div>
+
+    <!-- Score Modal -->
+    <div class="modal-overlay" id="scoreModal">
+        <div class="modal-box">
+            <h2 style="color:#9a3412; margin:0; font-family:'Prompt';">🎉 สรุปผลคะแนน</h2>
+            <p style="color:#64748b; font-weight:600; margin:6px 0 0 0;">คุณทำแบบฝึกหัดจับคู่ได้</p>
+            <span class="score-num"><span id="finalScoreText">0</span><span style="font-size:26px; color:#94a3b8;">/5</span></span>
+            <div id="saveStatus" style="font-weight:700; font-size:14px; margin-bottom:14px; color:#15803d; min-height:20px;"></div>
+            <button class="btn-primary" style="width:100%; background:var(--mint); box-shadow:0 4px 0 var(--mint-dark);" onclick="closeScoreModal()">👀 ดูเฉลย</button>
+            <button id="playAgainBtn" class="btn-primary" style="width:100%; margin-top:10px;" onclick="resetQuiz()" disabled>🔄 Play Again</button>
+        </div>
+    </div>
+
+    <audio id="audioPlayer" preload="metadata"></audio>
+
+<script>
+    const TOPIC_NAME = 'ม.1 Unit 8 Festive food Listen and Read';
+
+    const stories = [
+        {
+            id: 'intro',
+            label: '🌍 Intro',
+            img: 'ExoticDishes.jpg',
+            audio: 'ExoticDishes.mp3',
+            json: 'ExoticDishes.json',
+            subPos: 'pos-bottom', // Intro ขึ้นด้านล่าง ไม่บังหัวข้อ EXOTIC DISHES
+            th: '<strong>อาหารแปลกใหม่จากทั่วโลก:</strong> ในวัฒนธรรมส่วนใหญ่ อาหารเป็นส่วนสำคัญของการเฉลิมฉลอง และเป็นโอกาสที่จะได้ทำเมนูสุดพิเศษ หากคืนนี้คุณอยากลองมื้อเย็นที่ต่างออกไป ลองหาแรงบันดาลใจจากเมนูสุดพิเศษจากทั่วทุกมุมโลกเหล่านี้ดูสิ!'
+        },
+        {
+            id: 'usa',
+            label: '🇺🇸 USA',
+            img: 'Thanksgiving.jpg',
+            audio: 'Thanksgiving.mp3',
+            json: 'Thanksgiving.json',
+            subPos: 'pos-top', // ขึ้นด้านบน ไม่บังอาหาร
+            th: '<strong>สหรัฐอเมริกา - วันขอบคุณพระเจ้า (Thanksgiving):</strong> ผู้คนนิยมรับประทานไก่งวงอบคู่กับมันฝรั่ง หัวหอม และแครอท ส่วนของหวานจะเป็นพายฟักทอง'
+        },
+        {
+            id: 'indonesia',
+            label: '🇮🇩 Indonesia',
+            img: 'Eid.jpg',
+            audio: 'Eid.mp3',
+            json: 'Eid.json',
+            subPos: 'pos-top',
+            th: '<strong>อินโดนีเซีย - เทศกาลอีด (Eid):</strong> ชาวอินโดนีเซียเฉลิมฉลองการสิ้นสุดเดือนอันศักดิ์สิทธิ์รอมฎอนด้วยการรับประทานเมนูไก่ เนื้อแกะ หรือเนื้อวัว แต่จะไม่กินปลาเลย ส่วนของหวานมักจะเป็นเค้ก'
+        },
+        {
+            id: 'iceland',
+            label: '🇮🇸 Iceland',
+            img: 'Midwinter.jpg',
+            audio: 'Midwinter.mp3',
+            json: 'Midwinter.json',
+            subPos: 'pos-top',
+            th: '<strong>ไอซ์แลนด์ - งานเลี้ยงกลางฤดูหนาว (Midwinter Feast):</strong> ในประเทศไอซ์แลนด์ ผู้คนฉลองกลางฤดูหนาวด้วยการกินเนื้อสัตว์และไส้กรอก บางครั้งก็กินปลาคู่กับขนมปังและมันฝรั่งด้วย'
+        },
+        {
+            id: 'germany',
+            label: '🇩🇪 Germany',
+            img: 'Martinstag.jpg',
+            audio: 'Martinstag.mp3',
+            json: 'Martinstag.json',
+            subPos: 'pos-top',
+            th: '<strong>เยอรมนี - เทศกาลมาร์ตินสทาก (Martinstag):</strong> สัญลักษณ์ของเทศกาลมาร์ตินสทากคือห่าน ผู้คนจะนำห่านมาอบและเสิร์ฟคู่กับมันฝรั่งและกะหล่ำปลีสีแดง'
+        },
+        {
+            id: 'japan',
+            label: '🇯🇵 Japan',
+            img: 'CherryBlossom.jpg',
+            audio: 'CherryBlossom.mp3',
+            json: 'CherryBlossom.json',
+            subPos: 'pos-top',
+            th: '<strong>ญี่ปุ่น - เทศกาลชมดอกซากุระ (Cherry Blossom Viewing):</strong> เมื่อต้นซากุระออกดอก ชาวญี่ปุ่นจะเฉลิมฉลองด้วยการปิกนิกหรือจัดปาร์ตี้ใต้ต้นไม้ เมนูยอดนิยมคือซูชิซึ่งทำจากปลาและข้าว และยังมีเครื่องดื่มพิเศษเรียกว่าสาเก'
+        }
+    ];
+
+    const vocabDict = {
+        "cultures": "วัฒนธรรม",
+        "essential": "สำคัญ, จำเป็น",
+        "celebration": "การเฉลิมฉลอง",
+        "chance": "โอกาส",
+        "inspiration": "แรงบันดาลใจ",
+        "exotic": "แปลกใหม่, ต่างแดน",
+        "dishes": "จานอาหาร, เมนูอาหาร",
+        "typical": "ตามแบบฉบับ, เป็นประจำ",
+        "roast": "อบ, ย่าง",
+        "turkey": "ไก่งวง",
+        "dessert": "ของหวาน",
+        "pumpkin": "ฟักทอง",
+        "celebrate": "เฉลิมฉลอง",
+        "holy": "ศักดิ์สิทธิ์",
+        "lamb": "เนื้อแกะ",
+        "beef": "เนื้อวัว",
+        "midwinter": "กลางฤดูหนาว",
+        "sausages": "ไส้กรอก",
+        "symbol": "สัญลักษณ์",
+        "goose": "ห่าน",
+        "serve": "เสิร์ฟ",
+        "cabbage": "กะหล่ำปลี",
+        "cherry": "เชอร์รี่ / ซากุระ",
+        "blossom": "ดอกไม้บาน",
+        "picnics": "การปิกนิก",
+        "popular": "เป็นที่นิยม",
+        "sushi": "ซูชิ",
+        "sake": "สาเก (เหล้าข้าวญี่ปุ่น)"
+    };
+
+    const quizItems = [
+        { num: 1, dish: "fish and rice", answer: "Japan – Cherry Blossom Viewing" },
+        { num: 2, dish: "turkey", answer: "the USA – Thanksgiving" },
+        { num: 3, dish: "goose with potatoes", answer: "Germany – Martinstag" },
+        { num: 4, dish: "sausages", answer: "Iceland – Midwinter Feast" },
+        { num: 5, dish: "chicken", answer: "Indonesia – Eid" }
+    ];
+
+    const quizOptions = [
+        "Japan – Cherry Blossom Viewing",
+        "the USA – Thanksgiving",
+        "Germany – Martinstag",
+        "Iceland – Midwinter Feast",
+        "Indonesia – Eid"
+    ];
+
+    let currentIdx = 0;
+    let currentSegments = [];
+    let isCCOn = true;
+    let isThaiOn = false;
+    let isPendingSubmit = false;
+    let lastScore = 0;
+    const jsonCache = {};
+
+    const audio = document.getElementById('audioPlayer');
+    const stageContainer = document.getElementById('stageContainer');
+    const stageImg = document.getElementById('stageImg');
+    const subOverlay = document.getElementById('subOverlay');
+    const seekBar = document.getElementById('seekBar');
+    const timeTxt = document.getElementById('timeTxt');
+    const playPauseBtn = document.getElementById('playPauseBtn');
+    const thBox = document.getElementById('thBox');
+
+    // Web Audio SFX
+    function playSfx(type) {
+        try {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.type = type === 'win' ? 'triangle' : 'sawtooth';
+            osc.frequency.setValueAtTime(type === 'win' ? 587.33 : 220, ctx.currentTime);
+            if (type === 'win') osc.frequency.setValueAtTime(880, ctx.currentTime + 0.12);
+            gain.gain.setValueAtTime(0.15, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.28);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.28);
+        } catch (e) {}
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        renderTabs();
+        renderQuiz();
+        loadStory(0);
+        checkLoginStatus();
+    });
+
+    function renderTabs() {
+        const wrap = document.getElementById('storyTabs');
+        wrap.innerHTML = '';
+        stories.forEach((st, i) => {
+            const btn = document.createElement('button');
+            btn.className = 's-tab' + (i === currentIdx ? ' active' : '');
+            btn.innerText = st.label;
+            btn.onclick = () => loadStory(i);
+            wrap.appendChild(btn);
+        });
+    }
+
+    async function loadStory(idx) {
+        currentIdx = idx;
+        hidePopover();
+        audio.pause();
+        playPauseBtn.innerText = '▶️ Play';
+
+        const st = stories[idx];
+        stageImg.src = st.img;
+        audio.src = st.audio;
+        subOverlay.className = 'sub-overlay ' + st.subPos + (isCCOn ? '' : ' hidden');
+        subOverlay.innerHTML = 'กดปุ่ม ▶️ Play เพื่อเริ่มฟัง';
+        thBox.innerHTML = st.th;
+        document.getElementById('storyCounter').innerText = `${idx + 1} / ${stories.length}`;
+        document.getElementById('prevBtn').disabled = idx === 0;
+        document.getElementById('nextBtn').disabled = idx === stories.length - 1;
+        renderTabs();
+
+        // โหลดไฟล์ JSON timestamp
+        if (!jsonCache[st.json]) {
+            try {
+                const res = await fetch(st.json);
+                const data = await res.json();
+                jsonCache[st.json] = data.segments || [];
+            } catch (e) {
+                jsonCache[st.json] = [];
+            }
+        }
+        currentSegments = jsonCache[st.json];
+    }
+
+    function changeStory(step) {
+        const next = currentIdx + step;
+        if (next >= 0 && next < stories.length) loadStory(next);
+    }
+
+    function togglePlay() {
+        hidePopover();
+        if (audio.paused) {
+            audio.play().catch(() => {});
+        } else {
+            audio.pause();
+        }
+    }
+
+    function exitLesson() {
+        audio.pause();
+        audio.currentTime = 0;
+        hidePopover();
+        if (isFullscreenActive()) {
+            exitFullscreen();
+        } else {
+            Swal.fire({
+                title: 'ออกจากบทเรียน?',
+                text: 'ต้องการปิดหน้าต่างนี้หรือกลับไปหน้าบทเรียนหลักไหมครับ',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#dc2626',
+                cancelButtonColor: '#94a3b8',
+                confirmButtonText: 'ออกเลย',
+                cancelButtonText: 'อยู่ต่อ'
+            }).then(res => {
+                if (res.isConfirmed) {
+                    if (window.history.length > 1) window.history.back();
+                    else window.close();
+                }
+            });
+        }
+    }
+
+    audio.addEventListener('play', () => playPauseBtn.innerText = '⏸️ Pause');
+    audio.addEventListener('pause', () => playPauseBtn.innerText = '▶️ Play');
+    audio.addEventListener('ended', () => {
+        playPauseBtn.innerText = '▶️ Play';
+    });
+
+    audio.addEventListener('loadedmetadata', () => {
+        seekBar.max = audio.duration || 100;
+        updateTimeDisplay();
+    });
+
+    audio.addEventListener('timeupdate', () => {
+        seekBar.value = audio.currentTime;
+        updateTimeDisplay();
+        renderSubtitle(audio.currentTime);
+    });
+
+    seekBar.addEventListener('input', () => {
+        audio.currentTime = parseFloat(seekBar.value);
+    });
+
+    function fmtTime(sec) {
+        if (!isFinite(sec)) return '0:00';
+        const m = Math.floor(sec / 60);
+        const s = Math.floor(sec % 60).toString().padStart(2, '0');
+        return `${m}:${s}`;
+    }
+
+    function updateTimeDisplay() {
+        timeTxt.innerText = `${fmtTime(audio.currentTime)} / ${fmtTime(audio.duration)}`;
+    }
+
+    let lastRenderedSegIdx = -1;
+
+    function renderSubtitle(t) {
+        if (!currentSegments.length) return;
+
+        let segIdx = currentSegments.findIndex(seg => t >= seg.start - 0.15 && t <= seg.end + 0.35);
+        if (segIdx === -1) {
+            // คงประโยคล่าสุดไว้ถ้ายังไม่จบ
+            if (t < currentSegments[0].start) {
+                subOverlay.innerHTML = '🎧 กำลังเริ่มฟัง...';
+                lastRenderedSegIdx = -1;
+            }
+            return;
+        }
+
+        const seg = currentSegments[segIdx];
+        if (segIdx !== lastRenderedSegIdx) {
+            lastRenderedSegIdx = segIdx;
+            subOverlay.innerHTML = '';
+            (seg.words || []).forEach((wObj, wi) => {
+                const span = document.createElement('span');
+                span.className = 'sub-word';
+                span.dataset.widx = wi;
+                span.innerText = wObj.word;
+
+                const clean = wObj.word.toLowerCase().replace(/[^a-z]/g, '');
+                if (vocabDict[clean]) {
+                    span.classList.add('vocab-hit');
+                    span.onclick = (ev) => showVocabPopover(ev, wObj.word.replace(/[^a-zA-Z]/g, ''), vocabDict[clean]);
+                }
+                subOverlay.appendChild(span);
+                subOverlay.appendChild(document.createTextNode(' '));
+            });
+        }
+
+        const spans = subOverlay.querySelectorAll('.sub-word');
+        (seg.words || []).forEach((wObj, wi) => {
+            if (!spans[wi]) return;
+            if (t >= wObj.start - 0.05 && t <= wObj.end + 0.08) {
+                spans[wi].classList.add('active-word');
+            } else {
+                spans[wi].classList.remove('active-word');
+            }
+        });
+    }
+
+    function toggleCC() {
+        isCCOn = !isCCOn;
+        subOverlay.classList.toggle('hidden', !isCCOn);
+        document.getElementById('ccBtn').classList.toggle('active-toggle', isCCOn);
+    }
+
+    function toggleThai() {
+        isThaiOn = !isThaiOn;
+        thBox.classList.toggle('show', isThaiOn);
+        document.getElementById('thBtn').classList.toggle('active-toggle', isThaiOn);
+    }
+
+    // ================= FULLSCREEN & VOCAB POPOVER =================
+    function isFullscreenActive() {
+        return !!(document.fullscreenElement || document.webkitFullscreenElement || stageContainer.classList.contains('pseudo-fs'));
+    }
+
+    function enterFullscreen() {
+        if (stageContainer.requestFullscreen) {
+            stageContainer.requestFullscreen().catch(() => stageContainer.classList.add('pseudo-fs'));
+        } else if (stageContainer.webkitRequestFullscreen) {
+            stageContainer.webkitRequestFullscreen();
+        } else {
+            stageContainer.classList.add('pseudo-fs');
+        }
+    }
+
+    function exitFullscreen() {
+        stageContainer.classList.remove('pseudo-fs');
+        if (document.fullscreenElement && document.exitFullscreen) {
+            document.exitFullscreen().catch(() => {});
+        } else if (document.webkitFullscreenElement && document.webkitExitFullscreen) {
+            document.webkitExitFullscreen();
+        }
+    }
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && stageContainer.classList.contains('pseudo-fs')) {
+            exitFullscreen();
+        }
+    });
+
+    function showVocabPopover(ev, word, meaning) {
+        ev.stopPropagation();
+        audio.pause();
+
+        const pop = document.getElementById('vocab-popover');
+        const host = document.fullscreenElement || document.webkitFullscreenElement || document.body;
+        host.appendChild(pop);
+
+        document.getElementById('vpWord').innerText = word;
+        document.getElementById('vpTh').innerText = meaning;
+        pop.style.display = 'block';
+
+        const rect = pop.getBoundingClientRect();
+        let x = ev.clientX - rect.width / 2;
+        let y = ev.clientY - rect.height - 14;
+
+        if (x < 10) x = 10;
+        if (x + rect.width > window.innerWidth - 10) x = window.innerWidth - rect.width - 10;
+        if (y < 10) y = ev.clientY + 18;
+
+        pop.style.left = x + 'px';
+        pop.style.top = y + 'px';
+    }
+
+    function hidePopover() {
+        const pop = document.getElementById('vocab-popover');
+        if (pop) pop.style.display = 'none';
+    }
+
+    document.addEventListener('click', (e) => {
+        const pop = document.getElementById('vocab-popover');
+        if (pop && pop.style.display === 'block' && !pop.contains(e.target)) {
+            hidePopover();
+        }
+    });
+
+    // ================= QUIZ LOGIC (5 คะแนน) =================
+    function renderQuiz() {
+        const list = document.getElementById('quizList');
+        list.innerHTML = '';
+        quizItems.forEach((item, idx) => {
+            const row = document.createElement('div');
+            row.className = 'q-row';
+            row.id = `qrow-${idx}`;
+            row.innerHTML = `
+                <div class="q-dish">
+                    <span class="q-num">${item.num}</span>
+                    <span>${item.dish}</span>
+                </div>
+                <select class="q-select" id="qsel-${idx}">
+                    <option value="">-- เลือกประเทศและเทศกาล --</option>
+                    ${quizOptions.map(opt => `<option value="${opt}">${opt}</option>`).join('')}
+                </select>
+            `;
+            list.appendChild(row);
+        });
+    }
+
+    function checkQuiz() {
+        let unanswered = 0;
+        let score = 0;
+
+        quizItems.forEach((item, idx) => {
+            const val = document.getElementById(`qsel-${idx}`).value;
+            if (!val) unanswered++;
+        });
+
+        if (unanswered > 0) {
+            Swal.fire('ยังตอบไม่ครบ!', `เหลืออีก ${unanswered} ข้อ กรุณาเลือกคำตอบให้ครบก่อนส่งนะครับ`, 'warning');
+            return;
+        }
+
+        quizItems.forEach((item, idx) => {
+            const sel = document.getElementById(`qsel-${idx}`);
+            const row = document.getElementById(`qrow-${idx}`);
+            row.classList.remove('correct', 'wrong');
+            if (sel.value === item.answer) {
+                score++;
+                row.classList.add('correct');
+            } else {
+                row.classList.add('wrong');
+            }
+            sel.disabled = true;
+        });
+
+        lastScore = score;
+        playSfx(score >= 3 ? 'win' : 'lose');
+        document.getElementById('submitQuizBtn').disabled = true;
+
+        if (!localStorage.getItem('studentId')) {
+            isPendingSubmit = true;
+            document.getElementById('modalTitle').innerText = '📝 ลงชื่อเพื่อบันทึกคะแนน';
+            document.getElementById('modalSub').innerText = `คุณได้ ${score}/5 คะแนน กรอกข้อมูลเพื่อส่งครู`;
+            document.getElementById('loginModal').classList.add('active');
+        } else {
+            submitScoreToSheet(score);
+        }
+    }
+
+    function resetQuiz() {
+        document.getElementById('scoreModal').classList.remove('active');
+        document.getElementById('submitQuizBtn').disabled = false;
+        renderQuiz();
+    }
+
+    function closeScoreModal() {
+        document.getElementById('scoreModal').classList.remove('active');
+    }
+
+    // ================= LOGIN & GOOGLE SHEETS =================
+    function formatRoomValue(val) {
+        const nums = val.match(/\d+/g);
+        if (nums && nums.length >= 2) return `ม.${nums[0]}/${nums[1]}`;
+        if (nums && nums.length === 1) return `ม.1/${nums[0]}`;
+        return val.trim();
+    }
+
+    document.getElementById('in_room').addEventListener('blur', function() {
+        this.value = formatRoomValue(this.value);
+    });
+
+    function checkLoginStatus() {
+        if (localStorage.getItem('studentId')) {
+            document.getElementById('userProfile').style.display = 'flex';
+            document.getElementById('p_name').innerText = localStorage.getItem('studentName');
+            document.getElementById('p_room').innerText = localStorage.getItem('studentRoom');
+            document.getElementById('p_id').innerText = localStorage.getItem('studentId');
+        } else {
+            document.getElementById('userProfile').style.display = 'none';
+            document.getElementById('loginModal').classList.add('active');
+        }
+    }
+
+    function switchAccount() {
+        Swal.fire({
+            title: '⚠️ สลับบัญชีผู้เล่น?',
+            text: 'ระบบจะล้างข้อมูลเดิมและเริ่มใหม่',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#f43f5e',
+            cancelButtonColor: '#94a3b8',
+            confirmButtonText: 'ตกลง',
+            cancelButtonText: 'ยกเลิก'
+        }).then((res) => {
+            if (res.isConfirmed) {
+                localStorage.clear();
+                isPendingSubmit = false;
+                document.getElementById('userProfile').style.display = 'none';
+                document.getElementById('in_name').value = '';
+                document.getElementById('in_room').value = '';
+                document.getElementById('in_id').value = '';
+                document.getElementById('modalTitle').innerText = '🔄 ลงชื่อบัญชีใหม่';
+                document.getElementById('modalSub').innerText = 'กรอกข้อมูลนักเรียนคนใหม่เพื่อเริ่มเรียน';
+                document.getElementById('loginModal').classList.add('active');
+            }
+        });
+    }
+
+    function confirmUser() {
+        const n = document.getElementById('in_name').value.trim();
+        const r = formatRoomValue(document.getElementById('in_room').value);
+        document.getElementById('in_room').value = r;
+        const id = document.getElementById('in_id').value.trim();
+
+        if (!n || !r || id.length !== 5) {
+            Swal.fire('ข้อมูลไม่ครบ!', 'กรุณากรอกชื่อ ห้อง และรหัสนักเรียน 5 หลัก', 'warning');
+            return;
+        }
+
+        localStorage.setItem('studentName', n);
+        localStorage.setItem('studentRoom', r);
+        localStorage.setItem('studentId', id);
+
+        document.getElementById('loginModal').classList.remove('active');
+        document.getElementById('userProfile').style.display = 'flex';
+        document.getElementById('p_name').innerText = n;
+        document.getElementById('p_room').innerText = r;
+        document.getElementById('p_id').innerText = id;
+
+        if (isPendingSubmit) {
+            isPendingSubmit = false;
+            submitScoreToSheet(lastScore);
+        }
+    }
+
+    function submitScoreToSheet(score) {
+        document.getElementById('scoreModal').classList.add('active');
+        document.getElementById('finalScoreText').innerText = score;
+        const stat = document.getElementById('saveStatus');
+        const playAgainBtn = document.getElementById('playAgainBtn');
+
+        playAgainBtn.disabled = true;
+
+        if (typeof QUIZ_CONFIG === 'undefined' || !QUIZ_CONFIG.SCRIPT_URL) {
+            stat.innerText = '❌ ไม่พบไฟล์ตั้งค่า (quiz-config.js)';
+            stat.style.color = '#b91c1c';
+            playAgainBtn.disabled = false;
+            return;
+        }
+
+        stat.innerText = '⏳ กำลังบันทึกคะแนนลงระบบ...';
+        stat.style.color = '#d97706';
+
+        fetch(QUIZ_CONFIG.SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            body: JSON.stringify({
+                name: localStorage.getItem('studentName'),
+                room: localStorage.getItem('studentRoom'),
+                studentId: "'" + localStorage.getItem('studentId'),
+                lesson: TOPIC_NAME,
+                score: score,
+                maxScore: quizItems.length
+            })
+        }).catch(e => console.error(e));
+
+        setTimeout(() => {
+            stat.innerText = '✅ บันทึกคะแนนลงระบบเรียบร้อย!';
+            stat.style.color = '#15803d';
+            playAgainBtn.disabled = false;
+        }, 1500);
+    }
+</script>
+</body>
+</html>

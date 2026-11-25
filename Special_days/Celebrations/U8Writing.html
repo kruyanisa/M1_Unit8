@@ -130,57 +130,6 @@
             outline: none;
         }
 
-        /* Translation Toggle & Box */
-        .trans-bar {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 12px;
-        }
-
-        .btn-trans {
-            font-family: 'Prompt', sans-serif;
-            font-size: 13px;
-            font-weight: 700;
-            padding: 7px 16px;
-            border-radius: 14px;
-            border: 2px solid #cbd5e1;
-            background: #f8fafc;
-            color: #475569;
-            cursor: pointer;
-            box-shadow: 0 3px 0 #cbd5e1;
-            transition: 0.15s;
-        }
-
-        .btn-trans:active { transform: translateY(2px); box-shadow: none; }
-
-        .btn-trans.active {
-            background: #dcfce7;
-            border-color: var(--emerald);
-            color: #065f46;
-            box-shadow: 0 3px 0 var(--emerald-dark);
-        }
-
-        .thai-box {
-            display: none;
-            background: #f0fdf4;
-            border: 2px solid #86efac;
-            border-radius: 16px;
-            padding: 12px 14px;
-            margin-bottom: 14px;
-            font-size: 15px;
-            line-height: 1.75;
-            color: #065f46;
-            font-weight: 600;
-            animation: fadeIn 0.2s ease;
-        }
-
-        .thai-box.show { display: block; }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-4px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
         /* Sticky Word Bank */
         .word-bank-wrap {
             position: sticky;
@@ -191,7 +140,7 @@
             border: 2px solid #c7d2fe;
             border-radius: 18px;
             padding: 12px;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
             box-shadow: 0 6px 16px rgba(79, 70, 229, 0.1);
         }
 
@@ -199,11 +148,32 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
             margin-bottom: 8px;
             font-family: 'Prompt', sans-serif;
             font-size: 12px;
             font-weight: 700;
             color: #4338ca;
+        }
+
+        .btn-trans {
+            font-family: 'Prompt', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 10px;
+            border: 2px solid #cbd5e1;
+            background: #f8fafc;
+            color: #475569;
+            cursor: pointer;
+            transition: 0.15s;
+        }
+
+        .btn-trans.active {
+            background: #dcfce7;
+            border-color: var(--emerald);
+            color: #065f46;
         }
 
         .word-bank {
@@ -238,15 +208,53 @@
             cursor: default;
         }
 
-        /* Passage Text */
+        /* Passage Text (Sentence by Sentence) */
         .passage-box {
             background: #f8fafc;
             border: 2px solid #e2e8f0;
             border-radius: 18px;
-            padding: 16px 14px;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .sentence-block {
+            padding-bottom: 8px;
+            border-bottom: 1px dashed #e2e8f0;
+        }
+        .sentence-block:last-child {
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .en-line {
             font-size: clamp(16px, 4.2vw, 18px);
-            line-height: 2.3;
+            line-height: 2.15;
             color: var(--ink);
+        }
+
+        .th-line {
+            display: none;
+            margin-top: 2px;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #0f766e;
+            font-weight: 600;
+            background: #f0fdf4;
+            padding: 4px 10px;
+            border-radius: 8px;
+            border-left: 3px solid var(--emerald);
+        }
+
+        .show-thai .th-line {
+            display: block;
+            animation: fadeIn 0.2s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-2px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .blank-slot {
@@ -396,21 +404,14 @@
         <!-- Sticky Word Bank -->
         <div class="word-bank-wrap">
             <div class="bank-head">
-                <span>📦 คลังคำศัพท์ (แตะเพื่อเติมลงช่องสีส้ม)</span>
-                <span id="filledCount">0 / 9</span>
+                <span>📦 คลังคำศัพท์ (<span id="filledCount">0 / 9</span>)</span>
+                <button type="button" id="btnTrans" class="btn-trans" onclick="toggleThai()">🇹🇭 คำแปลไทย: ปิด</button>
             </div>
             <div class="word-bank" id="wordBank"></div>
         </div>
 
-        <!-- Text with 9 Blanks -->
+        <!-- Text with 9 Blanks & Interlinear Thai -->
         <div class="passage-box" id="passageBox"></div>
-        <!-- Toggle Thai Translation -->
-        <div class="trans-bar" style="margin-top: 14px;">
-            <button type="button" id="btnTrans" class="btn-trans" onclick="toggleThai()">🇹🇭 คำแปลไทย: ปิด</button>
-        </div>
-        <div id="thaiBox" class="thai-box">
-            🇹🇭 <b>คำแปล:</b> เมื่อปีที่แล้ว ครอบครัวของฉันและฉันอยู่ที่ประเทศอังกฤษในวันที่ 5 พฤศจิกายน และได้ชมงานเฉลิมฉลองคืนกองไฟ (Bonfire Night) งานนั้นยอดเยี่ยมมาก ผู้คนจุดกองไฟและจุดพลุ มันน่าตื่นเต้นมากที่ได้เฝ้าดูท้องฟ้าสว่างไสวไปด้วยสีสันต่างๆ มีร้านค้าแผงลอยมากมาย และพวกเราได้กินอาหารพิเศษอย่างมันฝรั่งอบ พวกเรามีช่วงเวลาที่ยอดเยี่ยมมาก!
-        </div>
 
         <button id="btnSubmit" class="btn-primary" onclick="handleSubmit()">✅ ตรวจคำตอบและส่งคะแนน</button>
     </div>
@@ -445,17 +446,38 @@
     const wordList = ["special", "saw", "were", "on", "lit", "great", "set off", "stalls", "light"];
     const correctAnswers = ["on", "saw", "were", "lit", "set off", "light", "stalls", "special", "great"];
 
-    const textParts = [
-        "Last year my family and I were in England ",
-        " 5th November and ",
-        " the celebrations for Bonfire Night. They ",
-        " brilliant. People ",
-        " fires and ",
-        " fireworks. It was really exciting watching the sky ",
-        " up in different colours. There were different ",
-        " and we ate ",
-        " food like baked potatoes. We had a ",
-        " time!"
+    // แบ่งประโยคพร้อมคำแปลใต้บรรทัด
+    const sentences = [
+        {
+            parts: ["Last year my family and I were in England ", " 5th November and ", " the celebrations for Bonfire Night."],
+            blanks: [0, 1],
+            thai: "เมื่อปีที่แล้ว ครอบครัวของฉันและฉันอยู่ที่ประเทศอังกฤษในวันที่ 5 พฤศจิกายน และได้ชมงานเฉลิมฉลองคืนกองไฟ (Bonfire Night)"
+        },
+        {
+            parts: ["They ", " brilliant."],
+            blanks: [2],
+            thai: "งานนั้นยอดเยี่ยมมาก"
+        },
+        {
+            parts: ["People ", " fires and ", " fireworks."],
+            blanks: [3, 4],
+            thai: "ผู้คนจุดกองไฟและจุดพลุ"
+        },
+        {
+            parts: ["It was really exciting watching the sky ", " up in different colours."],
+            blanks: [5],
+            thai: "มันน่าตื่นเต้นมากที่ได้เฝ้าดูท้องฟ้าสว่างไสวไปด้วยสีสันต่างๆ"
+        },
+        {
+            parts: ["There were different ", " and we ate ", " food like baked potatoes."],
+            blanks: [6, 7],
+            thai: "มีร้านค้าแผงลอยมากมาย และพวกเราได้กินอาหารพิเศษอย่างมันฝรั่งอบ"
+        },
+        {
+            parts: ["We had a ", " time!"],
+            blanks: [8],
+            thai: "พวกเรามีช่วงเวลาที่ยอดเยี่ยมมาก!"
+        }
     ];
 
     let slotValues = Array(correctAnswers.length).fill(null);
@@ -506,9 +528,9 @@
 
     function toggleThai() {
         playSFX('tap');
-        const box = document.getElementById('thaiBox');
+        const box = document.getElementById('passageBox');
         const btn = document.getElementById('btnTrans');
-        const isOn = box.classList.toggle('show');
+        const isOn = box.classList.toggle('show-thai');
         btn.classList.toggle('active', isOn);
         btn.innerText = isOn ? '🇹🇭 คำแปลไทย: เปิด' : '🇹🇭 คำแปลไทย: ปิด';
     }
@@ -544,27 +566,43 @@
         const filled = slotValues.filter(v => v !== null).length;
         document.getElementById('filledCount').innerText = `${filled} / ${correctAnswers.length}`;
 
-        // 3. Render Passage (ไม่แสดงเฉลย โชว์แค่ถูก/ผิด)
+        // 3. Render Passage (Sentence by Sentence + Thai below each)
         const box = document.getElementById('passageBox');
         box.innerHTML = '';
-        textParts.forEach((part, idx) => {
-            box.appendChild(document.createTextNode(part));
-            if (idx < correctAnswers.length) {
-                const slot = document.createElement('span');
-                const val = slotValues[idx];
-                let cls = 'blank-slot';
-                if (!isGraded && idx === activeSlot) cls += ' active-slot';
-                if (val) cls += ' filled';
+        sentences.forEach(s => {
+            const block = document.createElement('div');
+            block.className = 'sentence-block';
 
-                if (isGraded) {
-                    cls += (val === correctAnswers[idx]) ? ' correct' : ' wrong';
+            const enLine = document.createElement('div');
+            enLine.className = 'en-line';
+
+            s.parts.forEach((part, pIdx) => {
+                enLine.appendChild(document.createTextNode(part));
+                if (pIdx < s.blanks.length) {
+                    const bIdx = s.blanks[pIdx];
+                    const slot = document.createElement('span');
+                    const val = slotValues[bIdx];
+                    let cls = 'blank-slot';
+                    if (!isGraded && bIdx === activeSlot) cls += ' active-slot';
+                    if (val) cls += ' filled';
+                    if (isGraded) {
+                        cls += (val === correctAnswers[bIdx]) ? ' correct' : ' wrong';
+                    }
+
+                    slot.className = cls;
+                    slot.innerText = val ? val : `${bIdx + 1}`;
+                    slot.onclick = () => clickSlot(bIdx);
+                    enLine.appendChild(slot);
                 }
+            });
 
-                slot.className = cls;
-                slot.innerText = val ? val : `${idx + 1}`;
-                slot.onclick = () => clickSlot(idx);
-                box.appendChild(slot);
-            }
+            const thLine = document.createElement('div');
+            thLine.className = 'th-line';
+            thLine.innerText = s.thai;
+
+            block.appendChild(enLine);
+            block.appendChild(thLine);
+            box.appendChild(block);
         });
     }
 

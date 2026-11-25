@@ -16,7 +16,6 @@
             --rose-dark: #be123c;
             --mint: #10b981;
             --mint-dark: #059669;
-            --cream: #fffbeb;
             --ink: #1e293b;
         }
 
@@ -237,7 +236,6 @@
         .sub-overlay.pos-bottom { bottom: 12px; top: auto; }
         .sub-overlay.pos-top { top: 12px; bottom: auto; }
 
-        /* กันซับชนปุ่ม Exit เมื่อเปิดเต็มจอ */
         .stage-container.pseudo-fs .sub-overlay.pos-top,
         .stage-container:fullscreen .sub-overlay.pos-top,
         .stage-container:-webkit-full-screen .sub-overlay.pos-top {
@@ -638,14 +636,121 @@
 <script>
     const TOPIC_NAME = 'ม.1 Unit 8 Festive food Listen and Read';
 
+    // ฝังข้อมูลซับทั้ง 6 เรื่องไว้ในไฟล์เดียว (ใช้งานได้ทันทีทั้งในเครื่องและบน GitHub)
+    const EMBEDDED_SUBS = {
+        intro: [
+            { start: 0.312, end: 10.616, words: [
+                {word:"Exotic",start:0.312,end:0.993},{word:"dishes",start:1.194,end:1.675},{word:"In",start:3.078,end:3.158},
+                {word:"most",start:3.319,end:3.619},{word:"cultures,",start:3.72,end:4.221},{word:"food",start:4.542,end:4.842},
+                {word:"is",start:4.963,end:5.043},{word:"an",start:5.083,end:5.143},{word:"essential",start:5.203,end:5.845},
+                {word:"part",start:5.925,end:6.186},{word:"of",start:6.266,end:6.326},{word:"any",start:6.767,end:6.927},
+                {word:"celebration",start:6.987,end:7.669},{word:"and",start:8.13,end:8.25},{word:"a",start:8.291,end:8.311},
+                {word:"chance",start:8.391,end:8.732},{word:"to",start:8.772,end:8.832},{word:"cook",start:8.872,end:9.072},
+                {word:"something",start:9.113,end:9.473},{word:"really",start:9.754,end:10.095},{word:"special.",start:10.155,end:10.616}
+            ]},
+            { start: 11.598, end: 20.359, words: [
+                {word:"If",start:11.598,end:11.679},{word:"you",start:11.719,end:11.899},{word:"feel",start:11.939,end:12.12},
+                {word:"like",start:12.16,end:12.34},{word:"something",start:12.4,end:12.761},{word:"a",start:12.861,end:12.922},
+                {word:"little",start:13.082,end:13.423},{word:"different",start:13.483,end:13.824},{word:"for",start:13.844,end:13.984},
+                {word:"dinner",start:14.004,end:14.225},{word:"tonight,",start:14.245,end:14.585},{word:"take",start:14.926,end:15.187},
+                {word:"inspiration",start:15.327,end:16.049},{word:"from",start:16.149,end:16.31},{word:"these",start:16.35,end:16.53},
+                {word:"exotic",start:16.67,end:17.252},{word:"dishes",start:17.332,end:17.673},{word:"from",start:17.973,end:18.134},
+                {word:"all",start:18.575,end:18.735},{word:"four",start:18.856,end:19.136},{word:"corners",start:19.236,end:19.637},
+                {word:"of",start:19.758,end:19.838},{word:"the",start:19.898,end:19.978},{word:"world.",start:20.038,end:20.359}
+            ]}
+        ],
+        usa: [
+            { start: 0.573, end: 10.429, words: [
+                {word:"USA",start:0.573,end:1.396},{word:"Thanksgiving",start:2.239,end:3.102},{word:"People",start:4.046,end:4.447},
+                {word:"have",start:4.487,end:4.788},{word:"a",start:4.869,end:4.909},{word:"typical",start:5.029,end:5.491},
+                {word:"dish",start:5.551,end:5.852},{word:"of",start:6.254,end:6.334},{word:"roast",start:6.454,end:6.795},
+                {word:"turkey",start:6.896,end:7.418},{word:"with",start:7.578,end:7.739},{word:"potatoes,",start:7.799,end:8.582},
+                {word:"onions",start:9.024,end:9.485},{word:"and",start:9.686,end:9.806},{word:"carrots.",start:9.907,end:10.429}
+            ]},
+            { start: 11.171, end: 13.761, words: [
+                {word:"For",start:11.171,end:11.352},{word:"dessert,",start:11.412,end:11.994},{word:"they",start:12.295,end:12.476},
+                {word:"have",start:12.536,end:12.757},{word:"pumpkin",start:12.857,end:13.319},{word:"pie.",start:13.379,end:13.761}
+            ]}
+        ],
+        indonesia: [
+            { start: 0.312, end: 11.791, words: [
+                {word:"Indonesia",start:0.312,end:1.095},{word:"–",start:1.115,end:1.135},{word:"Eid",start:1.636,end:1.917},
+                {word:"The",start:2.76,end:2.881},{word:"Indonesians",start:3.061,end:3.864},{word:"celebrate",start:4.065,end:4.586},
+                {word:"the",start:4.626,end:4.747},{word:"end",start:4.988,end:5.208},{word:"of",start:5.269,end:5.329},
+                {word:"the",start:5.369,end:5.489},{word:"holy",start:5.61,end:5.931},{word:"month",start:5.991,end:6.212},
+                {word:"of",start:6.252,end:6.292},{word:"Ramadan",start:6.332,end:6.874},{word:"by",start:7.195,end:7.356},
+                {word:"eating",start:7.556,end:7.918},{word:"dishes",start:8.038,end:8.459},{word:"of",start:8.54,end:8.6},
+                {word:"chicken,",start:8.76,end:9.162},{word:"lamb",start:9.503,end:9.884},{word:"or",start:10.065,end:10.145},
+                {word:"beef,",start:10.225,end:10.526},{word:"but",start:10.807,end:10.948},{word:"never",start:11.108,end:11.389},
+                {word:"fish.",start:11.449,end:11.791}
+            ]},
+            { start: 12.493, end: 14.48, words: [
+                {word:"For",start:12.493,end:12.633},{word:"dessert,",start:12.674,end:13.135},{word:"they",start:13.195,end:13.336},
+                {word:"often",start:13.496,end:13.757},{word:"have",start:13.837,end:14.078},{word:"cake.",start:14.199,end:14.48}
+            ]}
+        ],
+        iceland: [
+            { start: 0.473, end: 2.703, words: [
+                {word:"Iceland,",start:0.473,end:0.995},{word:"midwinter",start:1.397,end:2.12},{word:"feast.",start:2.22,end:2.703}
+            ]},
+            { start: 3.245, end: 7.784, words: [
+                {word:"In",start:3.245,end:3.325},{word:"Iceland,",start:3.486,end:3.948},{word:"people",start:4.229,end:4.591},
+                {word:"celebrate",start:4.651,end:5.133},{word:"midwinter",start:5.253,end:5.836},{word:"by",start:5.896,end:6.057},
+                {word:"eating",start:6.198,end:6.499},{word:"meat",start:6.619,end:6.88},{word:"and",start:7.021,end:7.122},
+                {word:"sausages.",start:7.222,end:7.784}
+            ]},
+            { start: 8.226, end: 11.36, words: [
+                {word:"They",start:8.226,end:8.367},{word:"sometimes",start:8.407,end:8.869},{word:"eat",start:8.949,end:9.07},
+                {word:"fish",start:9.17,end:9.492},{word:"with",start:9.552,end:9.693},{word:"bread",start:9.773,end:10.094},
+                {word:"and",start:10.135,end:10.235},{word:"potatoes",start:10.275,end:10.938},{word:"as",start:11.018,end:11.079},
+                {word:"well.",start:11.119,end:11.36}
+            ]}
+        ],
+        germany: [
+            { start: 0.431, end: 1.051, words: [{word:"Germany.",start:0.431,end:1.051}] },
+            { start: 1.912, end: 2.892, words: [{word:"Martinstag.",start:1.912,end:2.892}] },
+            { start: 3.633, end: 6.134, words: [
+                {word:"The",start:3.633,end:3.753},{word:"symbol",start:3.853,end:4.333},{word:"of",start:4.373,end:4.433},
+                {word:"Martinstag",start:4.493,end:5.373},{word:"is",start:5.513,end:5.613},{word:"a",start:5.654,end:5.674},
+                {word:"goose.",start:5.734,end:6.134}
+            ]},
+            { start: 6.914, end: 11.096, words: [
+                {word:"People",start:6.914,end:7.314},{word:"roast",start:7.414,end:7.754},{word:"goose",start:7.874,end:8.235},
+                {word:"and",start:8.335,end:8.455},{word:"serve",start:8.575,end:8.855},{word:"it",start:8.875,end:8.975},
+                {word:"with",start:9.015,end:9.155},{word:"potatoes",start:9.215,end:9.935},{word:"and",start:10.055,end:10.176},
+                {word:"red",start:10.316,end:10.536},{word:"cabbage.",start:10.636,end:11.096}
+            ]}
+        ],
+        japan: [
+            { start: 4.339, end: 12.014, words: [
+                {word:"When",start:4.339,end:4.58},{word:"the",start:4.64,end:4.74},{word:"cherry",start:4.84,end:5.241},
+                {word:"blossom",start:5.301,end:5.762},{word:"tree",start:5.842,end:6.123},{word:"flowers,",start:6.303,end:6.844},
+                {word:"the",start:7.305,end:7.425},{word:"Japanese",start:7.506,end:8.147},{word:"celebrate",start:8.427,end:9.028},
+                {word:"with",start:9.149,end:9.309},{word:"picnics",start:9.449,end:9.99},{word:"or",start:10.171,end:10.271},
+                {word:"parties",start:10.391,end:10.952},{word:"under",start:11.253,end:11.533},{word:"a",start:11.573,end:11.614},
+                {word:"tree.",start:11.714,end:12.014}
+            ]},
+            { start: 12.856, end: 17.184, words: [
+                {word:"A",start:12.856,end:12.876},{word:"popular",start:13.016,end:13.557},{word:"dish",start:13.617,end:13.918},
+                {word:"is",start:14.158,end:14.259},{word:"sushi",start:14.419,end:14.94},{word:"made",start:15.361,end:15.641},
+                {word:"of",start:15.721,end:15.802},{word:"fish",start:15.962,end:16.263},{word:"and",start:16.563,end:16.723},
+                {word:"rice.",start:16.824,end:17.184}
+            ]},
+            { start: 17.826, end: 21.833, words: [
+                {word:"They",start:17.826,end:18.006},{word:"also",start:18.186,end:18.527},{word:"drink",start:18.607,end:18.908},
+                {word:"a",start:19.108,end:19.148},{word:"special",start:19.308,end:19.85},{word:"drink",start:19.95,end:20.29},
+                {word:"called",start:20.671,end:21.032},{word:"sake.",start:21.312,end:21.833}
+            ]}
+        ]
+    };
+
     const stories = [
         {
             id: 'intro',
             label: '🌍 Intro',
             img: 'ExoticDishes.jpg',
             audio: 'ExoticDishes.mp3',
-            json: 'ExoticDishes.json',
-            subPos: 'pos-bottom', // Intro ขึ้นด้านล่าง ไม่บังหัวข้อ EXOTIC DISHES
+            subPos: 'pos-bottom',
             th: '<strong>อาหารแปลกใหม่จากทั่วโลก:</strong> ในวัฒนธรรมส่วนใหญ่ อาหารเป็นส่วนสำคัญของการเฉลิมฉลอง และเป็นโอกาสที่จะได้ทำเมนูสุดพิเศษ หากคืนนี้คุณอยากลองมื้อเย็นที่ต่างออกไป ลองหาแรงบันดาลใจจากเมนูสุดพิเศษจากทั่วทุกมุมโลกเหล่านี้ดูสิ!'
         },
         {
@@ -653,8 +758,7 @@
             label: '🇺🇸 USA',
             img: 'Thanksgiving.jpg',
             audio: 'Thanksgiving.mp3',
-            json: 'Thanksgiving.json',
-            subPos: 'pos-top', // ขึ้นด้านบน ไม่บังอาหาร
+            subPos: 'pos-top',
             th: '<strong>สหรัฐอเมริกา - วันขอบคุณพระเจ้า (Thanksgiving):</strong> ผู้คนนิยมรับประทานไก่งวงอบคู่กับมันฝรั่ง หัวหอม และแครอท ส่วนของหวานจะเป็นพายฟักทอง'
         },
         {
@@ -662,7 +766,6 @@
             label: '🇮🇩 Indonesia',
             img: 'Eid.jpg',
             audio: 'Eid.mp3',
-            json: 'Eid.json',
             subPos: 'pos-top',
             th: '<strong>อินโดนีเซีย - เทศกาลอีด (Eid):</strong> ชาวอินโดนีเซียเฉลิมฉลองการสิ้นสุดเดือนอันศักดิ์สิทธิ์รอมฎอนด้วยการรับประทานเมนูไก่ เนื้อแกะ หรือเนื้อวัว แต่จะไม่กินปลาเลย ส่วนของหวานมักจะเป็นเค้ก'
         },
@@ -671,7 +774,6 @@
             label: '🇮🇸 Iceland',
             img: 'Midwinter.jpg',
             audio: 'Midwinter.mp3',
-            json: 'Midwinter.json',
             subPos: 'pos-top',
             th: '<strong>ไอซ์แลนด์ - งานเลี้ยงกลางฤดูหนาว (Midwinter Feast):</strong> ในประเทศไอซ์แลนด์ ผู้คนฉลองกลางฤดูหนาวด้วยการกินเนื้อสัตว์และไส้กรอก บางครั้งก็กินปลาคู่กับขนมปังและมันฝรั่งด้วย'
         },
@@ -680,7 +782,6 @@
             label: '🇩🇪 Germany',
             img: 'Martinstag.jpg',
             audio: 'Martinstag.mp3',
-            json: 'Martinstag.json',
             subPos: 'pos-top',
             th: '<strong>เยอรมนี - เทศกาลมาร์ตินสทาก (Martinstag):</strong> สัญลักษณ์ของเทศกาลมาร์ตินสทากคือห่าน ผู้คนจะนำห่านมาอบและเสิร์ฟคู่กับมันฝรั่งและกะหล่ำปลีสีแดง'
         },
@@ -689,7 +790,6 @@
             label: '🇯🇵 Japan',
             img: 'CherryBlossom.jpg',
             audio: 'CherryBlossom.mp3',
-            json: 'CherryBlossom.json',
             subPos: 'pos-top',
             th: '<strong>ญี่ปุ่น - เทศกาลชมดอกซากุระ (Cherry Blossom Viewing):</strong> เมื่อต้นซากุระออกดอก ชาวญี่ปุ่นจะเฉลิมฉลองด้วยการปิกนิกหรือจัดปาร์ตี้ใต้ต้นไม้ เมนูยอดนิยมคือซูชิซึ่งทำจากปลาและข้าว และยังมีเครื่องดื่มพิเศษเรียกว่าสาเก'
         }
@@ -744,11 +844,11 @@
 
     let currentIdx = 0;
     let currentSegments = [];
+    let lastRenderedSegIdx = -1;
     let isCCOn = true;
     let isThaiOn = false;
     let isPendingSubmit = false;
     let lastScore = 0;
-    const jsonCache = {};
 
     const audio = document.getElementById('audioPlayer');
     const stageContainer = document.getElementById('stageContainer');
@@ -759,7 +859,6 @@
     const playPauseBtn = document.getElementById('playPauseBtn');
     const thBox = document.getElementById('thBox');
 
-    // Web Audio SFX
     function playSfx(type) {
         try {
             const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -796,8 +895,9 @@
         });
     }
 
-    async function loadStory(idx) {
+    function loadStory(idx) {
         currentIdx = idx;
+        lastRenderedSegIdx = -1;
         hidePopover();
         audio.pause();
         playPauseBtn.innerText = '▶️ Play';
@@ -805,6 +905,8 @@
         const st = stories[idx];
         stageImg.src = st.img;
         audio.src = st.audio;
+        currentSegments = EMBEDDED_SUBS[st.id] || [];
+
         subOverlay.className = 'sub-overlay ' + st.subPos + (isCCOn ? '' : ' hidden');
         subOverlay.innerHTML = 'กดปุ่ม ▶️ Play เพื่อเริ่มฟัง';
         thBox.innerHTML = st.th;
@@ -812,18 +914,6 @@
         document.getElementById('prevBtn').disabled = idx === 0;
         document.getElementById('nextBtn').disabled = idx === stories.length - 1;
         renderTabs();
-
-        // โหลดไฟล์ JSON timestamp
-        if (!jsonCache[st.json]) {
-            try {
-                const res = await fetch(st.json);
-                const data = await res.json();
-                jsonCache[st.json] = data.segments || [];
-            } catch (e) {
-                jsonCache[st.json] = [];
-            }
-        }
-        currentSegments = jsonCache[st.json];
     }
 
     function changeStory(step) {
@@ -867,9 +957,7 @@
 
     audio.addEventListener('play', () => playPauseBtn.innerText = '⏸️ Pause');
     audio.addEventListener('pause', () => playPauseBtn.innerText = '▶️ Play');
-    audio.addEventListener('ended', () => {
-        playPauseBtn.innerText = '▶️ Play';
-    });
+    audio.addEventListener('ended', () => playPauseBtn.innerText = '▶️ Play');
 
     audio.addEventListener('loadedmetadata', () => {
         seekBar.max = audio.duration || 100;
@@ -884,6 +972,7 @@
 
     seekBar.addEventListener('input', () => {
         audio.currentTime = parseFloat(seekBar.value);
+        renderSubtitle(audio.currentTime);
     });
 
     function fmtTime(sec) {
@@ -897,14 +986,11 @@
         timeTxt.innerText = `${fmtTime(audio.currentTime)} / ${fmtTime(audio.duration)}`;
     }
 
-    let lastRenderedSegIdx = -1;
-
     function renderSubtitle(t) {
         if (!currentSegments.length) return;
 
         let segIdx = currentSegments.findIndex(seg => t >= seg.start - 0.15 && t <= seg.end + 0.35);
         if (segIdx === -1) {
-            // คงประโยคล่าสุดไว้ถ้ายังไม่จบ
             if (t < currentSegments[0].start) {
                 subOverlay.innerHTML = '🎧 กำลังเริ่มฟัง...';
                 lastRenderedSegIdx = -1;

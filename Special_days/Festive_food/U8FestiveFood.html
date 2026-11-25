@@ -597,6 +597,7 @@
 
         <div class="quiz-actions">
             <button id="submitQuizBtn" class="btn-primary" onclick="checkQuiz()">✅ ตรวจคำตอบ & ส่งคะแนน</button>
+            <button id="inlineRetryBtn" class="btn-primary" style="display:none; background:var(--coral); box-shadow:0 4px 0 var(--coral-dark);" onclick="resetQuiz()">🔄 Practice Again</button>
         </div>
     </div>
 
@@ -796,34 +797,35 @@
     ];
 
     const vocabDict = {
+        "cook": "ทำอาหาร, ปรุงอาหาร",
+        "banana": "กล้วย",
+        "chicken": "เนื้อไก่, ไก่",
+        "culture": "วัฒนธรรม",
         "cultures": "วัฒนธรรม",
-        "essential": "สำคัญ, จำเป็น",
-        "celebration": "การเฉลิมฉลอง",
-        "chance": "โอกาส",
-        "inspiration": "แรงบันดาลใจ",
-        "exotic": "แปลกใหม่, ต่างแดน",
+        "dish": "จานอาหาร, เมนูอาหาร",
         "dishes": "จานอาหาร, เมนูอาหาร",
-        "typical": "ตามแบบฉบับ, เป็นประจำ",
-        "roast": "อบ, ย่าง",
-        "turkey": "ไก่งวง",
-        "dessert": "ของหวาน",
-        "pumpkin": "ฟักทอง",
-        "celebrate": "เฉลิมฉลอง",
-        "holy": "ศักดิ์สิทธิ์",
-        "lamb": "เนื้อแกะ",
-        "beef": "เนื้อวัว",
-        "midwinter": "กลางฤดูหนาว",
-        "sausages": "ไส้กรอก",
-        "symbol": "สัญลักษณ์",
+        "eid": "เทศกาลอีด (วันฉลองสิ้นสุดเดือนรอมฎอน)",
         "goose": "ห่าน",
-        "serve": "เสิร์ฟ",
-        "cabbage": "กะหล่ำปลี",
-        "cherry": "เชอร์รี่ / ซากุระ",
-        "blossom": "ดอกไม้บาน",
-        "picnics": "การปิกนิก",
-        "popular": "เป็นที่นิยม",
+        "iceland": "ประเทศไอซ์แลนด์",
+        "indonesia": "ประเทศอินโดนีเซีย",
+        "inspiration": "แรงบันดาลใจ",
+        "martinstag": "เทศกาลมาร์ตินสทาก (เยอรมนี)",
+        "midwinter": "กลางฤดูหนาว",
+        "milk": "นม",
+        "part": "ส่วน, ส่วนหนึ่ง",
+        "pie": "พาย",
+        "pumpkin": "ฟักทอง",
+        "ramadan": "เดือนรอมฎอน (เดือนถือศีลอด)",
+        "sake": "สาเก (เหล้าข้าวญี่ปุ่น)",
+        "sausage": "ไส้กรอก",
+        "sausages": "ไส้กรอก",
         "sushi": "ซูชิ",
-        "sake": "สาเก (เหล้าข้าวญี่ปุ่น)"
+        "thanksgiving": "วันขอบคุณพระเจ้า (สหรัฐอเมริกา)",
+        "turkey": "ไก่งวง",
+        "essential": "สำคัญมาก, จำเป็น",
+        "exotic": "แปลกใหม่, ต่างแดน",
+        "holy": "ศักดิ์สิทธิ์",
+        "typical": "ตามแบบฉบับ, เป็นประจำ"
     };
 
     const quizItems = [
@@ -1173,6 +1175,7 @@
     function resetQuiz() {
         document.getElementById('scoreModal').classList.remove('active');
         document.getElementById('submitQuizBtn').disabled = false;
+        document.getElementById('inlineRetryBtn').style.display = 'none';
         renderQuiz();
     }
 
@@ -1291,6 +1294,7 @@
             stat.innerText = '✅ บันทึกคะแนนลงระบบเรียบร้อย!';
             stat.style.color = '#15803d';
             playAgainBtn.disabled = false;
+            document.getElementById('inlineRetryBtn').style.display = 'inline-block';
         }, 1500);
     }
 </script>

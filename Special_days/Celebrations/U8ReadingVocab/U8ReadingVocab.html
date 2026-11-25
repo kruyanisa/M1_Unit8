@@ -152,7 +152,7 @@
         /* 3D Flip Card */
         .flip-wrap {
             perspective: 1000px;
-            height: 155px;
+            height: 170px;
             cursor: pointer;
         }
 
@@ -174,11 +174,10 @@
             backface-visibility: hidden;
             -webkit-backface-visibility: hidden;
             border-radius: 20px;
-            padding: 12px 10px;
+            overflow: hidden;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            justify-content: space-between;
             text-align: center;
             background: #ffffff;
             border: 3px solid #e2e8f0;
@@ -200,6 +199,17 @@
 
         .flip-wrap.learned .flip-front {
             background: var(--pastel-green-bg);
+        }
+
+        .card-body {
+            flex: 1;
+            width: 100%;
+            padding: 26px 10px 6px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
         }
 
         .pos-badge {
@@ -236,7 +246,6 @@
             font-weight: 700;
             color: var(--ink);
             line-height: 1.3;
-            margin-top: 8px;
         }
 
         .word-th {
@@ -244,17 +253,37 @@
             font-size: clamp(14px, 3.6vw, 16px);
             font-weight: 700;
             color: #9f1239;
-            line-height: 1.4;
-            margin-top: 6px;
+            line-height: 1.35;
         }
 
-        .tap-hint {
-            position: absolute;
-            bottom: 8px;
-            font-size: 11px;
+        .flip-hint {
+            font-size: 10.5px;
             font-weight: 600;
             color: #94a3b8;
+            margin-top: 4px;
         }
+
+        /* แถบสีส้มด้านล่างสำหรับกดฟังเสียง (ไม่พลิกการ์ด) */
+        .audio-bar {
+            width: 100%;
+            background: linear-gradient(90deg, #fb923c, #f97316);
+            color: #ffffff;
+            border: none;
+            padding: 8px 6px;
+            font-family: 'Prompt', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: filter 0.15s;
+        }
+
+        .audio-bar:hover { filter: brightness(1.06); }
+        .audio-bar:active { filter: brightness(0.92); }
+        .audio-bar .spk-icon { font-size: 18px; line-height: 1; }
 
         /* Sticky Bottom Bar */
         .sticky-bar {
@@ -368,7 +397,7 @@
     <div class="header-card">
         <div class="badge-unit">Unit 8a • Reading Vocabulary</div>
         <h1>🃏 Celebrations Flip Cards</h1>
-        <p class="sub-instruction">แตะการ์ดเพื่อฟังเสียงและพลิกดูคำแปล (การ์ดละ 1 คะแนน ครบ 34 คำแล้วกดส่งคะแนน)</p>
+        <p class="sub-instruction">แตะแถบสีส้มด้านล่างเพื่อฟังเสียง • แตะตัวคำศัพท์เพื่อพลิกดูคำแปล (การ์ดละ 1 คะแนน)</p>
         <div class="filter-tabs" id="filterTabs">
             <button class="f-tab active" onclick="setFilter('all', this)">ทั้งหมด (34)</button>
             <button class="f-tab" onclick="setFilter('v', this)">Verbs (2)</button>
@@ -403,7 +432,7 @@
     <div class="modal-overlay" id="scoreModal">
         <div class="modal-box">
             <h2 style="color:#9f1239; margin:0; font-family:'Prompt';">🎉 สรุปผลคะแนน</h2>
-            <p style="color:#64748b; font-weight:600; margin:6px 0 0 0;">คุณเปิดฟังคำศัพท์ไปแล้ว</p>
+            <p style="color:#64748b; font-weight:600; margin:6px 0 0 0;">คุณเปิดฝึกคำศัพท์ไปแล้ว</p>
             <span class="score-num"><span id="finalScoreText">0</span><span style="font-size:26px; color:#94a3b8;">/34</span></span>
             <div id="saveStatus" style="font-weight:700; font-size:14px; margin-bottom:14px; color:#15803d; min-height:20px;"></div>
             <button class="btn-primary" style="width:100%; background:var(--mint); box-shadow:0 4px 0 var(--mint-dark);" onclick="closeScoreModal()">👀 ทบทวนคำศัพท์ต่อ</button>
@@ -486,47 +515,47 @@
             wrap.className = 'flip-wrap'
                 + (learnedSet.has(item.id) ? ' learned' : '')
                 + (flippedSet.has(item.id) ? ' flipped' : '');
-            wrap.onclick = () => onCardClick(item, wrap);
+
+            // แตะส่วนการ์ดเพื่อพลิกดูคำแปล
+            wrap.onclick = () => onCardFlip(item, wrap);
 
             wrap.innerHTML = `
                 <div class="flip-inner">
                     <div class="flip-face flip-front">
-                        <span class="pos-badge">${item.pos}</span>
-                        <span class="check-badge">✅</span>
-                        <div class="word-en">${item.en}</div>
-                        <span class="tap-hint">🔊 แตะฟัง & พลิก</span>
+                        <div class="card-body">
+                            <span class="pos-badge">${item.pos}</span>
+                            <span class="check-badge">✅</span>
+                            <div class="word-en">${item.en}</div>
+                            <div class="flip-hint">🔄 แตะที่นี่เพื่อพลิกดูคำแปล</div>
+                        </div>
+                        <button type="button" class="audio-bar">
+                            <span class="spk-icon">🔊</span> ฟังเสียง
+                        </button>
                     </div>
                     <div class="flip-face flip-back">
-                        <span class="pos-badge">${item.pos}</span>
-                        <span class="check-badge">✅</span>
-                        <div class="word-th">${item.th}</div>
-                        <span class="tap-hint">🔄 แตะพลิกกลับ</span>
+                        <div class="card-body">
+                            <span class="pos-badge">${item.pos}</span>
+                            <span class="check-badge">✅</span>
+                            <div class="word-th">${item.th}</div>
+                            <div class="flip-hint">🔄 แตะที่นี่เพื่อพลิกกลับ</div>
+                        </div>
+                        <button type="button" class="audio-bar">
+                            <span class="spk-icon">🔊</span> ฟังเสียงอีกครั้ง
+                        </button>
                     </div>
                 </div>
             `;
+
+            // แตะแถบสีส้มด้านล่าง = เล่นเสียงอย่างเดียว (ไม่พลิกการ์ด)
+            wrap.querySelectorAll('.audio-bar').forEach(btn => {
+                btn.onclick = (e) => onAudioClick(e, item, wrap);
+            });
+
             grid.appendChild(wrap);
         });
     }
 
-    function onCardClick(item, wrapEl) {
-        // เล่นเสียงคำศัพท์ (หยุดเสียงเดิมก่อนเพื่อไม่ให้ตีกัน)
-        if (currentAudio) {
-            currentAudio.pause();
-            currentAudio.currentTime = 0;
-        }
-        currentAudio = new Audio(item.audio);
-        currentAudio.play().catch(() => {});
-
-        // พลิกการ์ด
-        if (flippedSet.has(item.id)) {
-            flippedSet.delete(item.id);
-            wrapEl.classList.remove('flipped');
-        } else {
-            flippedSet.add(item.id);
-            wrapEl.classList.add('flipped');
-        }
-
-        // บันทึกคะแนน + ไฮไลท์ขอบเขียวอ่อนพาสเทล
+    function markLearned(item, wrapEl) {
         if (!learnedSet.has(item.id)) {
             learnedSet.add(item.id);
             wrapEl.classList.add('learned');
@@ -534,23 +563,45 @@
         }
     }
 
+    function onAudioClick(e, item, wrapEl) {
+        e.stopPropagation(); // กันไม่ให้การ์ดพลิก
+        if (currentAudio) {
+            currentAudio.pause();
+            currentAudio.currentTime = 0;
+        }
+        currentAudio = new Audio(item.audio);
+        currentAudio.play().catch(() => {});
+        markLearned(item, wrapEl);
+    }
+
+    function onCardFlip(item, wrapEl) {
+        if (flippedSet.has(item.id)) {
+            flippedSet.delete(item.id);
+            wrapEl.classList.remove('flipped');
+        } else {
+            flippedSet.add(item.id);
+            wrapEl.classList.add('flipped');
+        }
+        markLearned(item, wrapEl);
+    }
+
     function handleSubmit() {
         const score = learnedSet.size;
         if (score === 0) {
-            Swal.fire('ยังไม่ได้เปิดการ์ดเลย!', 'กรุณาแตะฟังและพลิกการ์ดคำศัพท์ก่อนส่งคะแนนนะครับ', 'warning');
+            Swal.fire('ยังไม่ได้เปิดการ์ดเลย!', 'กรุณาแตะฟังเสียงหรือพลิกการ์ดคำศัพท์ก่อนส่งคะแนนนะครับ', 'warning');
             return;
         }
 
         if (score < vocabList.length) {
             Swal.fire({
                 icon: 'question',
-                title: `เปิดฟังไปแล้ว ${score} / ${vocabList.length} คำ`,
-                text: 'ยังฟังไม่ครบทุกคำ ต้องการส่งคะแนนเท่าที่ทำได้ตอนนี้เลยไหม?',
+                title: `ฝึกไปแล้ว ${score} / ${vocabList.length} คำ`,
+                text: 'ยังไม่ครบทุกคำ ต้องการส่งคะแนนเท่าที่ทำได้ตอนนี้เลยไหม?',
                 showCancelButton: true,
                 confirmButtonColor: '#f43f5e',
                 cancelButtonColor: '#94a3b8',
                 confirmButtonText: 'ส่งคะแนนเลย',
-                cancelButtonText: 'กลับไปฟังต่อ'
+                cancelButtonText: 'กลับไปฝึกต่อ'
             }).then(res => {
                 if (res.isConfirmed) proceedSubmit(score);
             });

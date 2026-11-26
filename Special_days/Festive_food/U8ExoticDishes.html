@@ -388,19 +388,19 @@
     const TOPIC_NAME = 'ม.1 Unit 8 Festive food Exotic Dishes';
 
     const baseQuestions = [
-        { img: 'roastturkey.jpg',  answer: 'roast turkey',          country: 'USA' },
-        { img: 'meatsausages.jpg', answer: 'meat & sausages',       country: 'Iceland' },
-        { img: 'roastgoose.jpg',   answer: 'roast goose',           country: 'Germany' },
-        { img: 'chickenLamb.jpg',  answer: 'chicken, lamb or beef', country: 'Indonesia' },
-        { img: 'sushi.jpg',        answer: 'sushi',                 country: 'Japan' }
+        { img: 'roastturkey.jpg',  answer: '(USA) roast turkey' },
+        { img: 'meatsausages.jpg', answer: '(Iceland) meat & sausages' },
+        { img: 'roastgoose.jpg',   answer: '(Germany) roast goose' },
+        { img: 'chickenLamb.jpg',  answer: '(Indonesia) chicken, lamb or beef' },
+        { img: 'sushi.jpg',        answer: '(Japan) sushi' }
     ];
 
     const allOptions = [
-        'roast turkey',
-        'meat & sausages',
-        'roast goose',
-        'chicken, lamb or beef',
-        'sushi'
+        '(USA) roast turkey',
+        '(Iceland) meat & sausages',
+        '(Germany) roast goose',
+        '(Indonesia) chicken, lamb or beef',
+        '(Japan) sushi'
     ];
 
     const letters = ['A', 'B', 'C', 'D', 'E'];
@@ -518,11 +518,11 @@
             score++;
             playSfx('correct');
             fb.className = 'feedback-bar ok';
-            fb.innerText = `✅ ถูกต้อง! ${q.answer} (${q.country})`;
+            fb.innerText = `✅ ถูกต้อง! ${q.answer}`;
         } else {
             playSfx('wrong');
             fb.className = 'feedback-bar no';
-            fb.innerText = `❌ ยังไม่ถูก! เฉลย: ${q.answer} (${q.country})`;
+            fb.innerText = `❌ ยังไม่ถูก! เฉลย: ${q.answer}`;
         }
 
         document.getElementById('progressFill').style.width = `${((currentIdx + 1) / questions.length) * 100}%`;

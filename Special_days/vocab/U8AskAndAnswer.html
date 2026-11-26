@@ -162,7 +162,7 @@
             width: 100%;
             height: 100%;
             object-fit: contain;
-            padding: 8px;
+            padding: 8px 8px 46px 8px;
         }
 
         .availability-badge {
@@ -189,41 +189,71 @@
             border: 2px solid #ef4444;
         }
 
-        .word-chip {
+        /* Clickable Word Chip with Audio */
+        .word-chip-btn {
             position: absolute;
             bottom: 10px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(15, 23, 42, 0.82);
+            background: #0f172a;
             color: #fff;
+            border: 2px solid #38bdf8;
             font-family: 'Prompt', sans-serif;
             font-size: 16px;
             font-weight: 700;
-            padding: 4px 16px;
+            padding: 6px 18px;
             border-radius: 999px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 10px rgba(15, 23, 42, 0.25);
+            transition: transform 0.12s;
         }
+        .word-chip-btn:active { transform: translateX(-50%) scale(0.95); }
 
-        /* Step Pill */
+        /* Step Box with Clear Highlight */
         .step-box {
-            background: #f0f9ff;
-            border: 2px solid #7dd3fc;
             border-radius: 18px;
-            padding: 14px;
+            padding: 16px;
             text-align: center;
             margin-bottom: 12px;
+            transition: 0.25s;
+        }
+
+        .step-box.mode-ask {
+            background: #eff6ff;
+            border: 3px solid #3b82f6;
+        }
+
+        .step-box.mode-answer {
+            background: #ecfdf5;
+            border: 3px solid #10b981;
         }
 
         .step-title {
+            display: inline-block;
             font-family: 'Prompt', sans-serif;
-            font-size: 16px;
+            font-size: clamp(16px, 4.2vw, 19px);
             font-weight: 700;
-            color: #0369a1;
-            margin-bottom: 6px;
+            padding: 6px 18px;
+            border-radius: 999px;
+            color: #fff;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+        }
+
+        .step-box.mode-ask .step-title {
+            background: linear-gradient(90deg, #2563eb, #0284c7);
+        }
+
+        .step-box.mode-answer .step-title {
+            background: linear-gradient(90deg, #059669, #10b981);
         }
 
         .step-guide {
-            font-size: 14px;
-            color: #475569;
+            font-size: 14.5px;
+            color: #334155;
             font-weight: 600;
             margin-bottom: 10px;
         }
@@ -363,30 +393,33 @@
         <div class="header-top">
             <div class="badge-unit">Unit 8b • Festive Food</div>
             <h1>🗣️ Ask & Answer Quiz</h1>
-            <p class="sub-note">ดูภาพและป้าย (มี/ไม่มี) แล้วพูด <strong>คำถาม ➔ คำตอบ</strong> (ไม่ดูใบ้ +2 / ดูใบ้ +1)</p>
+            <p class="sub-note">ดูภาพและป้าย (มี/ไม่มี) แล้วพูด <strong>คำถาม ➔ คำตอบ</strong> ครบ 14 คำ (ไม่ดูใบ้ +2 / ดูใบ้ +1)</p>
         </div>
 
         <div class="status-row">
-            <span id="progressTxt" style="color:#0369a1;">ข้อ 1 / 10</span>
+            <span id="progressTxt" style="color:#0369a1;">ข้อ 1 / 14</span>
             <div class="progress-track">
                 <div class="progress-fill" id="progressFill"></div>
             </div>
-            <span class="live-score">⭐ <span id="liveScore">0</span> / 20</span>
+            <span class="live-score">⭐ <span id="liveScore">0</span> / 28</span>
         </div>
 
         <div class="stage-box">
             <img id="foodImg" src="" alt="Food Item">
             <div id="availBadge" class="availability-badge yes">✅ มี (Yes)</div>
-            <div id="wordChip" class="word-chip">pineapples</div>
+            <button class="word-chip-btn" onclick="playWordAudio()" title="กดฟังเสียงคำศัพท์">
+                <span>🔊</span>
+                <span id="wordChip">pineapples</span>
+            </button>
         </div>
 
-        <div class="step-box">
-            <div class="step-title" id="stepTitle">ขั้นตอนที่ 1/2 : พูดประโยคคำถาม (Ask)</div>
+        <div class="step-box mode-ask" id="stepBox">
+            <div class="step-title" id="stepTitle">❓ ขั้นตอนที่ 1/2 : พูดประโยคคำถาม (Ask)</div>
             <div class="step-guide" id="stepGuide">ใช้ <strong>Is there any...? / Is there an...? / Are there any...?</strong></div>
 
             <div class="hint-box" id="hintBox">
                 <div id="hintText"></div>
-                <button class="btn-primary" style="margin-top:8px; padding:6px 14px; font-size:13px;" onclick="speakHint()">🔊 ฟังตัวอย่างเสียง</button>
+                <button class="btn-primary" style="margin-top:8px; padding:6px 14px; font-size:13px;" onclick="speakHint()">🔊 ฟังตัวอย่างประโยค</button>
             </div>
 
             <div class="controls-row">
@@ -418,8 +451,8 @@
     <div class="modal-overlay" id="scoreModal">
         <div class="modal-box">
             <h2 style="color:#0369a1; margin:0; font-family:'Prompt';">🎉 สรุปผลคะแนน</h2>
-            <p style="color:#64748b; font-weight:600; margin:6px 0 0 0; font-size:14px;">ฝึกถาม-ตอบ Ask & Answer</p>
-            <span class="score-num"><span id="finalScoreText">0</span><span style="font-size:26px; color:#94a3b8;">/20</span></span>
+            <p style="color:#64748b; font-weight:600; margin:6px 0 0 0; font-size:14px;">ฝึกถาม-ตอบ Ask & Answer (ครบ 14 คำ)</p>
+            <span class="score-num"><span id="finalScoreText">0</span><span style="font-size:26px; color:#94a3b8;">/28</span></span>
             <div id="saveStatus" style="font-weight:700; font-size:14px; margin-bottom:14px; color:#d97706; min-height:20px;"></div>
             <button id="playAgainBtn" class="btn-primary btn-mint" style="width:100%;" onclick="startQuiz()" disabled>🔄 เล่นใหม่อีกครั้ง</button>
         </div>
@@ -427,25 +460,31 @@
 
 <script>
     const TOPIC_NAME = 'ม.1 Unit 8 Festive food ask and answer';
-    const TOTAL_QUESTIONS = 10;
 
-    // 14 items from textbook Exercise 6
+    // All 14 items from textbook Exercise 6
     const allItems = [
-        { img: 'potatoes.jpg',   word: 'potatoes',   hasItem: false, q: 'Are there any potatoes?',   a: "No, there aren't.",  qGroups: [['are','there'], ['potato','potatoes']], aGroups: [['no'], ['aren','arent','not','there']] },
-        { img: 'orange.jpg',     word: 'orange',     hasItem: true,  q: 'Is there an orange?',       a: 'Yes, there is.',     qGroups: [['is','there'], ['orange','oranges']],   aGroups: [['yes','yeah'], ['is','there']] },
-        { img: 'pineapples.jpg', word: 'pineapples', hasItem: true,  q: 'Are there any pineapples?', a: 'Yes, there are.',    qGroups: [['are','there'], ['pineapple','pineapples']], aGroups: [['yes','yeah'], ['are','there']] },
-        { img: 'bread.jpg',      word: 'bread',      hasItem: true,  q: 'Is there any bread?',       a: 'Yes, there is.',     qGroups: [['is','there'], ['bread','red','bed']],  aGroups: [['yes','yeah'], ['is','there']] },
-        { img: 'lemons.jpg',     word: 'lemons',     hasItem: true,  q: 'Are there any lemons?',     a: 'Yes, there are.',    qGroups: [['are','there'], ['lemon','lemons']],    aGroups: [['yes','yeah'], ['are','there']] },
-        { img: 'cheese.jpg',     word: 'cheese',     hasItem: true,  q: 'Is there any cheese?',      a: 'Yes, there is.',     qGroups: [['is','there'], ['cheese','she']],       aGroups: [['yes','yeah'], ['is','there']] },
-        { img: 'fish.jpg',       word: 'fish',       hasItem: false, q: 'Is there any fish?',        a: "No, there isn't.",   qGroups: [['is','there'], ['fish','fit']],         aGroups: [['no'], ['isn','isnt','not','there']] },
-        { img: 'rice.jpg',       word: 'rice',       hasItem: false, q: 'Is there any rice?',        a: "No, there isn't.",   qGroups: [['is','there'], ['rice','right','rise']], aGroups: [['no'], ['isn','isnt','not','there']] },
-        { img: 'cherries.jpg',   word: 'cherries',   hasItem: true,  q: 'Are there any cherries?',   a: 'Yes, there are.',    qGroups: [['are','there'], ['cherry','cherries']], aGroups: [['yes','yeah'], ['are','there']] },
-        { img: 'biscuits.jpg',   word: 'biscuits',   hasItem: true,  q: 'Are there any biscuits?',   a: 'Yes, there are.',    qGroups: [['are','there'], ['biscuit','biscuits']], aGroups: [['yes','yeah'], ['are','there']] },
-        { img: 'tea.jpg',        word: 'tea',        hasItem: false, q: 'Is there any tea?',         a: "No, there isn't.",   qGroups: [['is','there'], ['tea','t','tee']],      aGroups: [['no'], ['isn','isnt','not','there']] },
-        { img: 'carrots.jpg',    word: 'carrots',    hasItem: false, q: 'Are there any carrots?',    a: "No, there aren't.",  qGroups: [['are','there'], ['carrot','carrots']],  aGroups: [['no'], ['aren','arent','not','there']] },
-        { img: 'tomatoes.jpg',   word: 'tomatoes',   hasItem: true,  q: 'Are there any tomatoes?',   a: 'Yes, there are.',    qGroups: [['are','there'], ['tomato','tomatoes']], aGroups: [['yes','yeah'], ['are','there']] },
-        { img: 'eggs.jpg',       word: 'eggs',       hasItem: true,  q: 'Are there any eggs?',       a: 'Yes, there are.',    qGroups: [['are','there'], ['egg','eggs','x']],    aGroups: [['yes','yeah'], ['are','there']] }
+        { img: 'potatoes.jpg',   audio: 'potatoes.mp3',   word: 'potatoes',   hasItem: false, q: 'Are there any potatoes?',   a: "No, there aren't.",  qGroups: [['are','there'], ['potato','potatoes']], aGroups: [['no'], ['aren','arent','not','there']] },
+        { img: 'orange.jpg',     audio: 'orange.mp3',     word: 'orange',     hasItem: true,  q: 'Is there an orange?',       a: 'Yes, there is.',     qGroups: [['is','there'], ['orange','oranges']],   aGroups: [['yes','yeah'], ['is','there']] },
+        { img: 'pineapples.jpg', audio: 'pineapples.mp3', word: 'pineapples', hasItem: true,  q: 'Are there any pineapples?', a: 'Yes, there are.',    qGroups: [['are','there'], ['pineapple','pineapples']], aGroups: [['yes','yeah'], ['are','there']] },
+        { img: 'bread.jpg',      audio: 'bread.mp3',      word: 'bread',      hasItem: true,  q: 'Is there any bread?',       a: 'Yes, there is.',     qGroups: [['is','there'], ['bread','red','bed','brad']],  aGroups: [['yes','yeah'], ['is','there']] },
+        { img: 'lemons.jpg',     audio: 'lemons.mp3',     word: 'lemons',     hasItem: true,  q: 'Are there any lemons?',     a: 'Yes, there are.',    qGroups: [['are','there'], ['lemon','lemons','raymond']], aGroups: [['yes','yeah'], ['are','there']] },
+        { img: 'cheese.jpg',     audio: 'cheese.mp3',     word: 'cheese',     hasItem: true,  q: 'Is there any cheese?',      a: 'Yes, there is.',     qGroups: [['is','there'], ['cheese','she','cheap','chees']], aGroups: [['yes','yeah'], ['is','there']] },
+        { img: 'fish.jpg',       audio: 'fish.mp3',       word: 'fish',       hasItem: false, q: 'Is there any fish?',        a: "No, there isn't.",   qGroups: [['is','there'], ['fish','fit','feet']],  aGroups: [['no'], ['isn','isnt','not','there']] },
+        { img: 'rice.jpg',       audio: 'rice.mp3',       word: 'rice',       hasItem: false, q: 'Is there any rice?',        a: "No, there isn't.",   qGroups: [['is','there'], ['rice','right','rise','light']], aGroups: [['no'], ['isn','isnt','not','there']] },
+        { img: 'cherries.jpg',   audio: 'cherries.mp3',   word: 'cherries',   hasItem: true,  q: 'Are there any cherries?',   a: 'Yes, there are.',    qGroups: [['are','there'], ['cherry','cherries','sherry','jerry','shorties','chilly','share','series']], aGroups: [['yes','yeah'], ['are','there']] },
+        { img: 'biscuits.jpg',   audio: 'biscuits.mp3',   word: 'biscuits',   hasItem: true,  q: 'Are there any biscuits?',   a: 'Yes, there are.',    qGroups: [['are','there'], ['biscuit','biscuits','basket','baskets']], aGroups: [['yes','yeah'], ['are','there']] },
+        { img: 'tea.jpg',        audio: 'tea.mp3',        word: 'tea',        hasItem: false, q: 'Is there any tea?',         a: "No, there isn't.",   qGroups: [['is','there'], ['tea','t','tee','key','three']], aGroups: [['no'], ['isn','isnt','not','there']] },
+        { img: 'carrots.jpg',    audio: 'carrots.mp3',    word: 'carrots',    hasItem: false, q: 'Are there any carrots?',    a: "No, there aren't.",  qGroups: [['are','there'], ['carrot','carrots','caret','parrot']], aGroups: [['no'], ['aren','arent','not','there']] },
+        { img: 'tomatoes.jpg',   audio: 'tomatoes.mp3',   word: 'tomatoes',   hasItem: true,  q: 'Are there any tomatoes?',   a: 'Yes, there are.',    qGroups: [['are','there'], ['tomato','tomatoes']], aGroups: [['yes','yeah'], ['are','there']] },
+        { img: 'eggs.jpg',       audio: 'eggs.mp3',       word: 'eggs',       hasItem: true,  q: 'Are there any eggs?',       a: 'Yes, there are.',    qGroups: [['are','there'], ['egg','eggs','x','ex','axe','acts','ache','eight','age','aids','edge']], aGroups: [['yes','yeah'], ['are','there']] }
     ];
+
+    const TOTAL_QUESTIONS = allItems.length;
+    const MAX_SCORE = TOTAL_QUESTIONS * 2;
+
+    const sfxCorrect = new Audio('correct.mp3');
+    const sfxWrong = new Audio('wrong.mp3');
+    let wordAudioPlayer = null;
 
     let quizItems = [];
     let currentIdx = 0;
@@ -468,20 +507,9 @@
     }
 
     function playSfx(type) {
-        try {
-            const ctx = new (window.AudioContext || window.webkitAudioContext)();
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-            osc.connect(gain);
-            gain.connect(ctx.destination);
-            osc.type = type === 'ok' ? 'triangle' : 'sawtooth';
-            osc.frequency.setValueAtTime(type === 'ok' ? 587.33 : 220, ctx.currentTime);
-            if (type === 'ok') osc.frequency.setValueAtTime(880, ctx.currentTime + 0.1);
-            gain.gain.setValueAtTime(0.14, ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
-            osc.start();
-            osc.stop(ctx.currentTime + 0.25);
-        } catch (e) {}
+        const audio = type === 'ok' ? sfxCorrect : sfxWrong;
+        audio.currentTime = 0;
+        audio.play().catch(() => {});
     }
 
     function speakText(text) {
@@ -493,6 +521,19 @@
         window.speechSynthesis.speak(u);
     }
 
+    function playWordAudio() {
+        const item = quizItems[currentIdx];
+        if (wordAudioPlayer) {
+            wordAudioPlayer.pause();
+            wordAudioPlayer.currentTime = 0;
+        }
+        wordAudioPlayer = new Audio(item.audio);
+        wordAudioPlayer.play().catch(() => {
+            // Fallback to browser TTS if mp3 is missing (e.g. lemons.mp3)
+            speakText(item.word);
+        });
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
         checkLoginStatus();
         setupSpeechRecognition();
@@ -501,7 +542,7 @@
 
     function startQuiz() {
         document.getElementById('scoreModal').classList.remove('active');
-        quizItems = shuffle(allItems).slice(0, TOTAL_QUESTIONS);
+        quizItems = shuffle(allItems);
         currentIdx = 0;
         totalScore = 0;
         document.getElementById('liveScore').innerText = '0';
@@ -540,16 +581,19 @@
         tryCount = 0;
         turnLocked = false;
         const item = quizItems[currentIdx];
+        const stepBox = document.getElementById('stepBox');
 
         document.getElementById('micBtn').disabled = false;
         document.getElementById('heardText').innerText = '';
         document.getElementById('fallbackWrap').style.display = recognition ? 'none' : 'block';
 
         if (currentStep === 'ask') {
-            document.getElementById('stepTitle').innerText = 'ขั้นตอนที่ 1/2 : พูดประโยคคำถาม (Ask)';
+            stepBox.className = 'step-box mode-ask';
+            document.getElementById('stepTitle').innerText = '❓ ขั้นตอนที่ 1/2 : พูดประโยคคำถาม (Ask)';
             document.getElementById('stepGuide').innerHTML = 'ถามว่ามีอาหารนี้ไหม (<em>Is there any...? / Is there an...? / Are there any...?</em>)';
         } else {
-            document.getElementById('stepTitle').innerText = 'ขั้นตอนที่ 2/2 : พูดประโยคคำตอบ (Answer)';
+            stepBox.className = 'step-box mode-answer';
+            document.getElementById('stepTitle').innerText = '💬 ขั้นตอนที่ 2/2 : พูดประโยคคำตอบ (Answer)';
             document.getElementById('stepGuide').innerHTML = item.hasItem
                 ? 'ป้ายขึ้น <strong>✅ มี</strong> ให้ตอบ <em>Yes, there is.</em> หรือ <em>Yes, there are.</em>'
                 : 'ป้ายขึ้น <strong>❌ ไม่มี</strong> ให้ตอบ <em>No, there isn\'t.</em> หรือ <em>No, there aren\'t.</em>';
@@ -691,7 +735,7 @@
         if (!localStorage.getItem('studentId')) {
             isPendingSubmit = true;
             document.getElementById('modalTitle').innerText = '📝 ลงชื่อเพื่อบันทึกคะแนน';
-            document.getElementById('modalSub').innerText = `คุณได้ ${totalScore}/20 คะแนน กรอกข้อมูลเพื่อส่งครู`;
+            document.getElementById('modalSub').innerText = `คุณได้ ${totalScore}/${MAX_SCORE} คะแนน กรอกข้อมูลเพื่อส่งครู`;
             document.getElementById('loginModal').classList.add('active');
         } else {
             submitScoreToSheet(totalScore);
@@ -800,7 +844,7 @@
                 studentId: "'" + localStorage.getItem('studentId'),
                 lesson: TOPIC_NAME,
                 score: score,
-                maxScore: 20
+                maxScore: MAX_SCORE
             })
         }).catch(e => console.error(e));
 

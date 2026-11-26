@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Festive Food: a/an or some & AI Speaking - Unit 8b</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Prompt:wght@500;600;700&family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://kruyanisa.github.io/classroom-core/quiz-config.js"></script>
+
+    <style>
+        :root {
+            --primary: #7c3aed;
+            --primary-dark: #5b21b6;
+            --accent: #f97316;
+            --accent-dark: #c2410c;
+            --mint: #10b981;
+            --mint-dark: #059669;
+            --rose: #f43f5e;
+            --rose-dark: #be123c;
+            --ink: #1e293b;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: 'Sarabun', sans-serif;
+            margin: 0;
+            padding: 12px 12px 40px 12px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--ink);
+            background: linear-gradient(160deg, #f5f3ff 0%, #fff7ed 55%, #ecfdf5 100%);
+        }
+
+        /* Profile Bar */
+        .profile-bar {
+            width: 100%;
+            max-width: 740px;
+            font-size: clamp(12px, 3.2vw, 14px);
+            background: rgba(255, 255, 255, 0.96);
+            border: 2px solid #ddd6fe;
+            padding: 8px 14px;
+            border-radius: 20px;
+            color: #5b21b6;
+            font-weight: 700;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.1);
+        }
+
+        .btn-switch {
+            background: var(--rose);
+            color: #fff;
+            border: none;
+            padding: 4px 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-family: 'Prompt', sans-serif;
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        /* Main Card */
+        .card-shell {
+            width: 100%;
+            max-width: 740px;
+            background: rgba(255, 255, 255, 0.97);
+            border: 3px solid #ddd6fe;
+            border-radius: 26px;
+            padding: 18px;
+            box-shadow: 0 12px 28px rgba(124, 58, 237, 0.12);
+        }
+
+        .header-top { text-align: center; margin-bottom: 14px; }
+
+        .badge-unit {
+            display: inline-block;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            color: #fff;
+            font-family: 'Prompt', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 4px 14px;
+            border-radius: 20px;
+            margin-bottom: 6px;
+        }
+
+        h1 {
+            font-family: 'Fredoka One', cursive;
+            color: #4c1d95;
+            font-size: clamp(22px, 5.5vw, 30px);
+            margin: 0 0 4px 0;
+        }
+
+        .sub-note {
+            font-size: 14px;
+            color: #64748b;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        /* Step Indicator */
+        .step-tabs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin: 14px 0;
+        }
+
+        .step-tab {
+            text-align: center;
+            padding: 9px 10px;
+            border-radius: 14px;
+            font-family: 'Prompt', sans-serif;
+            font-size: 13.5px;
+            font-weight: 700;
+            background: #f1f5f9;
+            color: #94a3b8;
+            border: 2px solid #e2e8f0;
+        }
+
+        .step-tab.active {
+            background: #ede9fe;
+            color: #5b21b6;
+            border-color: var(--primary);
+        }
+
+        .step-tab.done {
+            background: #dcfce7;
+            color: #166534;
+            border-color: var(--mint);
+        }
+
+        /* Tip Box */
+        .tip-box {
+            background: #fefce8;
+            border: 2px dashed #facc15;
+            border-radius: 16px;
+            padding: 10px 14px;
+            margin-bottom: 14px;
+            font-size: 14px;
+            color: #713f12;
+            line-height: 1.5;
+        }
+
+        /* Part 1 List */
+        .q-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        @media (max-width: 560px) {
+            .q-list { grid-template-columns: 1fr; }
+        }
+
+        .q-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            background: #faf5ff;
+            border: 2px solid #ddd6fe;
+            border-radius: 16px;
+            padding: 12px 14px;
+            transition: 0.2s;
+        }
+
+        .q-row.correct { background: #f0fdf4; border-color: #86efac; }
+        .q-row.wrong { background: #fef2f2; border-color: #fca5a5; }
+
+        .q-content {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Prompt', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .q-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: #fff;
+            font-size: 13px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .q-select {
+            padding: 6px 10px;
+            border-radius: 10px;
+            border: 2px solid #c4b5fd;
+            background: #fff;
+            font-family: 'Prompt', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            color: #5b21b6;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .q-status {
+            width: 100%;
+            font-family: 'Prompt', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+        }
+        .q-status.ok { color: #15803d; }
+        .q-status.no { color: #b91c1c; }
+
+        /* Part 2: AI Chat */
+        .chat-box {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 18px;
+            padding: 14px;
+            min-height: 210px;
+            max-height: 310px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .bubble {
+            max-width: 86%;
+            padding: 10px 14px;
+            border-radius: 16px;
+            font-family: 'Prompt', sans-serif;
+            font-size: 15px;
+            line-height: 1.45;
+            animation: popIn 0.25s ease;
+        }
+
+        @keyframes popIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .bubble.ai {
+            align-self: flex-start;
+            background: #ede9fe;
+            color: #4c1d95;
+            border-bottom-left-radius: 4px;
+        }
+
+        .bubble.user {
+            align-self: flex-end;
+            background: #dcfce7;
+            color: #14532d;
+            border-bottom-right-radius: 4px;
+        }
+
+        .bubble-label {
+            font-size: 11px;
+            font-weight: 700;
+            opacity: 0.75;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .speak-prompt-card {
+            background: #fff7ed;
+            border: 2.5px solid #fdba74;
+            border-radius: 18px;
+            padding: 14px;
+            text-align: center;
+            margin-bottom: 14px;
+        }
+
+        .target-sentence {
+            font-family: 'Prompt', sans-serif;
+            font-size: clamp(17px, 4.5vw, 21px);
+            font-weight: 700;
+            color: #9a3412;
+            margin: 6px 0 8px 0;
+        }
+
+        .heard-text {
+            font-size: 14px;
+            color: #475569;
+            min-height: 22px;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        .mic-controls {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        /* Buttons */
+        .btn-primary {
+            padding: 12px 24px;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 16px;
+            font-family: 'Prompt', sans-serif;
+            font-size: 15.5px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 0 var(--primary-dark);
+            transition: 0.1s;
+        }
+        .btn-primary:active:not(:disabled) { transform: translateY(3px); box-shadow: none; }
+        .btn-primary:disabled {
+            background: #94a3b8;
+            box-shadow: 0 4px 0 #64748b;
+            cursor: not-allowed;
+            opacity: 0.75;
+        }
+
+        .btn-mic {
+            background: var(--rose);
+            box-shadow: 0 4px 0 var(--rose-dark);
+        }
+        .btn-mic.listening {
+            background: #ef4444;
+            animation: pulseMic 1s infinite;
+        }
+        @keyframes pulseMic {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.04); }
+        }
+
+        .btn-listen {
+            background: var(--accent);
+            box-shadow: 0 4px 0 var(--accent-dark);
+        }
+
+        .btn-mint {
+            background: var(--mint);
+            box-shadow: 0 4px 0 var(--mint-dark);
+        }
+
+        .action-row {
+            margin-top: 16px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        /* Modals */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+            visibility: hidden;
+            opacity: 0;
+            transition: 0.25s;
+            padding: 15px;
+        }
+        .modal-overlay.active { visibility: visible; opacity: 1; }
+        .modal-box {
+            background: #fff;
+            padding: 26px 20px;
+            border-radius: 26px;
+            text-align: center;
+            width: 100%;
+            max-width: 340px;
+            border: 4px solid var(--primary);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+        .modal-box input {
+            width: 100%;
+            padding: 11px;
+            margin-bottom: 10px;
+            border: 2px solid #ddd6fe;
+            border-radius: 14px;
+            text-align: center;
+            font-family: 'Sarabun', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            outline: none;
+        }
+        .score-num {
+            font-family: 'Fredoka One', cursive;
+            font-size: 56px;
+            color: var(--primary);
+            margin: 8px 0;
+            display: block;
+            line-height: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- User Profile Bar -->
+    <div id="userProfile" class="profile-bar" style="display:none;">
+        <span>👤 <span id="p_name"></span> | 🏫 <span id="p_room"></span> | 🆔 <span id="p_id"></span></span>
+        <button class="btn-switch" onclick="switchAccount()">🔄 สลับบัญชี</button>
+    </div>
+
+    <!-- Main Card -->
+    <div class="card-shell">
+        <div class="header-top">
+            <div class="badge-unit">Unit 8b • Festive Food</div>
+            <h1>🍽️ a / an or some & AI Talk</h1>
+            <p class="sub-note">ทำส่วนที่ 1 ให้เสร็จก่อน แล้วไปฝึกพูดถาม-ตอบกับ AI ในส่วนที่ 2 (รวม 10 คะแนน)</p>
+        </div>
+
+        <div class="step-tabs">
+            <div id="tab1" class="step-tab active">1️⃣ เติม a/an หรือ some (6 คะแนน)</div>
+            <div id="tab2" class="step-tab">2️⃣ ฝึกพูดกับ AI (4 คะแนน)</div>
+        </div>
+
+        <!-- PART 1 -->
+        <div id="part1Section">
+            <div class="tip-box">
+                💡 <strong>ทริกจำง่ายๆ:</strong> <strong>a / an</strong> ใช้กับคำนามนับได้ 1 ชิ้น (เอกพจน์) • <strong>some</strong> ใช้กับคำนามพหูพจน์ (-s) หรือคำนามนับไม่ได้ (เช่น rice, bread, milk)
+            </div>
+
+            <div class="q-list" id="quizList"></div>
+
+            <div class="action-row">
+                <button id="checkPart1Btn" class="btn-primary" onclick="checkPart1()">✅ ตรวจส่วนที่ 1</button>
+                <button id="goPart2Btn" class="btn-primary btn-mint" style="display:none;" onclick="startPart2()">🎤 ไปส่วนที่ 2: ฝึกพูดกับ AI ➡️</button>
+            </div>
+        </div>
+
+        <!-- PART 2 -->
+        <div id="part2Section" style="display:none;">
+            <div class="tip-box" style="background:#ecfdf5; border-color:#34d399; color:#065f46;">
+                🤖 <strong>วิธีฝึกพูด:</strong> กด <strong>🔊 ฟังตัวอย่าง</strong> ก่อนได้ จากนั้นกด <strong>🎤 กดพูด</strong> แล้วอ่านประโยคสีส้มให้ AI ฟัง (สำเนียงพอได้ก็ผ่านเลย!)
+            </div>
+
+            <div class="chat-box" id="chatBox"></div>
+
+            <div class="speak-prompt-card" id="speakCard">
+                <div style="font-size:13px; font-weight:700; color:#c2410c;" id="turnLabel">รอบที่ 1 / 4 — ตาคุณพูด (A):</div>
+                <div class="target-sentence" id="targetSentence">Can I have some potatoes?</div>
+                <div class="mic-controls">
+                    <button class="btn-primary btn-listen" onclick="speakModel()">🔊 ฟังตัวอย่าง</button>
+                    <button id="micBtn" class="btn-primary btn-mic" onclick="startListening()">🎤 กดพูด</button>
+                </div>
+                <div id="heardText" class="heard-text"></div>
+                <div id="fallbackWrap" style="display:none; margin-top:10px;">
+                    <button class="btn-primary btn-mint" style="font-size:13px; padding:8px 14px;" onclick="passTurnManually()">✅ ฝึกอ่านออกเสียงแล้ว (ผ่านรอบนี้)</button>
+                </div>
+            </div>
+
+            <div class="action-row">
+                <button id="finishAllBtn" class="btn-primary btn-mint" style="display:none;" onclick="finishAll()">🏆 ส่งคะแนนรวม (10 คะแนน)</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal-box">
+            <h2 id="modalTitle" style="color:#4c1d95; margin:0 0 6px 0; font-family:'Prompt';">📝 ลงชื่อเข้าเรียน</h2>
+            <p id="modalSub" style="color:#64748b; font-weight:600; margin:0 0 12px 0; font-size:14px;">กรอกข้อมูลเพื่อเริ่มทำแบบฝึกหัดและบันทึกคะแนน</p>
+            <input type="text" id="in_name" placeholder="ชื่อ - นามสกุล">
+            <input type="text" id="in_room" placeholder="ชั้น/ห้อง (เช่น 1/1)">
+            <input type="text" id="in_id" placeholder="รหัสนักเรียน (5 หลัก)" maxlength="5">
+            <button class="btn-primary" style="width:100%;" onclick="confirmUser()">🚀 เริ่มทำเลย</button>
+        </div>
+    </div>
+
+    <!-- Score Modal -->
+    <div class="modal-overlay" id="scoreModal">
+        <div class="modal-box">
+            <h2 style="color:#4c1d95; margin:0; font-family:'Prompt';">🎉 สรุปผลคะแนนรวม</h2>
+            <p id="scoreBreakdown" style="color:#64748b; font-weight:600; margin:6px 0 0 0; font-size:14px;"></p>
+            <span class="score-num"><span id="finalScoreText">0</span><span style="font-size:26px; color:#94a3b8;">/10</span></span>
+            <div id="saveStatus" style="font-weight:700; font-size:14px; margin-bottom:14px; color:#d97706; min-height:20px;"></div>
+            <button id="playAgainBtn" class="btn-primary btn-mint" style="width:100%;" onclick="resetAll()" disabled>🔄 เริ่มทำใหม่ทั้งหมด</button>
+        </div>
+    </div>
+
+<script>
+    const TOPIC_NAME = 'ม.1 Unit 8 Festive food a or an or some';
+
+    // Part 1: 6 dropdown questions
+    const part1Questions = [
+        { num: 1, noun: 'potatoes', answer: 'some',   displayAns: 'some potatoes' },
+        { num: 2, noun: 'rice',     answer: 'some',   displayAns: 'some rice' },
+        { num: 3, noun: 'egg',      answer: 'a / an', displayAns: 'an egg' },
+        { num: 4, noun: 'bread',    answer: 'some',   displayAns: 'some bread' },
+        { num: 5, noun: 'milk',     answer: 'some',   displayAns: 'some milk' },
+        { num: 6, noun: 'carrots',  answer: 'some',   displayAns: 'some carrots' }
+    ];
+
+    // Part 2: 4 AI dialogue turns (covering all 6 items from the textbook)
+    const speakingTurns = [
+        {
+            prompt: 'Can I have some potatoes?',
+            keywords: ['have', 'potato', 'potatoes', 'some', 'can'],
+            mustAny: ['potato', 'potatoes'],
+            aiReply: 'Yes, you can. Can I have some rice?'
+        },
+        {
+            prompt: 'Yes, you can. Can I have an egg?',
+            keywords: ['yes', 'can', 'have', 'egg', 'eggs', 'an'],
+            mustAny: ['egg', 'eggs', 'x', 'yes'],
+            aiReply: 'Yes, you can. Can I have some bread?'
+        },
+        {
+            prompt: 'Yes, you can. Can I have some milk?',
+            keywords: ['yes', 'can', 'have', 'milk', 'some'],
+            mustAny: ['milk', 'new', 'meal', 'yes'],
+            aiReply: 'Yes, you can. Can I have some carrots?'
+        },
+        {
+            prompt: 'Yes, you can.',
+            keywords: ['yes', 'you', 'can', 'yeah'],
+            mustAny: ['yes', 'yeah', 'can'],
+            aiReply: 'Thank you! Great job practicing English today!'
+        }
+    ];
+
+    let part1Score = 0;
+    let part2Score = 0;
+    let currentTurn = 0;
+    let tryCount = 0;
+    let isPendingSubmit = false;
+    let recognition = null;
+    let isListening = false;
+
+    function playSfx(type) {
+        try {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.type = type === 'ok' ? 'triangle' : 'sawtooth';
+            osc.frequency.setValueAtTime(type === 'ok' ? 587.33 : 220, ctx.currentTime);
+            if (type === 'ok') osc.frequency.setValueAtTime(880, ctx.currentTime + 0.1);
+            gain.gain.setValueAtTime(0.14, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.25);
+        } catch (e) {}
+    }
+
+    function speakText(text, rate = 0.9) {
+        if (!('speechSynthesis' in window)) return;
+        window.speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = 'en-US';
+        u.rate = rate;
+        window.speechSynthesis.speak(u);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        renderPart1();
+        checkLoginStatus();
+        setupSpeechRecognition();
+    });
+
+    // ================= PART 1 =================
+    function renderPart1() {
+        const list = document.getElementById('quizList');
+        list.innerHTML = '';
+        part1Questions.forEach((q, idx) => {
+            const row = document.createElement('div');
+            row.className = 'q-row';
+            row.id = `qrow-${idx}`;
+            row.innerHTML = `
+                <div class="q-content">
+                    <span class="q-num">${q.num}</span>
+                    <select class="q-select" id="qsel-${idx}">
+                        <option value="">-- เลือก --</option>
+                        <option value="a / an">a / an</option>
+                        <option value="some">some</option>
+                    </select>
+                    <span>${q.noun}</span>
+                </div>
+                <div class="q-status" id="qstat-${idx}"></div>
+            `;
+            list.appendChild(row);
+        });
+    }
+
+    function checkPart1() {
+        let unanswered = 0;
+        part1Questions.forEach((q, idx) => {
+            if (!document.getElementById(`qsel-${idx}`).value) unanswered++;
+        });
+        if (unanswered > 0) {
+            Swal.fire('ยังตอบไม่ครบ!', `เหลืออีก ${unanswered} ข้อ กรุณาเลือกให้ครบทั้ง 6 ข้อก่อนนะครับ`, 'warning');
+            return;
+        }
+
+        part1Score = 0;
+        part1Questions.forEach((q, idx) => {
+            const sel = document.getElementById(`qsel-${idx}`);
+            const row = document.getElementById(`qrow-${idx}`);
+            const stat = document.getElementById(`qstat-${idx}`);
+            row.classList.remove('correct', 'wrong');
+
+            if (sel.value === q.answer) {
+                part1Score++;
+                row.classList.add('correct');
+                stat.className = 'q-status ok';
+                stat.innerText = `✅ ถูกต้อง (${q.displayAns})`;
+            } else {
+                row.classList.add('wrong');
+                stat.className = 'q-status no';
+                stat.innerText = `❌ เฉลย: ${q.answer} (${q.displayAns})`;
+            }
+            sel.disabled = true;
+        });
+
+        playSfx(part1Score >= 4 ? 'ok' : 'no');
+        document.getElementById('checkPart1Btn').style.display = 'none';
+        document.getElementById('goPart2Btn').style.display = 'inline-block';
+        document.getElementById('tab1').classList.remove('active');
+        document.getElementById('tab1').classList.add('done');
+
+        Swal.fire({
+            title: `ส่วนที่ 1 ได้ ${part1Score} / 6 คะแนน!`,
+            text: 'ดูเฉลยแล้วกดปุ่มไปฝึกพูดโต้ตอบกับ AI ในส่วนที่ 2 ต่อได้เลยครับ',
+            icon: 'success',
+            confirmButtonText: 'ตกลง'
+        });
+    }
+
+    // ================= PART 2 (AI SPEAKING) =================
+    function startPart2() {
+        document.getElementById('part1Section').style.display = 'none';
+        document.getElementById('part2Section').style.display = 'block';
+        document.getElementById('tab2').classList.add('active');
+
+        currentTurn = 0;
+        part2Score = 0;
+        tryCount = 0;
+        document.getElementById('chatBox').innerHTML = '';
+        document.getElementById('speakCard').style.display = 'block';
+        document.getElementById('finishAllBtn').style.display = 'none';
+
+        addBubble('ai', '🤖 AI Partner', 'Hello! Let\'s practice asking for food. You start first! (ลองกดปุ่มไมค์แล้วพูดตามประโยคด้านล่างได้เลย)');
+        loadTurn();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function addBubble(who, label, text) {
+        const box = document.getElementById('chatBox');
+        const div = document.createElement('div');
+        div.className = `bubble ${who}`;
+        div.innerHTML = `<span class="bubble-label">${label}</span>${text}`;
+        box.appendChild(div);
+        box.scrollTop = box.scrollHeight;
+    }
+
+    function loadTurn() {
+        tryCount = 0;
+        const turn = speakingTurns[currentTurn];
+        document.getElementById('turnLabel').innerText = `รอบที่ ${currentTurn + 1} / ${speakingTurns.length} — ตาคุณพูด:`;
+        document.getElementById('targetSentence').innerText = turn.prompt;
+        document.getElementById('heardText').innerText = '';
+        document.getElementById('fallbackWrap').style.display = recognition ? 'none' : 'block';
+    }
+
+    function speakModel() {
+        const turn = speakingTurns[currentTurn];
+        speakText(turn.prompt, 0.85);
+    }
+
+    function setupSpeechRecognition() {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognition) {
+            recognition = null;
+            return;
+        }
+        recognition = new SpeechRecognition();
+        recognition.lang = 'en-US';
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 3;
+
+        recognition.onstart = () => {
+            isListening = true;
+            const btn = document.getElementById('micBtn');
+            btn.classList.add('listening');
+            btn.innerText = '🔴 กำลังฟัง... พูดเลย!';
+            document.getElementById('heardText').innerText = '🎙️ กำลังรับเสียง...';
+        };
+
+        recognition.onend = () => {
+            isListening = false;
+            const btn = document.getElementById('micBtn');
+            btn.classList.remove('listening');
+            btn.innerText = '🎤 กดพูด';
+        };
+
+        recognition.onerror = () => {
+            document.getElementById('heardText').innerText = '⚠️ ไม่ได้ยินเสียง ลองกดพูดใหม่อีกครั้งนะครับ';
+            tryCount++;
+            if (tryCount >= 2) document.getElementById('fallbackWrap').style.display = 'block';
+        };
+
+        recognition.onresult = (event) => {
+            let transcripts = [];
+            for (let i = 0; i < event.results[0].length; i++) {
+                transcripts.push(event.results[0][i].transcript.toLowerCase());
+            }
+            const bestText = event.results[0][0].transcript;
+            document.getElementById('heardText').innerText = `🗣️ ระบบได้ยินว่า: "${bestText}"`;
+            evaluateSpeech(transcripts, bestText);
+        };
+    }
+
+    function startListening() {
+        if (!recognition) {
+            Swal.fire('เบราว์เซอร์ไม่รองรับไมค์', 'แนะนำเปิดด้วย Google Chrome หรือกดปุ่ม "ฝึกอ่านออกเสียงแล้ว" ด้านล่างแทนได้ครับ', 'info');
+            document.getElementById('fallbackWrap').style.display = 'block';
+            return;
+        }
+        if (isListening) {
+            recognition.stop();
+            return;
+        }
+        window.speechSynthesis.cancel();
+        try { recognition.start(); } catch (e) {}
+    }
+
+    function evaluateSpeech(transcripts, bestText) {
+        const turn = speakingTurns[currentTurn];
+        const combined = transcripts.join(' ').replace(/[^a-z0-9\s]/g, '');
+        const words = combined.split(/\s+/);
+
+        let matchedCount = 0;
+        turn.keywords.forEach(kw => {
+            if (words.some(w => w.includes(kw) || kw.includes(w) && w.length >= 3)) matchedCount++;
+        });
+
+        const hasKeyFood = turn.mustAny.some(k => combined.includes(k));
+        const passed = matchedCount >= 2 || hasKeyFood;
+
+        if (passed) {
+            completeTurn(bestText);
+        } else {
+            tryCount++;
+            playSfx('no');
+            document.getElementById('heardText').innerHTML = `🗣️ ได้ยินว่า "${bestText}" — <span style="color:#b91c1c;">ลองพูดช้าๆ ชัดๆ อีกครั้งนะครับ</span>`;
+            if (tryCount >= 2) {
+                document.getElementById('fallbackWrap').style.display = 'block';
+            }
+        }
+    }
+
+    function passTurnManually() {
+        completeTurn(speakingTurns[currentTurn].prompt);
+    }
+
+    function completeTurn(spokenText) {
+        const turn = speakingTurns[currentTurn];
+        part2Score++;
+        playSfx('ok');
+        addBubble('user', '👤 คุณ (ผ่าน ✅)', spokenText);
+
+        setTimeout(() => {
+            addBubble('ai', '🤖 AI Partner', turn.aiReply);
+            speakText(turn.aiReply, 0.9);
+
+            currentTurn++;
+            if (currentTurn < speakingTurns.length) {
+                setTimeout(() => loadTurn(), 1400);
+            } else {
+                document.getElementById('speakCard').style.display = 'none';
+                document.getElementById('tab2').classList.remove('active');
+                document.getElementById('tab2').classList.add('done');
+                document.getElementById('finishAllBtn').style.display = 'inline-block';
+            }
+        }, 550);
+    }
+
+    function finishAll() {
+        const total = part1Score + part2Score;
+        if (!localStorage.getItem('studentId')) {
+            isPendingSubmit = true;
+            document.getElementById('modalTitle').innerText = '📝 ลงชื่อเพื่อบันทึกคะแนน';
+            document.getElementById('modalSub').innerText = `คุณได้ ${total}/10 คะแนน กรอกข้อมูลเพื่อส่งครู`;
+            document.getElementById('loginModal').classList.add('active');
+        } else {
+            submitScoreToSheet(total);
+        }
+    }
+
+    function resetAll() {
+        document.getElementById('scoreModal').classList.remove('active');
+        document.getElementById('part1Section').style.display = 'block';
+        document.getElementById('part2Section').style.display = 'none';
+        document.getElementById('checkPart1Btn').style.display = 'inline-block';
+        document.getElementById('goPart2Btn').style.display = 'none';
+        document.getElementById('tab1').className = 'step-tab active';
+        document.getElementById('tab2').className = 'step-tab';
+        part1Score = 0;
+        part2Score = 0;
+        renderPart1();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ================= LOGIN & GOOGLE SHEETS =================
+    function formatRoomValue(val) {
+        const nums = val.match(/\d+/g);
+        if (nums && nums.length >= 2) return `ม.${nums[0]}/${nums[1]}`;
+        if (nums && nums.length === 1) return `ม.1/${nums[0]}`;
+        return val.trim();
+    }
+
+    document.getElementById('in_room').addEventListener('blur', function() {
+        this.value = formatRoomValue(this.value);
+    });
+
+    function checkLoginStatus() {
+        if (localStorage.getItem('studentId')) {
+            document.getElementById('userProfile').style.display = 'flex';
+            document.getElementById('p_name').innerText = localStorage.getItem('studentName');
+            document.getElementById('p_room').innerText = localStorage.getItem('studentRoom');
+            document.getElementById('p_id').innerText = localStorage.getItem('studentId');
+        } else {
+            document.getElementById('userProfile').style.display = 'none';
+            document.getElementById('loginModal').classList.add('active');
+        }
+    }
+
+    function switchAccount() {
+        Swal.fire({
+            title: '⚠️ สลับบัญชีผู้เล่น?',
+            text: 'ระบบจะล้างข้อมูลเดิมและเริ่มใหม่',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#f43f5e',
+            cancelButtonColor: '#94a3b8',
+            confirmButtonText: 'ตกลง',
+            cancelButtonText: 'ยกเลิก'
+        }).then((res) => {
+            if (res.isConfirmed) {
+                localStorage.clear();
+                isPendingSubmit = false;
+                document.getElementById('userProfile').style.display = 'none';
+                document.getElementById('in_name').value = '';
+                document.getElementById('in_room').value = '';
+                document.getElementById('in_id').value = '';
+                document.getElementById('modalTitle').innerText = '🔄 ลงชื่อบัญชีใหม่';
+                document.getElementById('modalSub').innerText = 'กรอกข้อมูลนักเรียนคนใหม่เพื่อเริ่มเรียน';
+                document.getElementById('loginModal').classList.add('active');
+            }
+        });
+    }
+
+    function confirmUser() {
+        const n = document.getElementById('in_name').value.trim();
+        const r = formatRoomValue(document.getElementById('in_room').value);
+        document.getElementById('in_room').value = r;
+        const id = document.getElementById('in_id').value.trim();
+
+        if (!n || !r || id.length !== 5) {
+            Swal.fire('ข้อมูลไม่ครบ!', 'กรุณากรอกชื่อ ห้อง และรหัสนักเรียน 5 หลัก', 'warning');
+            return;
+        }
+
+        localStorage.setItem('studentName', n);
+        localStorage.setItem('studentRoom', r);
+        localStorage.setItem('studentId', id);
+
+        document.getElementById('loginModal').classList.remove('active');
+        document.getElementById('userProfile').style.display = 'flex';
+        document.getElementById('p_name').innerText = n;
+        document.getElementById('p_room').innerText = r;
+        document.getElementById('p_id').innerText = id;
+
+        if (isPendingSubmit) {
+            isPendingSubmit = false;
+            submitScoreToSheet(part1Score + part2Score);
+        }
+    }
+
+    function submitScoreToSheet(totalScore) {
+        document.getElementById('scoreModal').classList.add('active');
+        document.getElementById('finalScoreText').innerText = totalScore;
+        document.getElementById('scoreBreakdown').innerText = `ส่วนที่ 1: ${part1Score}/6  •  ส่วนที่ 2 (พูดกับ AI): ${part2Score}/4`;
+
+        const stat = document.getElementById('saveStatus');
+        const playAgainBtn = document.getElementById('playAgainBtn');
+        playAgainBtn.disabled = true;
+
+        if (typeof QUIZ_CONFIG === 'undefined' || !QUIZ_CONFIG.SCRIPT_URL) {
+            stat.innerText = '❌ ไม่พบไฟล์ตั้งค่า (quiz-config.js)';
+            stat.style.color = '#b91c1c';
+            playAgainBtn.disabled = false;
+            return;
+        }
+
+        stat.innerText = '⏳ กำลังบันทึกคะแนนลงระบบ...';
+        stat.style.color = '#d97706';
+
+        fetch(QUIZ_CONFIG.SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            body: JSON.stringify({
+                name: localStorage.getItem('studentName'),
+                room: localStorage.getItem('studentRoom'),
+                studentId: "'" + localStorage.getItem('studentId'),
+                lesson: TOPIC_NAME,
+                score: totalScore,
+                maxScore: 10
+            })
+        }).catch(e => console.error(e));
+
+        setTimeout(() => {
+            stat.innerText = '✅ บันทึกคะแนนลงระบบเรียบร้อย!';
+            stat.style.color = '#15803d';
+            playAgainBtn.disabled = false;
+        }, 1500);
+    }
+</script>
+</body>
+</html>

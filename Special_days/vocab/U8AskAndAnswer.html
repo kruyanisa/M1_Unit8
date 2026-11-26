@@ -18,6 +18,8 @@
             --mint-dark: #059669;
             --rose: #f43f5e;
             --rose-dark: #be123c;
+            --slate: #64748b;
+            --slate-dark: #475569;
             --ink: #1e293b;
         }
 
@@ -165,6 +167,12 @@
             padding: 8px 8px 46px 8px;
         }
 
+        /* Slow Blink Animation */
+        @keyframes slowBlink {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.96); }
+        }
+
         .availability-badge {
             position: absolute;
             top: 10px;
@@ -175,6 +183,7 @@
             padding: 6px 14px;
             border-radius: 14px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            animation: slowBlink 2.2s infinite ease-in-out;
         }
 
         .availability-badge.yes {
@@ -289,7 +298,7 @@
         }
 
         .btn-primary {
-            padding: 12px 22px;
+            padding: 12px 20px;
             background: var(--sky);
             color: #fff;
             border: none;
@@ -325,6 +334,11 @@
         .btn-hint {
             background: var(--amber);
             box-shadow: 0 4px 0 var(--amber-dark);
+        }
+
+        .btn-skip {
+            background: var(--slate);
+            box-shadow: 0 4px 0 var(--slate-dark);
         }
 
         .btn-mint {
@@ -425,13 +439,10 @@
             <div class="controls-row">
                 <button id="micBtn" class="btn-primary btn-mic" onclick="toggleListening()">🎤 กดพูด</button>
                 <button id="hintBtn" class="btn-primary btn-hint" onclick="showHint()">💡 ดูคำใบ้ (ได้ 1 คะแนน)</button>
+                <button id="skipBtn" class="btn-primary btn-skip" onclick="confirmSkip()">⏭️ ข้ามข้อนี้</button>
             </div>
 
             <div id="heardText" class="heard-text"></div>
-
-            <div id="fallbackWrap" style="display:none; margin-top:10px;">
-                <button class="btn-primary btn-mint" style="font-size:13px; padding:8px 14px;" onclick="passStepManually()">✅ ฝึกอ่านออกเสียงแล้ว (ผ่านขั้นตอนนี้)</button>
-            </div>
         </div>
     </div>
 
@@ -461,7 +472,6 @@
 <script>
     const TOPIC_NAME = 'ม.1 Unit 8 Festive food ask and answer';
 
-    // All 14 items from textbook Exercise 6
     const allItems = [
         { img: 'potatoes.jpg',   audio: 'potatoes.mp3',   word: 'potatoes',   hasItem: false, q: 'Are there any potatoes?',   a: "No, there aren't.",  qGroups: [['are','there'], ['potato','potatoes']], aGroups: [['no'], ['aren','arent','not','there']] },
         { img: 'orange.jpg',     audio: 'orange.mp3',     word: 'orange',     hasItem: true,  q: 'Is there an orange?',       a: 'Yes, there is.',     qGroups: [['is','there'], ['orange','oranges']],   aGroups: [['yes','yeah'], ['is','there']] },
@@ -488,10 +498,9 @@
 
     let quizItems = [];
     let currentIdx = 0;
-    let currentStep = 'ask'; // 'ask' -> 'answer'
+    let currentStep = 'ask';
     let usedHintThisQ = false;
     let totalScore = 0;
-    let tryCount = 0;
     let turnLocked = false;
     let recognition = null;
     let isListening = false;
@@ -529,7 +538,6 @@
         }
         wordAudioPlayer = new Audio(item.audio);
         wordAudioPlayer.play().catch(() => {
-            // Fallback to browser TTS if mp3 is missing (e.g. lemons.mp3)
             speakText(item.word);
         });
     }
@@ -552,7 +560,6 @@
     function loadQuestion() {
         currentStep = 'ask';
         usedHintThisQ = false;
-        tryCount = 0;
         turnLocked = false;
 
         const item = quizItems[currentIdx];
@@ -573,19 +580,18 @@
         document.getElementById('hintBox').style.display = 'none';
         document.getElementById('hintBtn').disabled = false;
         document.getElementById('hintBtn').innerText = '💡 ดูคำใบ้ (ได้ 1 คะแนน)';
+        document.getElementById('skipBtn').disabled = false;
 
         updateStepUI();
     }
 
     function updateStepUI() {
-        tryCount = 0;
         turnLocked = false;
         const item = quizItems[currentIdx];
         const stepBox = document.getElementById('stepBox');
 
         document.getElementById('micBtn').disabled = false;
         document.getElementById('heardText').innerText = '';
-        document.getElementById('fallbackWrap').style.display = recognition ? 'none' : 'block';
 
         if (currentStep === 'ask') {
             stepBox.className = 'step-box mode-ask';
@@ -616,6 +622,38 @@
     function speakHint() {
         const item = quizItems[currentIdx];
         speakText(currentStep === 'ask' ? item.q : item.a);
+    }
+
+    function confirmSkip() {
+        if (turnLocked) return;
+        const item = quizItems[currentIdx];
+        const lostPoints = usedHintThisQ ? 1 : 2;
+
+        Swal.fire({
+            title: `⏭️ ข้ามคำว่า "${item.word}"?`,
+            html: `หากข้าม ระบบจะข้ามทั้ง <b>คำถามและคำตอบ</b> ของข้อนี้<br>และจะไม่ได้คะแนนข้อนี้ (<b style="color:#dc2626;">เสีย ${lostPoints} คะแนน</b>)`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#64748b',
+            confirmButtonText: 'ยืนยันข้าม (0 คะแนน)',
+            cancelButtonText: 'ลองพูดต่อ'
+        }).then((res) => {
+            if (res.isConfirmed) {
+                turnLocked = true;
+                if (isListening) try { recognition.stop(); } catch (e) {}
+                document.getElementById('micBtn').disabled = true;
+                document.getElementById('skipBtn').disabled = true;
+                document.getElementById('progressFill').style.width = `${((currentIdx + 1) / TOTAL_QUESTIONS) * 100}%`;
+
+                currentIdx++;
+                if (currentIdx < TOTAL_QUESTIONS) {
+                    loadQuestion();
+                } else {
+                    finishQuiz();
+                }
+            }
+        });
     }
 
     function isMatch(text, groups) {
@@ -657,18 +695,14 @@
             if (transcripts.some(t => isMatch(t, groups))) {
                 passStep(bestText);
             } else {
-                tryCount++;
                 playSfx('no');
                 document.getElementById('heardText').innerHTML = `🗣️ ได้ยินว่า "${bestText}" — <span style="color:#b91c1c;">ยังไม่ตรงครับ ลองพูดใหม่ หรือกดดูคำใบ้ได้นะ</span>`;
-                if (tryCount >= 2) document.getElementById('fallbackWrap').style.display = 'block';
             }
         };
 
         recognition.onerror = () => {
             if (turnLocked) return;
             document.getElementById('heardText').innerText = '⚠️ ไม่ได้ยินเสียง ลองกดพูดใหม่อีกครั้งนะครับ';
-            tryCount++;
-            if (tryCount >= 2) document.getElementById('fallbackWrap').style.display = 'block';
         };
 
         recognition.onend = () => {
@@ -682,8 +716,7 @@
     function toggleListening() {
         if (turnLocked) return;
         if (!recognition) {
-            Swal.fire('เบราว์เซอร์ไม่รองรับไมค์', 'แนะนำเปิดด้วย Google Chrome หรือกดปุ่ม "ฝึกอ่านออกเสียงแล้ว" ด้านล่างแทนได้ครับ', 'info');
-            document.getElementById('fallbackWrap').style.display = 'block';
+            Swal.fire('เบราว์เซอร์ไม่รองรับไมค์', 'กรุณาเปิดด้วย Google Chrome เพื่อใช้งานไมโครโฟนครับ', 'info');
             return;
         }
         if (isListening) {
@@ -692,13 +725,6 @@
         }
         window.speechSynthesis.cancel();
         try { recognition.start(); } catch (e) {}
-    }
-
-    function passStepManually() {
-        if (turnLocked) return;
-        if (isListening) try { recognition.stop(); } catch (e) {}
-        const item = quizItems[currentIdx];
-        passStep(currentStep === 'ask' ? item.q : item.a);
     }
 
     function passStep(spokenText) {

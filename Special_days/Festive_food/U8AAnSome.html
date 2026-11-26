@@ -285,7 +285,7 @@
 
         .target-sentence {
             font-family: 'Prompt', sans-serif;
-            font-size: clamp(17px, 4.5vw, 21px);
+            font-size: clamp(18px, 4.8vw, 22px);
             font-weight: 700;
             color: #9a3412;
             margin: 6px 0 8px 0;
@@ -421,12 +421,12 @@
         <div class="header-top">
             <div class="badge-unit">Unit 8b • Festive Food</div>
             <h1>🍽️ a / an or some & AI Talk</h1>
-            <p class="sub-note">ทำส่วนที่ 1 ให้เสร็จก่อน แล้วไปฝึกพูดถาม-ตอบกับ AI ในส่วนที่ 2 (รวม 10 คะแนน)</p>
+            <p class="sub-note">ทำส่วนที่ 1 ให้เสร็จก่อน แล้วไปฝึกพูดทีละประโยคกับ AI ในส่วนที่ 2 (รวม 12 คะแนน)</p>
         </div>
 
         <div class="step-tabs">
             <div id="tab1" class="step-tab active">1️⃣ เติม a/an หรือ some (6 คะแนน)</div>
-            <div id="tab2" class="step-tab">2️⃣ ฝึกพูดกับ AI (4 คะแนน)</div>
+            <div id="tab2" class="step-tab">2️⃣ ฝึกพูดกับ AI (6 คะแนน)</div>
         </div>
 
         <!-- PART 1 -->
@@ -446,13 +446,13 @@
         <!-- PART 2 -->
         <div id="part2Section" style="display:none;">
             <div class="tip-box" style="background:#ecfdf5; border-color:#34d399; color:#065f46;">
-                🤖 <strong>วิธีฝึกพูด:</strong> กด <strong>🔊 ฟังตัวอย่าง</strong> แล้วกด <strong>🎤 กดพูด</strong> อ่านให้ครบทั้งประโยค (ระบบจะรอจนพูดจบ หรือกดปุ่มอีกครั้งเมื่อพูดเสร็จ)
+                🤖 <strong>วิธีฝึกพูด:</strong> กด <strong>🔊 ฟังตัวอย่าง</strong> แล้วกด <strong>🎤 กดพูด</strong> พูดทีละประโยคตามที่ขึ้นสีส้ม (ตอบเสร็จแล้วค่อยถามต่อในรอบถัดไป)
             </div>
 
             <div class="chat-box" id="chatBox"></div>
 
             <div class="speak-prompt-card" id="speakCard">
-                <div style="font-size:13px; font-weight:700; color:#c2410c;" id="turnLabel">รอบที่ 1 / 4 — ตาคุณพูด:</div>
+                <div style="font-size:13px; font-weight:700; color:#c2410c;" id="turnLabel">รอบที่ 1 / 6 — ถาม AI:</div>
                 <div class="target-sentence" id="targetSentence">Can I have some potatoes?</div>
                 <div class="mic-controls">
                     <button class="btn-primary btn-listen" onclick="speakModel()">🔊 ฟังตัวอย่าง</button>
@@ -465,7 +465,7 @@
             </div>
 
             <div class="action-row">
-                <button id="finishAllBtn" class="btn-primary btn-mint" style="display:none;" onclick="finishAll()">🏆 ส่งคะแนนรวม (10 คะแนน)</button>
+                <button id="finishAllBtn" class="btn-primary btn-mint" style="display:none;" onclick="finishAll()">🏆 ส่งคะแนนรวม (12 คะแนน)</button>
             </div>
         </div>
     </div>
@@ -487,7 +487,7 @@
         <div class="modal-box">
             <h2 style="color:#4c1d95; margin:0; font-family:'Prompt';">🎉 สรุปผลคะแนนรวม</h2>
             <p id="scoreBreakdown" style="color:#64748b; font-weight:600; margin:6px 0 0 0; font-size:14px;"></p>
-            <span class="score-num"><span id="finalScoreText">0</span><span style="font-size:26px; color:#94a3b8;">/10</span></span>
+            <span class="score-num"><span id="finalScoreText">0</span><span style="font-size:26px; color:#94a3b8;">/12</span></span>
             <div id="saveStatus" style="font-weight:700; font-size:14px; margin-bottom:14px; color:#d97706; min-height:20px;"></div>
             <button id="playAgainBtn" class="btn-primary btn-mint" style="width:100%;" onclick="resetAll()" disabled>🔄 เริ่มทำใหม่ทั้งหมด</button>
         </div>
@@ -506,44 +506,66 @@
         { num: 6, noun: 'carrots',  answer: 'some',   displayAns: 'some carrots' }
     ];
 
-    // Part 2: 4 AI dialogue turns (require BOTH parts when there's a follow-up question)
+    // Part 2: 6 short turns (Answer first, then Ask in the next turn!)
     const speakingTurns = [
         {
+            role: 'ถาม AI',
             prompt: 'Can I have some potatoes?',
             requiredGroups: [
                 ['can', 'have', 'some'],
                 ['potato', 'potatoes']
             ],
-            missingHint: 'อย่าลืมพูดคำว่า "Can I have some potatoes?" ให้ครบนะครับ',
+            hint: 'ลองพูดคำว่า "Can I have some potatoes?" ชัดๆ นะครับ',
             aiReply: 'Yes, you can. Can I have some rice?'
         },
         {
-            prompt: 'Yes, you can. Can I have an egg?',
-            requiredGroups: [
-                ['yes', 'yeah', 'can'],
-                ['have', 'an', 'a'],
-                ['egg', 'eggs', 'x', 'ache']
-            ],
-            missingHint: 'พูดยังไม่ครบครับ! หลัง "Yes, you can." ต้องถามต่อว่า "Can I have an egg?" ด้วยนะ',
-            aiReply: 'Yes, you can. Can I have some bread?'
-        },
-        {
-            prompt: 'Yes, you can. Can I have some milk?',
-            requiredGroups: [
-                ['yes', 'yeah', 'can'],
-                ['have', 'some'],
-                ['milk', 'meal', 'new', 'mu']
-            ],
-            missingHint: 'พูดยังไม่ครบครับ! หลัง "Yes, you can." ต้องถามต่อว่า "Can I have some milk?" ด้วยนะ',
-            aiReply: 'Yes, you can. Can I have some carrots?'
-        },
-        {
+            role: 'ตอบ AI',
             prompt: 'Yes, you can.',
             requiredGroups: [
                 ['yes', 'yeah'],
                 ['can', 'you']
             ],
-            missingHint: 'ลองพูดคำว่า "Yes, you can." ชัดๆ อีกครั้งนะครับ',
+            hint: 'ลองพูดคำว่า "Yes, you can." นะครับ',
+            aiReply: null // ตอบเสร็จแล้วให้ถามต่อทันที
+        },
+        {
+            role: 'ถาม AI ต่อ',
+            prompt: 'Can I have an egg?',
+            requiredGroups: [
+                ['can', 'have'],
+                ['egg', 'eggs', 'x', 'ache']
+            ],
+            hint: 'ลองพูดคำว่า "Can I have an egg?" ชัดๆ นะครับ',
+            aiReply: 'Yes, you can. Can I have some bread?'
+        },
+        {
+            role: 'ตอบ AI',
+            prompt: 'Yes, you can.',
+            requiredGroups: [
+                ['yes', 'yeah'],
+                ['can', 'you']
+            ],
+            hint: 'ลองพูดคำว่า "Yes, you can." นะครับ',
+            aiReply: null // ตอบเสร็จแล้วให้ถามต่อทันที
+        },
+        {
+            role: 'ถาม AI ต่อ',
+            prompt: 'Can I have some milk?',
+            requiredGroups: [
+                ['can', 'have', 'some'],
+                ['milk', 'meal', 'new', 'mu']
+            ],
+            hint: 'ลองพูดคำว่า "Can I have some milk?" ชัดๆ นะครับ',
+            aiReply: 'Yes, you can. Can I have some carrots?'
+        },
+        {
+            role: 'ตอบ AI (รอบสุดท้าย)',
+            prompt: 'Yes, you can.',
+            requiredGroups: [
+                ['yes', 'yeah'],
+                ['can', 'you']
+            ],
+            hint: 'ลองพูดคำว่า "Yes, you can." นะครับ',
             aiReply: 'Thank you! Great job practicing English today!'
         }
     ];
@@ -555,9 +577,7 @@
     let isPendingSubmit = false;
     let recognition = null;
     let isListening = false;
-    let fullTranscript = '';
-    let silenceTimer = null;
-    let hasEvaluatedTurn = false;
+    let turnLocked = false; // ป้องกันการตรวจซ้ำ 2 รอบ
 
     function playSfx(type) {
         try {
@@ -668,11 +688,12 @@
         currentTurn = 0;
         part2Score = 0;
         tryCount = 0;
+        turnLocked = false;
         document.getElementById('chatBox').innerHTML = '';
         document.getElementById('speakCard').style.display = 'block';
         document.getElementById('finishAllBtn').style.display = 'none';
 
-        addBubble('ai', '🤖 AI Partner', 'Hello! Let\'s practice asking for food. You start first! (กดปุ่มไมค์แล้วพูดให้ครบทั้งประโยคนะครับ)');
+        addBubble('ai', '🤖 AI Partner', 'Hello! Let\'s practice asking for food. You start first!');
         loadTurn();
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -688,18 +709,17 @@
 
     function loadTurn() {
         tryCount = 0;
-        hasEvaluatedTurn = false;
-        fullTranscript = '';
+        turnLocked = false;
         const turn = speakingTurns[currentTurn];
-        document.getElementById('turnLabel').innerText = `รอบที่ ${currentTurn + 1} / ${speakingTurns.length} — ตาคุณพูด:`;
+        document.getElementById('turnLabel').innerText = `รอบที่ ${currentTurn + 1} / ${speakingTurns.length} — ${turn.role}:`;
         document.getElementById('targetSentence').innerText = turn.prompt;
         document.getElementById('heardText').innerText = '';
+        document.getElementById('micBtn').disabled = false;
         document.getElementById('fallbackWrap').style.display = recognition ? 'none' : 'block';
     }
 
     function speakModel() {
-        const turn = speakingTurns[currentTurn];
-        speakText(turn.prompt, 0.85);
+        speakText(speakingTurns[currentTurn].prompt, 0.85);
     }
 
     function isSentenceComplete(text, turn) {
@@ -718,82 +738,62 @@
         }
         recognition = new SpeechRecognition();
         recognition.lang = 'en-US';
-        recognition.continuous = true;
-        recognition.interimResults = true;
+        recognition.continuous = false;
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 3;
 
         recognition.onstart = () => {
             isListening = true;
-            hasEvaluatedTurn = false;
-            fullTranscript = '';
-            clearTimeout(silenceTimer);
             const btn = document.getElementById('micBtn');
             btn.classList.add('listening');
-            btn.innerText = '⏹️ กำลังฟัง... (พูดจบกดหยุด)';
-            document.getElementById('heardText').innerText = '🎙️ พูดให้ครบทั้งประโยคได้เลยครับ...';
+            btn.innerText = '🔴 กำลังฟัง... พูดเลย!';
+            document.getElementById('heardText').innerText = '🎙️ กำลังรับเสียง...';
         };
 
         recognition.onresult = (event) => {
-            let finalStr = '';
-            let interimStr = '';
-            for (let i = 0; i < event.results.length; i++) {
-                if (event.results[i].isFinal) {
-                    finalStr += event.results[i][0].transcript + ' ';
-                } else {
-                    interimStr += event.results[i][0].transcript + ' ';
+            if (turnLocked) return; // กันเด้งซ้ำเด็ดขาด
+            let transcripts = [];
+            for (let i = 0; i < event.results[0].length; i++) {
+                transcripts.push(event.results[0][i].transcript);
+            }
+            const bestText = transcripts[0];
+            const turn = speakingTurns[currentTurn];
+
+            if (transcripts.some(t => isSentenceComplete(t, turn))) {
+                completeTurn(bestText);
+            } else {
+                tryCount++;
+                playSfx('no');
+                document.getElementById('heardText').innerHTML = `🗣️ ได้ยินว่า "${bestText}"<br><span style="color:#b91c1c;">${turn.hint}</span>`;
+                if (tryCount >= 2) {
+                    document.getElementById('fallbackWrap').style.display = 'block';
                 }
             }
-            fullTranscript = (finalStr + interimStr).trim();
-            document.getElementById('heardText').innerText = `🗣️ กำลังได้ยิน: "${fullTranscript}"`;
-
-            // If full sentence is already detected, stop and pass right away
-            if (isSentenceComplete(fullTranscript, speakingTurns[currentTurn])) {
-                clearTimeout(silenceTimer);
-                hasEvaluatedTurn = true;
-                try { recognition.stop(); } catch (e) {}
-                completeTurn(fullTranscript);
-                return;
-            }
-
-            // Otherwise wait 2.2s after user stops speaking before evaluating
-            clearTimeout(silenceTimer);
-            silenceTimer = setTimeout(() => {
-                if (isListening) {
-                    try { recognition.stop(); } catch (e) {}
-                }
-            }, 2200);
         };
 
         recognition.onerror = () => {
-            clearTimeout(silenceTimer);
-            if (!hasEvaluatedTurn) {
-                document.getElementById('heardText').innerText = '⚠️ ไม่ได้ยินเสียง ลองกดพูดใหม่อีกครั้งนะครับ';
-                tryCount++;
-                if (tryCount >= 2) document.getElementById('fallbackWrap').style.display = 'block';
-            }
+            if (turnLocked) return;
+            document.getElementById('heardText').innerText = '⚠️ ไม่ได้ยินเสียง ลองกดพูดใหม่อีกครั้งนะครับ';
+            tryCount++;
+            if (tryCount >= 2) document.getElementById('fallbackWrap').style.display = 'block';
         };
 
         recognition.onend = () => {
-            clearTimeout(silenceTimer);
             isListening = false;
             const btn = document.getElementById('micBtn');
             btn.classList.remove('listening');
             btn.innerText = '🎤 กดพูด';
-
-            if (!hasEvaluatedTurn && fullTranscript) {
-                hasEvaluatedTurn = true;
-                evaluateSpeech(fullTranscript);
-            }
         };
     }
 
     function toggleListening() {
+        if (turnLocked) return;
         if (!recognition) {
             Swal.fire('เบราว์เซอร์ไม่รองรับไมค์', 'แนะนำเปิดด้วย Google Chrome หรือกดปุ่ม "ฝึกอ่านออกเสียงแล้ว" ด้านล่างแทนได้ครับ', 'info');
             document.getElementById('fallbackWrap').style.display = 'block';
             return;
         }
         if (isListening) {
-            clearTimeout(silenceTimer);
             try { recognition.stop(); } catch (e) {}
             return;
         }
@@ -801,48 +801,54 @@
         try { recognition.start(); } catch (e) {}
     }
 
-    function evaluateSpeech(spokenText) {
-        const turn = speakingTurns[currentTurn];
-        if (isSentenceComplete(spokenText, turn)) {
-            completeTurn(spokenText);
-        } else {
-            tryCount++;
-            playSfx('no');
-            document.getElementById('heardText').innerHTML = `🗣️ ได้ยินว่า "${spokenText}"<br><span style="color:#b91c1c;">${turn.missingHint}</span>`;
-            if (tryCount >= 2) {
-                document.getElementById('fallbackWrap').style.display = 'block';
-            }
-        }
-    }
-
     function passTurnManually() {
+        if (turnLocked) return;
         if (isListening) {
-            hasEvaluatedTurn = true;
             try { recognition.stop(); } catch (e) {}
         }
         completeTurn(speakingTurns[currentTurn].prompt);
     }
 
     function completeTurn(spokenText) {
+        if (turnLocked) return;
+        turnLocked = true; // ล็อกรอบทันที
+        document.getElementById('micBtn').disabled = true;
+
         const turn = speakingTurns[currentTurn];
         part2Score++;
         playSfx('ok');
         addBubble('user', '👤 คุณ (ผ่าน ✅)', spokenText);
 
-        setTimeout(() => {
-            addBubble('ai', '🤖 AI Partner', turn.aiReply);
-            speakText(turn.aiReply, 0.9);
+        currentTurn++;
 
-            currentTurn++;
-            if (currentTurn < speakingTurns.length) {
-                setTimeout(() => loadTurn(), 1400);
-            } else {
-                document.getElementById('speakCard').style.display = 'none';
-                document.getElementById('tab2').classList.remove('active');
-                document.getElementById('tab2').classList.add('done');
-                document.getElementById('finishAllBtn').style.display = 'inline-block';
-            }
-        }, 550);
+        if (turn.aiReply) {
+            setTimeout(() => {
+                addBubble('ai', '🤖 AI Partner', turn.aiReply);
+                speakText(turn.aiReply, 0.9);
+
+                if (currentTurn < speakingTurns.length) {
+                    setTimeout(() => loadTurn(), 1400);
+                } else {
+                    finishPart2UI();
+                }
+            }, 500);
+        } else {
+            // รอบที่ตอบ "Yes, you can." เสร็จ -> เปลี่ยนเป็นรอบถามต่อทันที
+            setTimeout(() => {
+                if (currentTurn < speakingTurns.length) {
+                    loadTurn();
+                } else {
+                    finishPart2UI();
+                }
+            }, 600);
+        }
+    }
+
+    function finishPart2UI() {
+        document.getElementById('speakCard').style.display = 'none';
+        document.getElementById('tab2').classList.remove('active');
+        document.getElementById('tab2').classList.add('done');
+        document.getElementById('finishAllBtn').style.display = 'inline-block';
     }
 
     function finishAll() {
@@ -850,7 +856,7 @@
         if (!localStorage.getItem('studentId')) {
             isPendingSubmit = true;
             document.getElementById('modalTitle').innerText = '📝 ลงชื่อเพื่อบันทึกคะแนน';
-            document.getElementById('modalSub').innerText = `คุณได้ ${total}/10 คะแนน กรอกข้อมูลเพื่อส่งครู`;
+            document.getElementById('modalSub').innerText = `คุณได้ ${total}/12 คะแนน กรอกข้อมูลเพื่อส่งครู`;
             document.getElementById('loginModal').classList.add('active');
         } else {
             submitScoreToSheet(total);
@@ -950,7 +956,7 @@
     function submitScoreToSheet(totalScore) {
         document.getElementById('scoreModal').classList.add('active');
         document.getElementById('finalScoreText').innerText = totalScore;
-        document.getElementById('scoreBreakdown').innerText = `ส่วนที่ 1: ${part1Score}/6  •  ส่วนที่ 2 (พูดกับ AI): ${part2Score}/4`;
+        document.getElementById('scoreBreakdown').innerText = `ส่วนที่ 1: ${part1Score}/6  •  ส่วนที่ 2 (พูดกับ AI): ${part2Score}/6`;
 
         const stat = document.getElementById('saveStatus');
         const playAgainBtn = document.getElementById('playAgainBtn');
@@ -975,7 +981,7 @@
                 studentId: "'" + localStorage.getItem('studentId'),
                 lesson: TOPIC_NAME,
                 score: totalScore,
-                maxScore: 10
+                maxScore: 12
             })
         }).catch(e => console.error(e));
 

@@ -190,7 +190,7 @@
             padding: 4px 8px;
         }
 
-        /* Filling section (Disabled until dialog finishes, with helpful note) */
+        /* Filling section */
         .quiz-intro-note {
             background: #fffbeb;
             border: 2px dashed #fcd34d;
@@ -244,6 +244,11 @@
             transition: 0.2s;
         }
 
+        .q-row.correct-row {
+            background: #f0fdf4;
+            border-color: #86efac;
+        }
+
         .q-row.incorrect {
             background: #fef2f2;
             border-color: #fca5a5;
@@ -271,7 +276,7 @@
             margin: 0 4px;
         }
         .q-select:focus { border-color: var(--royal); }
-        .q-select:disabled { opacity: 0.9; cursor: not-allowed; }
+        .q-select:disabled { opacity: 0.95; cursor: not-allowed; }
 
         .q-select.wrong-ans {
             border-color: #ef4444 !important;
@@ -286,12 +291,14 @@
         }
 
         .q-status {
-            font-size: 14px;
+            font-family: 'Prompt', sans-serif;
+            font-size: 13.5px;
             font-weight: 700;
-            color: #ef4444;
             display: inline-block;
             margin-top: 4px;
         }
+        .q-status.ok { color: #15803d; }
+        .q-status.no { color: #dc2626; }
 
         /* Action Buttons */
         .action-row {
@@ -303,13 +310,13 @@
         }
 
         .btn-primary {
-            padding: 13px 26px;
+            padding: 12px 24px;
             background: var(--royal);
             color: #fff;
             border: none;
             border-radius: 16px;
             font-family: 'Prompt', sans-serif;
-            font-size: 16px;
+            font-size: 15.5px;
             font-weight: 700;
             cursor: pointer;
             box-shadow: 0 4px 0 var(--royal-dark);
@@ -321,6 +328,16 @@
             box-shadow: 0 4px 0 #64748b;
             cursor: not-allowed;
             opacity: 0.75;
+        }
+
+        .btn-mint {
+            background: var(--mint);
+            box-shadow: 0 4px 0 var(--mint-dark);
+        }
+
+        .btn-amber {
+            background: var(--amber);
+            box-shadow: 0 4px 0 var(--amber-dark);
         }
 
         /* Modals */
@@ -368,6 +385,11 @@
             margin: 8px 0;
             display: block;
             line-height: 1;
+        }
+        .modal-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
     </style>
 </head>
@@ -439,79 +461,31 @@
             <p style="color:#64748b; font-weight:600; margin:6px 0 0 0; font-size:14px;">Fill in: much, many (6 ข้อ 12 คะแนน)</p>
             <span class="score-num"><span id="finalScoreText">0</span><span style="font-size:26px; color:#94a3b8;">/12</span></span>
             <div id="saveStatus" style="font-weight:700; font-size:14px; margin-bottom:14px; color:#d97706; min-height:20px;"></div>
-            <button id="playAgainBtn" class="btn-primary btn-mint" style="width:100%;" onclick="resetQuiz()" disabled>🔄 เล่นใหม่อีกครั้ง</button>
+            <div class="modal-actions">
+                <button id="reviewBtn" class="btn-primary btn-amber" style="width:100%;" onclick="reviewAnswers()" disabled>👀 ดูเฉลย (ถูก-ผิด)</button>
+                <button id="playAgainBtn" class="btn-primary btn-mint" style="width:100%;" onclick="resetQuiz()" disabled>🔄 เล่นใหม่อีกครั้ง</button>
+            </div>
         </div>
     </div>
 
 <script>
     const TOPIC_NAME = 'ม.1 Unit 8 Festive food much many';
 
-    // 6 questions with 2 dropdown slots each
     const questions = [
-        {
-            num: 1,
-            text_pre: '1 "How',
-            text_mid: 'oranges are there?" "Not',
-            text_post: '."',
-            ans1: 'many',
-            ans2: 'many',
-            nounType: 'Countable Plural'
-        },
-        {
-            num: 2,
-            text_pre: '2 "How',
-            text_mid: 'rice is there?" "Not',
-            text_post: '."',
-            ans1: 'much',
-            ans2: 'much',
-            nounType: 'Uncountable'
-        },
-        {
-            num: 3,
-            text_pre: '3 "How',
-            text_mid: 'onions are there?" "Not',
-            text_post: '."',
-            ans1: 'many',
-            ans2: 'many',
-            nounType: 'Countable Plural'
-        },
-        {
-            num: 4,
-            text_pre: '4 "How',
-            text_mid: 'biscuits are there?" "Not',
-            text_post: '."',
-            ans1: 'many',
-            ans2: 'many',
-            nounType: 'Countable Plural'
-        },
-        {
-            num: 5,
-            text_pre: '5 "How',
-            text_mid: 'milk is there?" "Not',
-            text_post: '."',
-            ans1: 'much',
-            ans2: 'much',
-            nounType: 'Uncountable'
-        },
-        {
-            num: 6,
-            text_pre: '6 "How',
-            text_mid: 'apples are there?" "Not',
-            text_post: '."',
-            ans1: 'many',
-            ans2: 'many',
-            nounType: 'Countable Plural'
-        }
+        { num: 1, text_pre: '1 "How', text_mid: 'oranges are there?" "Not',  text_post: '."', ans1: 'many', ans2: 'many' },
+        { num: 2, text_pre: '2 "How', text_mid: 'rice is there?" "Not',     text_post: '."', ans1: 'much', ans2: 'much' },
+        { num: 3, text_pre: '3 "How', text_mid: 'onions are there?" "Not',   text_post: '."', ans1: 'many', ans2: 'many' },
+        { num: 4, text_pre: '4 "How', text_mid: 'biscuits are there?" "Not', text_post: '."', ans1: 'many', ans2: 'many' },
+        { num: 5, text_pre: '5 "How', text_mid: 'milk is there?" "Not',     text_post: '."', ans1: 'much', ans2: 'much' },
+        { num: 6, text_pre: '6 "How', text_mid: 'apples are there?" "Not',   text_post: '."', ans1: 'many', ans2: 'many' }
     ];
 
     let isAudioCompleted = false;
     let audio = null;
-    let subtitleTimer = null;
     let isPendingSubmit = false;
     let lastScore = 0;
 
-    // Approximate timestamps based on conversation turns for highlighs
-    const subtitleTImes = [
+    const subtitleTimes = [
         { start: 0, end: 2.2 },
         { start: 2.2, end: 5.2 },
         { start: 5.2, end: 8.8 },
@@ -519,6 +493,23 @@
         { start: 11.2, end: 12.8 },
         { start: 12.8, end: 19 }
     ];
+
+    function playSfx(type) {
+        try {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.type = type === 'ok' ? 'triangle' : 'sawtooth';
+            osc.frequency.setValueAtTime(type === 'ok' ? 587.33 : 220, ctx.currentTime);
+            if (type === 'ok') osc.frequency.setValueAtTime(880, ctx.currentTime + 0.12);
+            gain.gain.setValueAtTime(0.15, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.28);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.28);
+        } catch (e) {}
+    }
 
     document.addEventListener('DOMContentLoaded', () => {
         setupAudio();
@@ -531,7 +522,7 @@
 
         audio.ontimeupdate = () => {
             const cur = audio.currentTime;
-            subtitleTImes.forEach((time, idx) => {
+            subtitleTimes.forEach((time, idx) => {
                 const line = document.getElementById(`sub-${idx}`);
                 if (cur >= time.start && cur < time.end) {
                     line.classList.add('active');
@@ -547,11 +538,8 @@
             document.getElementById('playLabel').innerText = 'ฟังซ้ำอีกรอบ';
             document.getElementById('audioPlayBtn').classList.remove('playing');
 
-            // Unlock and remove helper alerts
             document.getElementById('exerciseOverlay').classList.remove('locked');
             document.getElementById('quizIntroNote').style.display = 'none';
-
-            // Reset Sub highlights
             document.querySelectorAll('.subtitle-line').forEach(l => l.classList.remove('active'));
         };
     }
@@ -560,7 +548,6 @@
         if (!audio) return;
         if (audio.paused) {
             audio.play().catch(() => {
-                // If mp3 play fails, assume done & instantly unlock
                 isAudioCompleted = true;
                 document.getElementById('exerciseOverlay').classList.remove('locked');
                 document.getElementById('quizIntroNote').style.display = 'none';
@@ -636,10 +623,8 @@
 
             sel1.classList.remove('correct-ans', 'wrong-ans');
             sel2.classList.remove('correct-ans', 'wrong-ans');
-            row.classList.remove('incorrect');
-            errDiv.innerText = '';
+            row.classList.remove('correct-row', 'incorrect');
 
-            // 1 pt for each correct dropdown
             if (isCorrect1) {
                 totalPoints++;
                 sel1.classList.add('correct-ans');
@@ -654,14 +639,21 @@
                 sel2.classList.add('wrong-ans');
             }
 
-            if (!isCorrect1 || !isCorrect2) {
+            if (isCorrect1 && isCorrect2) {
+                row.classList.add('correct-row');
+                errDiv.className = 'q-status ok';
+                errDiv.innerText = '✅ ถูกต้องทั้ง 2 ช่อง (+2 คะแนน)';
+            } else {
                 row.classList.add('incorrect');
-                errDiv.innerHTML = `❌ ยังไม่ถูกต้อง (เฉลย: How <b>${q.ans1}</b> ... Not <b>${q.ans2}</b>)`;
+                errDiv.className = 'q-status no';
+                errDiv.innerHTML = `❌ มีจุดผิด (เฉลย: How <b>${q.ans1}</b> ... Not <b>${q.ans2}</b>)`;
             }
         });
 
+        playSfx(totalPoints >= 8 ? 'ok' : 'no');
         lastScore = totalPoints;
-        document.getElementById('submitBtn').disabled = true;
+        document.getElementById('submitBtn').style.display = 'none';
+        document.getElementById('inlineRetryBtn').style.display = 'inline-block';
 
         if (!localStorage.getItem('studentId')) {
             isPendingSubmit = true;
@@ -673,12 +665,17 @@
         }
     }
 
+    function reviewAnswers() {
+        document.getElementById('scoreModal').classList.remove('active');
+        document.getElementById('exerciseOverlay').scrollIntoView({ behavior: 'smooth' });
+    }
+
     function resetQuiz() {
         document.getElementById('scoreModal').classList.remove('active');
+        document.getElementById('submitBtn').style.display = 'inline-block';
         document.getElementById('submitBtn').disabled = false;
         document.getElementById('inlineRetryBtn').style.display = 'none';
 
-        // Keep dialogues unlocked
         isAudioCompleted = true;
         document.getElementById('exerciseOverlay').classList.remove('locked');
         document.getElementById('quizIntroNote').style.display = 'none';
@@ -775,14 +772,17 @@
         document.getElementById('scoreModal').classList.add('active');
         document.getElementById('finalScoreText').innerText = score;
         const stat = document.getElementById('saveStatus');
+        const reviewBtn = document.getElementById('reviewBtn');
         const playAgainBtn = document.getElementById('playAgainBtn');
+
+        reviewBtn.disabled = true;
         playAgainBtn.disabled = true;
 
         if (typeof QUIZ_CONFIG === 'undefined' || !QUIZ_CONFIG.SCRIPT_URL) {
             stat.innerText = '❌ ไม่พบไฟล์ตั้งค่า (quiz-config.js)';
             stat.style.color = '#b91c1c';
+            reviewBtn.disabled = false;
             playAgainBtn.disabled = false;
-            document.getElementById('inlineRetryBtn').style.display = 'inline-block';
             return;
         }
 
@@ -805,8 +805,8 @@
         setTimeout(() => {
             stat.innerText = '✅ บันทึกคะแนนลงระบบเรียบร้อย!';
             stat.style.color = '#15803d';
+            reviewBtn.disabled = false;
             playAgainBtn.disabled = false;
-            document.getElementById('inlineRetryBtn').style.display = 'inline-block';
         }, 1500);
     }
 </script>

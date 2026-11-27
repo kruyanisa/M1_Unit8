@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Festive Food: Vocab Practice - Unit 8b</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Prompt:wght@500;600;700&family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://kruyanisa.github.io/classroom-core/quiz-config.js"></script>
+
+    <style>
+        :root {
+            --coral: #f97316;
+            --coral-dark: #c2410c;
+            --berry: #ec4899;
+            --berry-dark: #be185d;
+            --mint: #10b981;
+            --mint-dark: #059669;
+            --sky: #0ea5e9;
+            --sky-dark: #0369a1;
+            --rose: #f43f5e;
+            --rose-dark: #be123c;
+            --cream: #fffbeb;
+            --ink: #1e293b;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: 'Sarabun', sans-serif;
+            margin: 0;
+            padding: 12px 12px 40px 12px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--ink);
+            background: linear-gradient(155deg, #fff7ed 0%, #fdf2f8 50%, #ecfdf5 100%);
+        }
+
+        /* Profile Bar */
+        .profile-bar {
+            width: 100%;
+            max-width: 720px;
+            font-size: clamp(12px, 3.2vw, 14px);
+            background: rgba(255, 255, 255, 0.96);
+            border: 2px solid #fed7aa;
+            padding: 8px 14px;
+            border-radius: 20px;
+            color: #9a3412;
+            font-weight: 700;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 12px rgba(249, 115, 22, 0.1);
+        }
+
+        .btn-switch {
+            background: var(--rose);
+            color: #fff;
+            border: none;
+            padding: 4px 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-family: 'Prompt', sans-serif;
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        /* Main Shell */
+        .card-shell {
+            width: 100%;
+            max-width: 720px;
+            background: rgba(255, 255, 255, 0.96);
+            border: 3px solid #fed7aa;
+            border-radius: 28px;
+            padding: 18px;
+            box-shadow: 0 14px 30px rgba(249, 115, 22, 0.12);
+        }
+
+        .header-top { text-align: center; margin-bottom: 14px; }
+
+        .badge-unit {
+            display: inline-block;
+            background: linear-gradient(90deg, var(--coral), var(--berry));
+            color: #fff;
+            font-family: 'Prompt', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 4px 14px;
+            border-radius: 20px;
+            margin-bottom: 6px;
+        }
+
+        h1 {
+            font-family: 'Fredoka One', cursive;
+            color: #9a3412;
+            font-size: clamp(22px, 5.5vw, 30px);
+            margin: 0 0 4px 0;
+        }
+
+        .sub-note {
+            font-size: 14px;
+            color: #64748b;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        /* Mode Switcher Tabs */
+        .mode-tabs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 14px 0 18px 0;
+        }
+
+        .tab-btn {
+            padding: 12px 10px;
+            border-radius: 16px;
+            border: 2.5px solid #e2e8f0;
+            background: #f8fafc;
+            color: #475569;
+            font-family: 'Prompt', sans-serif;
+            font-size: clamp(14px, 3.8vw, 16px);
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.15s;
+        }
+
+        .tab-btn.active-flash {
+            background: linear-gradient(135deg, #fff7ed, #ffedd5);
+            border-color: var(--coral);
+            color: #9a3412;
+            box-shadow: 0 4px 0 #fdba74;
+        }
+
+        .tab-btn.active-quiz {
+            background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+            border-color: var(--mint);
+            color: #065f46;
+            box-shadow: 0 4px 0 #6ee7b7;
+        }
+
+        /* ================= FLASHCARD MODE ================= */
+        .fc-status {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'Prompt', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            color: #9a3412;
+            margin-bottom: 12px;
+        }
+
+        .flashcard-scene {
+            perspective: 1000px;
+            width: 100%;
+            max-width: 460px;
+            height: 270px;
+            margin: 0 auto 16px auto;
+            cursor: pointer;
+        }
+
+        .flashcard {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.5s cubic-bezier(0.4, 0.2, 0.2, 1);
+        }
+
+        .flashcard.is-flipped { transform: rotateY(180deg); }
+
+        .fc-face {
+            position: absolute;
+            inset: 0;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            border-radius: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+        }
+
+        .fc-front {
+            background: linear-gradient(145deg, #ffffff, #fff7ed);
+            border: 3px solid #fdba74;
+        }
+
+        .fc-back {
+            background: linear-gradient(145deg, #ecfdf5, #d1fae5);
+            border: 3px solid #34d399;
+            transform: rotateY(180deg);
+        }
+
+        .pos-tag {
+            display: inline-block;
+            font-family: 'Prompt', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 3px 12px;
+            border-radius: 999px;
+            margin-bottom: 10px;
+        }
+        .pos-v { background: #dbeafe; color: #1d4ed8; }
+        .pos-n { background: #fef3c7; color: #b45309; }
+        .pos-adj { background: #fce7f3; color: #be185d; }
+
+        .fc-word {
+            font-family: 'Fredoka One', cursive;
+            font-size: clamp(32px, 8vw, 44px);
+            color: #9a3412;
+            margin: 0 0 12px 0;
+            line-height: 1.15;
+        }
+
+        .fc-meaning {
+            font-family: 'Prompt', sans-serif;
+            font-size: clamp(20px, 5vw, 25px);
+            font-weight: 700;
+            color: #065f46;
+            margin: 0 0 8px 0;
+            line-height: 1.4;
+        }
+
+        .fc-hint {
+            font-size: 13px;
+            color: #64748b;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        .btn-audio-pill {
+            background: var(--sky);
+            color: #fff;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 999px;
+            font-family: 'Prompt', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 0 var(--sky-dark);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: 0.1s;
+        }
+        .btn-audio-pill:active { transform: translateY(3px); box-shadow: none; }
+
+        .fc-controls {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        /* ================= QUIZ MODE ================= */
+        .quiz-status-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 14px;
+            font-family: 'Prompt', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .progress-track {
+            flex: 1;
+            height: 12px;
+            background: #e2e8f0;
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--coral), var(--mint));
+            transition: width 0.3s ease;
+        }
+
+        .live-score {
+            background: #fef3c7;
+            color: #b45309;
+            padding: 4px 12px;
+            border-radius: 12px;
+            border: 1.5px solid #fcd34d;
+        }
+
+        .quiz-prompt-box {
+            background: linear-gradient(145deg, #fff7ed, #ffffff);
+            border: 3px solid #fed7aa;
+            border-radius: 22px;
+            padding: 20px 16px;
+            text-align: center;
+            margin-bottom: 14px;
+        }
+
+        .quiz-word {
+            font-family: 'Fredoka One', cursive;
+            font-size: clamp(30px, 7.5vw, 42px);
+            color: #9a3412;
+            margin: 4px 0 12px 0;
+        }
+
+        .choices-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        @media (max-width: 540px) {
+            .choices-grid { grid-template-columns: 1fr; }
+        }
+
+        .choice-btn {
+            padding: 14px 16px;
+            background: #ffffff;
+            border: 2.5px solid #cbd5e1;
+            border-radius: 16px;
+            font-family: 'Prompt', sans-serif;
+            font-size: clamp(14.5px, 3.8vw, 16px);
+            font-weight: 600;
+            color: var(--ink);
+            text-align: left;
+            cursor: pointer;
+            box-shadow: 0 4px 0 #cbd5e1;
+            transition: 0.12s;
+            line-height: 1.4;
+        }
+
+        .choice-btn:hover:not(:disabled) {
+            border-color: var(--coral);
+            background: #fff7ed;
+        }
+        .choice-btn:active:not(:disabled) { transform: translateY(3px); box-shadow: none; }
+        .choice-btn:disabled { cursor: not-allowed; }
+
+        .choice-btn.correct {
+            background: #dcfce7 !important;
+            border-color: #10b981 !important;
+            color: #065f46 !important;
+            box-shadow: 0 4px 0 #059669 !important;
+        }
+
+        .choice-btn.wrong {
+            background: #fee2e2 !important;
+            border-color: #ef4444 !important;
+            color: #991b1b !important;
+            box-shadow: 0 4px 0 #dc2626 !important;
+        }
+
+        .quiz-feedback {
+            text-align: center;
+            font-family: 'Prompt', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            min-height: 24px;
+            margin-top: 12px;
+        }
+
+        /* Shared Tactile Buttons */
+        .btn-primary {
+            padding: 11px 20px;
+            background: var(--coral);
+            color: #fff;
+            border: none;
+            border-radius: 16px;
+            font-family: 'Prompt', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 0 var(--coral-dark);
+            transition: 0.1s;
+        }
+        .btn-primary:active:not(:disabled) { transform: translateY(3px); box-shadow: none; }
+        .btn-primary:disabled {
+            background: #94a3b8;
+            box-shadow: 0 4px 0 #64748b;
+            cursor: not-allowed;
+            opacity: 0.75;
+        }
+
+        .btn-mint { background: var(--mint); box-shadow: 0 4px 0 var(--mint-dark); }
+        .btn-berry { background: var(--berry); box-shadow: 0 4px 0 var(--berry-dark); }
+        .btn-slate { background: #64748b; box-shadow: 0 4px 0 #475569; }
+
+        /* Modals */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+            visibility: hidden;
+            opacity: 0;
+            transition: 0.25s;
+            padding: 15px;
+        }
+        .modal-overlay.active { visibility: visible; opacity: 1; }
+        .modal-box {
+            background: #fff;
+            padding: 26px 20px;
+            border-radius: 26px;
+            text-align: center;
+            width: 100%;
+            max-width: 340px;
+            border: 4px solid var(--coral);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+        .modal-box input {
+            width: 100%;
+            padding: 11px;
+            margin-bottom: 10px;
+            border: 2px solid #fed7aa;
+            border-radius: 14px;
+            text-align: center;
+            font-family: 'Sarabun', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            outline: none;
+        }
+        .score-num {
+            font-family: 'Fredoka One', cursive;
+            font-size: 56px;
+            color: var(--coral);
+            margin: 8px 0;
+            display: block;
+            line-height: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- User Profile Bar -->
+    <div id="userProfile" class="profile-bar" style="display:none;">
+        <span>👤 <span id="p_name"></span> | 🏫 <span id="p_room"></span> | 🆔 <span id="p_id"></span></span>
+        <button class="btn-switch" onclick="switchAccount()">🔄 สลับบัญชี</button>
+    </div>
+
+    <!-- Main Card -->
+    <div class="card-shell">
+        <div class="header-top">
+            <div class="badge-unit">Unit 8b • Festive Food</div>
+            <h1>🎉 Vocab Practice (26 Words)</h1>
+            <p class="sub-note">ทบทวนคำศัพท์ด้วย <strong>แฟลชการ์ด</strong> แล้วทำ <strong>ควิซ 4 ตัวเลือก</strong> เพื่อเก็บคะแนน</p>
+        </div>
+
+        <!-- Mode Tabs -->
+        <div class="mode-tabs">
+            <button id="tabFlash" class="tab-btn active-flash" onclick="switchMode('flash')">🃏 แฟลชการ์ด (ทบทวน)</button>
+            <button id="tabQuiz" class="tab-btn" onclick="switchMode('quiz')">🎯 ควิซ 4 ตัวเลือก (เก็บคะแนน)</button>
+        </div>
+
+        <!-- VIEW 1: FLASHCARDS -->
+        <div id="flashView">
+            <div class="fc-status">
+                <span id="fcCounter">คำที่ 1 / 26</span>
+                <button class="btn-switch" style="background:var(--berry);" onclick="shuffleFlashcards()">🔀 สลับการ์ด</button>
+            </div>
+
+            <div class="flashcard-scene" onclick="flipCard()">
+                <div class="flashcard" id="flashcardEl">
+                    <!-- Front -->
+                    <div class="fc-face fc-front">
+                        <span id="fcPosFront" class="pos-tag pos-v">v.</span>
+                        <div id="fcWord" class="fc-word">cook</div>
+                        <button class="btn-audio-pill" onclick="event.stopPropagation(); playCurrentFlashAudio()">🔊 ฟังเสียง</button>
+                        <div class="fc-hint">👆 แตะที่การ์ดเพื่อดูความหมาย</div>
+                    </div>
+                    <!-- Back -->
+                    <div class="fc-face fc-back">
+                        <span id="fcPosBack" class="pos-tag pos-v">v.</span>
+                        <div id="fcMeaning" class="fc-meaning">ทำอาหาร, ปรุงอาหาร</div>
+                        <div id="fcWordSmall" style="font-family:'Prompt'; font-weight:700; color:#047857; font-size:15px;">(cook)</div>
+                        <div class="fc-hint">👆 แตะอีกครั้งเพื่อพลิกกลับ</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="fc-controls">
+                <button class="btn-primary btn-slate" onclick="prevCard()">⬅️ ก่อนหน้า</button>
+                <button class="btn-primary" onclick="nextCard()">ถัดไป ➡️</button>
+                <button class="btn-primary btn-mint" onclick="switchMode('quiz')">🎯 เริ่มทำควิซเลย</button>
+            </div>
+        </div>
+
+        <!-- VIEW 2: 4-CHOICE QUIZ -->
+        <div id="quizView" style="display:none;">
+            <div class="quiz-status-row">
+                <span id="qProgressTxt" style="color:#9a3412;">ข้อ 1 / 26</span>
+                <div class="progress-track">
+                    <div class="progress-fill" id="qProgressFill"></div>
+                </div>
+                <span class="live-score">⭐ <span id="qLiveScore">0</span> / 26</span>
+            </div>
+
+            <div class="quiz-prompt-box">
+                <span id="qPos" class="pos-tag pos-n">n.</span>
+                <div id="qWord" class="quiz-word">banana</div>
+                <button class="btn-audio-pill" onclick="playCurrentQuizAudio()">🔊 ฟังเสียงคำศัพท์</button>
+            </div>
+
+            <div class="choices-grid" id="choicesGrid"></div>
+            <div id="quizFeedback" class="quiz-feedback"></div>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal-box">
+            <h2 id="modalTitle" style="color:#9a3412; margin:0 0 6px 0; font-family:'Prompt';">📝 ลงชื่อเข้าเรียน</h2>
+            <p id="modalSub" style="color:#64748b; font-weight:600; margin:0 0 12px 0; font-size:14px;">กรอกข้อมูลเพื่อเริ่มเรียนและบันทึกคะแนน</p>
+            <input type="text" id="in_name" placeholder="ชื่อ - นามสกุล">
+            <input type="text" id="in_room" placeholder="ชั้น/ห้อง (เช่น 1/1)">
+            <input type="text" id="in_id" placeholder="รหัสนักเรียน (5 หลัก)" maxlength="5">
+            <button class="btn-primary" style="width:100%;" onclick="confirmUser()">🚀 เริ่มเลย</button>
+        </div>
+    </div>
+
+    <!-- Score Modal -->
+    <div class="modal-overlay" id="scoreModal">
+        <div class="modal-box">
+            <h2 style="color:#9a3412; margin:0; font-family:'Prompt';">🎉 สรุปผลคะแนนคำศัพท์</h2>
+            <p style="color:#64748b; font-weight:600; margin:6px 0 0 0; font-size:14px;">Festive Food Vocab (26 ข้อ)</p>
+            <span class="score-num"><span id="finalScoreText">0</span><span style="font-size:26px; color:#94a3b8;">/26</span></span>
+            <div id="saveStatus" style="font-weight:700; font-size:14px; margin-bottom:14px; color:#d97706; min-height:20px;"></div>
+            <button id="playAgainBtn" class="btn-primary btn-mint" style="width:100%;" onclick="restartQuiz()" disabled>🔄 ทำควิซใหม่อีกครั้ง</button>
+        </div>
+    </div>
+
+<script>
+    const TOPIC_NAME = 'ม.1 Unit 8 Festive food vocab practice';
+
+    const vocabData = [
+        { word: 'cook',         pos: 'v.',   meaning: 'ทำอาหาร, ปรุงอาหาร' },
+        { word: 'banana',       pos: 'n.',   meaning: 'กล้วย' },
+        { word: 'chicken',      pos: 'n.',   meaning: 'เนื้อไก่, ไก่' },
+        { word: 'culture',      pos: 'n.',   meaning: 'วัฒนธรรม' },
+        { word: 'dish',         pos: 'n.',   meaning: 'จานอาหาร, เมนูอาหาร' },
+        { word: 'Eid',          pos: 'n.',   meaning: 'เทศกาลอีด (วันฉลองสิ้นสุดเดือนรอมฎอนของชาวมุสลิม)' },
+        { word: 'goose',        pos: 'n.',   meaning: 'ห่าน' },
+        { word: 'Iceland',      pos: 'n.',   meaning: 'ประเทศไอซ์แลนด์' },
+        { word: 'Indonesia',    pos: 'n.',   meaning: 'ประเทศอินโดนีเซีย' },
+        { word: 'inspiration',  pos: 'n.',   meaning: 'แรงบันดาลใจ' },
+        { word: 'Martinstag',   pos: 'n.',   meaning: 'เทศกาลมาร์ตินสทาก (วันนักบุญมาร์ตินของเยอรมนี)' },
+        { word: 'midwinter',    pos: 'n.',   meaning: 'กลางฤดูหนาว' },
+        { word: 'milk',         pos: 'n.',   meaning: 'นม' },
+        { word: 'part',         pos: 'n.',   meaning: 'ส่วน, ส่วนหนึ่ง' },
+        { word: 'pie',          pos: 'n.',   meaning: 'พาย' },
+        { word: 'pumpkin',      pos: 'n.',   meaning: 'ฟักทอง' },
+        { word: 'Ramadan',      pos: 'n.',   meaning: 'เดือนรอมฎอน (เดือนถือศีลอดของศาสนาอิสลาม)' },
+        { word: 'sake',         pos: 'n.',   meaning: 'สาเก (เหล้าข้าวญี่ปุ่น)' },
+        { word: 'sausage',      pos: 'n.',   meaning: 'ไส้กรอก' },
+        { word: 'sushi',        pos: 'n.',   meaning: 'ซูชิ' },
+        { word: 'Thanksgiving', pos: 'n.',   meaning: 'วันขอบคุณพระเจ้า (เทศกาลของสหรัฐอเมริกา)' },
+        { word: 'turkey',       pos: 'n.',   meaning: 'ไก่งวง' },
+        { word: 'essential',    pos: 'adj.', meaning: 'สำคัญมาก, จำเป็น' },
+        { word: 'exotic',       pos: 'adj.', meaning: 'แปลกใหม่, ต่างแดน' },
+        { word: 'holy',         pos: 'adj.', meaning: 'ศักดิ์สิทธิ์' },
+        { word: 'typical',      pos: 'adj.', meaning: 'ตามแบบฉบับ, เป็นประจำ' }
+    ];
+
+    const MAX_SCORE = vocabData.length;
+    let audioPlayer = null;
+    let fcList = [...vocabData];
+    let fcIdx = 0;
+
+    let quizList = [];
+    let qIdx = 0;
+    let qScore = 0;
+    let qLocked = false;
+    let isPendingSubmit = false;
+
+    function shuffle(arr) {
+        const a = [...arr];
+        for (let i = a.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+    }
+
+    function getPosClass(pos) {
+        if (pos === 'v.') return 'pos-tag pos-v';
+        if (pos === 'adj.') return 'pos-tag pos-adj';
+        return 'pos-tag pos-n';
+    }
+
+    // เล่นไฟล์เสียงตามชื่อคำศัพท์ (รองรับทั้งพิมพ์ใหญ่/เล็ก และมี TTS สำรอง)
+    function playWordAudio(word) {
+        if (audioPlayer) {
+            audioPlayer.pause();
+            audioPlayer.currentTime = 0;
+        }
+        const primarySrc = `${word}.mp3`;
+        const lowerSrc = `${word.toLowerCase()}.mp3`;
+
+        audioPlayer = new Audio(primarySrc);
+        audioPlayer.play().catch(() => {
+            if (primarySrc !== lowerSrc) {
+                audioPlayer = new Audio(lowerSrc);
+                audioPlayer.play().catch(() => speakFallback(word));
+            } else {
+                speakFallback(word);
+            }
+        });
+    }
+
+    function speakFallback(text) {
+        if (!('speechSynthesis' in window)) return;
+        window.speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = 'en-US';
+        u.rate = 0.88;
+        window.speechSynthesis.speak(u);
+    }
+
+    // เสียงถูก-ผิดด้วย Web Audio API
+    function playSfx(type) {
+        try {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.type = type === 'ok' ? 'triangle' : 'sawtooth';
+            osc.frequency.setValueAtTime(type === 'ok' ? 587.33 : 220, ctx.currentTime);
+            if (type === 'ok') osc.frequency.setValueAtTime(880, ctx.currentTime + 0.1);
+            gain.gain.setValueAtTime(0.14, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.25);
+        } catch (e) {}
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        checkLoginStatus();
+        renderFlashcard();
+    });
+
+    function switchMode(mode) {
+        const flashView = document.getElementById('flashView');
+        const quizView = document.getElementById('quizView');
+        const tabFlash = document.getElementById('tabFlash');
+        const tabQuiz = document.getElementById('tabQuiz');
+
+        if (mode === 'flash') {
+            flashView.style.display = 'block';
+            quizView.style.display = 'none';
+            tabFlash.className = 'tab-btn active-flash';
+            tabQuiz.className = 'tab-btn';
+            renderFlashcard();
+        } else {
+            flashView.style.display = 'none';
+            quizView.style.display = 'block';
+            tabFlash.className = 'tab-btn';
+            tabQuiz.className = 'tab-btn active-quiz';
+            startQuiz();
+        }
+    }
+
+    // ================= FLASHCARD LOGIC =================
+    function renderFlashcard() {
+        const item = fcList[fcIdx];
+        document.getElementById('flashcardEl').classList.remove('is-flipped');
+        document.getElementById('fcCounter').innerText = `คำที่ ${fcIdx + 1} / ${fcList.length}`;
+        document.getElementById('fcWord').innerText = item.word;
+        document.getElementById('fcMeaning').innerText = item.meaning;
+        document.getElementById('fcWordSmall').innerText = `(${item.word})`;
+
+        const posClass = getPosClass(item.pos);
+        const pf = document.getElementById('fcPosFront');
+        const pb = document.getElementById('fcPosBack');
+        pf.className = posClass;
+        pf.innerText = item.pos;
+        pb.className = posClass;
+        pb.innerText = item.pos;
+    }
+
+    function flipCard() {
+        document.getElementById('flashcardEl').classList.toggle('is-flipped');
+    }
+
+    function playCurrentFlashAudio() {
+        playWordAudio(fcList[fcIdx].word);
+    }
+
+    function nextCard() {
+        fcIdx = (fcIdx + 1) % fcList.length;
+        renderFlashcard();
+    }
+
+    function prevCard() {
+        fcIdx = (fcIdx - 1 + fcList.length) % fcList.length;
+        renderFlashcard();
+    }
+
+    function shuffleFlashcards() {
+        fcList = shuffle(vocabData);
+        fcIdx = 0;
+        renderFlashcard();
+    }
+
+    // ================= QUIZ LOGIC =================
+    function startQuiz() {
+        document.getElementById('scoreModal').classList.remove('active');
+        quizList = shuffle(vocabData);
+        qIdx = 0;
+        qScore = 0;
+        document.getElementById('qLiveScore').innerText = '0';
+        renderQuizQuestion();
+    }
+
+    function restartQuiz() {
+        startQuiz();
+    }
+
+    function renderQuizQuestion() {
+        qLocked = false;
+        const current = quizList[qIdx];
+
+        document.getElementById('qProgressTxt').innerText = `ข้อ ${qIdx + 1} / ${MAX_SCORE}`;
+        document.getElementById('qProgressFill').style.width = `${(qIdx / MAX_SCORE) * 100}%`;
+
+        const qPosEl = document.getElementById('qPos');
+        qPosEl.className = getPosClass(current.pos);
+        qPosEl.innerText = current.pos;
+
+        document.getElementById('qWord').innerText = current.word;
+        document.getElementById('quizFeedback').innerText = '';
+
+        // สร้าง 4 ตัวเลือก (ถูก 1 + หลอก 3)
+        const distractors = shuffle(vocabData.filter(v => v.word !== current.word)).slice(0, 3);
+        const options = shuffle([current, ...distractors]);
+
+        const grid = document.getElementById('choicesGrid');
+        grid.innerHTML = '';
+        options.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.className = 'choice-btn';
+            btn.innerText = opt.meaning;
+            btn.dataset.word = opt.word;
+            btn.onclick = () => selectAnswer(btn, opt.word === current.word, current);
+            grid.appendChild(btn);
+        });
+
+        playWordAudio(current.word);
+    }
+
+    function playCurrentQuizAudio() {
+        if (quizList[qIdx]) playWordAudio(quizList[qIdx].word);
+    }
+
+    function selectAnswer(clickedBtn, isCorrect, current) {
+        if (qLocked) return;
+        qLocked = true;
+
+        const allBtns = document.querySelectorAll('.choice-btn');
+        allBtns.forEach(b => {
+            b.disabled = true;
+            if (b.dataset.word === current.word) {
+                b.classList.add('correct');
+            }
+        });
+
+        const fb = document.getElementById('quizFeedback');
+        if (isCorrect) {
+            qScore++;
+            document.getElementById('qLiveScore').innerText = qScore;
+            playSfx('ok');
+            fb.style.color = '#059669';
+            fb.innerText = '✅ ถูกต้อง! เก่งมาก';
+        } else {
+            clickedBtn.classList.add('wrong');
+            playSfx('no');
+            fb.style.color = '#dc2626';
+            fb.innerText = `❌ ยังไม่ถูก — คำตอบคือ "${current.meaning}"`;
+        }
+
+        document.getElementById('qProgressFill').style.width = `${((qIdx + 1) / MAX_SCORE) * 100}%`;
+
+        setTimeout(() => {
+            qIdx++;
+            if (qIdx < MAX_SCORE) {
+                renderQuizQuestion();
+            } else {
+                finishQuiz();
+            }
+        }, isCorrect ? 850 : 1450);
+    }
+
+    function finishQuiz() {
+        if (!localStorage.getItem('studentId')) {
+            isPendingSubmit = true;
+            document.getElementById('modalTitle').innerText = '📝 ลงชื่อเพื่อบันทึกคะแนน';
+            document.getElementById('modalSub').innerText = `คุณได้ ${qScore}/${MAX_SCORE} คะแนน กรอกข้อมูลเพื่อส่งครู`;
+            document.getElementById('loginModal').classList.add('active');
+        } else {
+            submitScoreToSheet(qScore);
+        }
+    }
+
+    // ================= LOGIN & GOOGLE SHEETS =================
+    function formatRoomValue(val) {
+        const nums = val.match(/\d+/g);
+        if (nums && nums.length >= 2) return `ม.${nums[0]}/${nums[1]}`;
+        if (nums && nums.length === 1) return `ม.1/${nums[0]}`;
+        return val.trim();
+    }
+
+    document.getElementById('in_room').addEventListener('blur', function() {
+        this.value = formatRoomValue(this.value);
+    });
+
+    function checkLoginStatus() {
+        if (localStorage.getItem('studentId')) {
+            document.getElementById('userProfile').style.display = 'flex';
+            document.getElementById('p_name').innerText = localStorage.getItem('studentName');
+            document.getElementById('p_room').innerText = localStorage.getItem('studentRoom');
+            document.getElementById('p_id').innerText = localStorage.getItem('studentId');
+        } else {
+            document.getElementById('userProfile').style.display = 'none';
+            document.getElementById('loginModal').classList.add('active');
+        }
+    }
+
+    function switchAccount() {
+        Swal.fire({
+            title: '⚠️ สลับบัญชีผู้เล่น?',
+            text: 'ระบบจะล้างข้อมูลเดิมและเริ่มใหม่',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#f43f5e',
+            cancelButtonColor: '#94a3b8',
+            confirmButtonText: 'ตกลง',
+            cancelButtonText: 'ยกเลิก'
+        }).then((res) => {
+            if (res.isConfirmed) {
+                localStorage.clear();
+                isPendingSubmit = false;
+                document.getElementById('userProfile').style.display = 'none';
+                document.getElementById('in_name').value = '';
+                document.getElementById('in_room').value = '';
+                document.getElementById('in_id').value = '';
+                document.getElementById('modalTitle').innerText = '🔄 ลงชื่อบัญชีใหม่';
+                document.getElementById('modalSub').innerText = 'กรอกข้อมูลนักเรียนคนใหม่เพื่อเริ่มเรียน';
+                document.getElementById('loginModal').classList.add('active');
+            }
+        });
+    }
+
+    function confirmUser() {
+        const n = document.getElementById('in_name').value.trim();
+        const r = formatRoomValue(document.getElementById('in_room').value);
+        document.getElementById('in_room').value = r;
+        const id = document.getElementById('in_id').value.trim();
+
+        if (!n || !r || id.length !== 5) {
+            Swal.fire('ข้อมูลไม่ครบ!', 'กรุณากรอกชื่อ ห้อง และรหัสนักเรียน 5 หลัก', 'warning');
+            return;
+        }
+
+        localStorage.setItem('studentName', n);
+        localStorage.setItem('studentRoom', r);
+        localStorage.setItem('studentId', id);
+
+        document.getElementById('loginModal').classList.remove('active');
+        document.getElementById('userProfile').style.display = 'flex';
+        document.getElementById('p_name').innerText = n;
+        document.getElementById('p_room').innerText = r;
+        document.getElementById('p_id').innerText = id;
+
+        if (isPendingSubmit) {
+            isPendingSubmit = false;
+            submitScoreToSheet(qScore);
+        }
+    }
+
+    function submitScoreToSheet(score) {
+        document.getElementById('scoreModal').classList.add('active');
+        document.getElementById('finalScoreText').innerText = score;
+        const stat = document.getElementById('saveStatus');
+        const playAgainBtn = document.getElementById('playAgainBtn');
+        playAgainBtn.disabled = true;
+
+        if (typeof QUIZ_CONFIG === 'undefined' || !QUIZ_CONFIG.SCRIPT_URL) {
+            stat.innerText = '❌ ไม่พบไฟล์ตั้งค่า (quiz-config.js)';
+            stat.style.color = '#b91c1c';
+            playAgainBtn.disabled = false;
+            return;
+        }
+
+        stat.innerText = '⏳ กำลังบันทึกคะแนนลงระบบ...';
+        stat.style.color = '#d97706';
+
+        fetch(QUIZ_CONFIG.SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            body: JSON.stringify({
+                name: localStorage.getItem('studentName'),
+                room: localStorage.getItem('studentRoom'),
+                studentId: "'" + localStorage.getItem('studentId'),
+                lesson: TOPIC_NAME,
+                score: score,
+                maxScore: MAX_SCORE
+            })
+        }).catch(e => console.error(e));
+
+        setTimeout(() => {
+            stat.innerText = '✅ บันทึกคะแนนลงระบบเรียบร้อย!';
+            stat.style.color = '#15803d';
+            playAgainBtn.disabled = false;
+        }, 1500);
+    }
+</script>
+</body>
+</html>

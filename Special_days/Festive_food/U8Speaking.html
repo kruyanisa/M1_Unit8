@@ -351,7 +351,7 @@
         <div class="header-top">
             <div class="badge-unit">Unit 8b • Festive Food</div>
             <h1>🎄 Speaking Practice (A / B)</h1>
-            <p class="sub-note">เลือกบทบาท <strong>A</strong> หรือ <strong>B</strong> แล้วฝึกพูดโต้ตอบกับ AI (คะแนนเต็ม 10 คะแนนเท่ากัน)</p>
+            <p class="sub-note">เลือกบทบาท <strong>A</strong> หรือ <strong>B</strong> แล้วพูดให้ครบทั้งประโยค (คะแนนเต็ม 10 คะแนนเท่ากัน)</p>
         </div>
 
         <!-- Step 1: Role Selection -->
@@ -423,18 +423,19 @@
 <script>
     const TOPIC_NAME = 'ม.1 Unit 8 Festive food Speaking';
 
+    // ต้องพูดครบคำสำคัญ + คำลงท้ายประโยค ถึงจะผ่าน
     const dialogue = [
-        { role: 'A', text: 'I really like the food on Christmas day.', keywords: ['really','like','food','christmas','day'] },
-        { role: 'B', text: 'What do you like about it?', keywords: ['what','do','you','like','about'] },
-        { role: 'A', text: 'I really like seafood.', keywords: ['really','like','seafood','sea','food'] },
-        { role: 'B', text: 'Me too, and my mother makes aubergine soup as well.', keywords: ['me','too','mother','makes','soup','well'] },
-        { role: 'A', text: "Yes, my mother does too. It's very nice.", keywords: ['yes','mother','does','too','very','nice'] },
-        { role: 'B', text: 'What else do you eat at Christmas?', keywords: ['what','else','eat','christmas'] },
-        { role: 'A', text: 'We eat roast lamb. What about you?', keywords: ['eat','roast','lamb','what','about','you'] },
-        { role: 'B', text: 'We eat baked cod and for dessert we have turron.', keywords: ['eat','baked','cod','dessert','have'] },
-        { role: 'A', text: 'I hate turron.', keywords: ['hate','turron','to','run','turn','on'] },
-        { role: 'B', text: "Really? I love it. It's my favourite dessert.", keywords: ['really','love','favourite','favorite','dessert'] },
-        { role: 'A', text: "I don't like honey and almonds.", keywords: ['dont','like','honey','almonds','almond'] }
+        { role: 'A', text: 'I really like the food on Christmas day.', keywords: ['really','like','food','christmas','day'], endWords: ['christmas','day'] },
+        { role: 'B', text: 'What do you like about it?', keywords: ['what','do','you','like','about','it'], endWords: ['about','it'] },
+        { role: 'A', text: 'I really like seafood.', keywords: ['really','like','seafood'], endWords: ['seafood','food'] },
+        { role: 'B', text: 'Me too, and my mother makes aubergine soup as well.', keywords: ['me','too','mother','makes','soup','well'], endWords: ['well','soup'] },
+        { role: 'A', text: "Yes, my mother does too. It's very nice.", keywords: ['yes','mother','does','too','very','nice'], endWords: ['nice'] },
+        { role: 'B', text: 'What else do you eat at Christmas?', keywords: ['what','else','eat','christmas'], endWords: ['christmas'] },
+        { role: 'A', text: 'We eat roast lamb. What about you?', keywords: ['eat','roast','lamb','what','about','you'], endWords: ['about','you'] },
+        { role: 'B', text: 'We eat baked cod and for dessert we have turron.', keywords: ['eat','baked','cod','dessert','have'], endWords: ['have','turron','turn','run','dessert'] },
+        { role: 'A', text: 'I hate turron.', keywords: ['hate'], endWords: ['turron','turn','run','on','two','to'] },
+        { role: 'B', text: "Really? I love it. It's my favourite dessert.", keywords: ['really','love','favourite','dessert'], endWords: ['dessert'] },
+        { role: 'A', text: "I don't like honey and almonds.", keywords: ['dont','like','honey','almonds'], endWords: ['almonds','almond'] }
     ];
 
     let userRole = 'A';
@@ -448,6 +449,37 @@
     let turnLocked = false;
     let fullTranscript = '';
     let silenceTimer = null;
+    let cachedBestVoice = null;
+
+    // คัดเลือกเสียงที่ชัดและทรงพลังที่สุดที่มีในเครื่อง
+    function loadBestVoice() {
+        if (!('speechSynthesis' in window)) return;
+        const voices = window.speechSynthesis.getVoices();
+        if (!voices.length) return;
+
+        const priorities = [
+            v => /natural/i.test(v.name) && /en-US|en-GB/i.test(v.lang) && /guy|ryan|andrew|aria|jenny/i.test(v.name),
+            v => /natural/i.test(v.name) && /en/i.test(v.lang),
+            v => /google uk english male/i.test(v.name),
+            v => /google us english/i.test(v.name),
+            v => /microsoft david|microsoft mark|microsoft guy/i.test(v.name),
+            v => /samantha|alex|daniel/i.test(v.name),
+            v => /^en-US/i.test(v.lang)
+        ];
+
+        for (const matchFn of priorities) {
+            const found = voices.find(matchFn);
+            if (found) {
+                cachedBestVoice = found;
+                return;
+            }
+        }
+    }
+
+    if ('speechSynthesis' in window) {
+        loadBestVoice();
+        window.speechSynthesis.onvoiceschanged = loadBestVoice;
+    }
 
     function playSfx(type) {
         try {
@@ -472,9 +504,14 @@
             return;
         }
         window.speechSynthesis.cancel();
+        if (!cachedBestVoice) loadBestVoice();
+
         const u = new SpeechSynthesisUtterance(text);
-        u.lang = 'en-US';
-        u.rate = 0.88;
+        if (cachedBestVoice) u.voice = cachedBestVoice;
+        u.lang = cachedBestVoice ? cachedBestVoice.lang : 'en-US';
+        u.volume = 1.0;
+        u.rate = 0.92;
+        u.pitch = 0.92; // ทุ้มและหนักแน่นขึ้นเล็กน้อย
         if (onEndCallback) u.onend = onEndCallback;
         window.speechSynthesis.speak(u);
     }
@@ -531,7 +568,6 @@
 
         const line = dialogue[currentIndex];
         if (line.role !== userRole) {
-            // AI's turn
             document.getElementById('speakCard').style.display = 'none';
             addBubble('ai', `🤖 AI (${line.role})`, line.text);
             speakText(line.text, () => {
@@ -539,11 +575,10 @@
                 setTimeout(processNextLine, 450);
             });
         } else {
-            // User's turn
             turnLocked = false;
             fullTranscript = '';
             document.getElementById('speakCard').style.display = 'block';
-            document.getElementById('turnLabel').innerText = `ตาคุณพูด (${userRole}):`;
+            document.getElementById('turnLabel').innerText = `ตาคุณพูด (${userRole}) — พูดให้ครบทั้งประโยค:`;
             document.getElementById('targetSentence').innerText = line.text;
             document.getElementById('heardText').innerText = '';
             document.getElementById('micBtn').disabled = false;
@@ -561,17 +596,25 @@
         const clean = spoken.toLowerCase()
             .replace(/don't/g, 'dont')
             .replace(/it's/g, 'its')
+            .replace(/favorite/g, 'favourite')
             .replace(/[^a-z0-9\s]/g, ' ')
             .replace(/\s+/g, ' ')
             .trim();
         const words = clean.split(' ').filter(Boolean);
 
+        // 1. ต้องมีคำลงท้ายประโยค (ป้องกันพูดไม่จบแล้วผ่าน)
+        const hasEnding = line.endWords.some(ew =>
+            words.some(w => w === ew || (ew.length >= 4 && w.includes(ew)))
+        );
+        if (!hasEnding) return false;
+
+        // 2. ต้องมีคำสำคัญครบอย่างน้อย 75% ของประโยค
         let hits = 0;
         line.keywords.forEach(kw => {
             if (words.some(w => w === kw || (kw.length >= 4 && w.includes(kw)))) hits++;
         });
 
-        const needed = line.keywords.length <= 4 ? 2 : Math.ceil(line.keywords.length * 0.5);
+        const needed = Math.ceil(line.keywords.length * 0.75);
         return hits >= needed;
     }
 
@@ -593,7 +636,7 @@
             const btn = document.getElementById('micBtn');
             btn.classList.add('listening');
             btn.innerText = '⏹️ กำลังฟัง... (พูดจบกดหยุด)';
-            document.getElementById('heardText').innerText = '🎙️ พูดตามประโยคสีส้มได้เลยครับ...';
+            document.getElementById('heardText').innerText = '🎙️ พูดให้ครบทั้งประโยคได้เลยครับ...';
         };
 
         recognition.onresult = (event) => {
@@ -618,7 +661,7 @@
             clearTimeout(silenceTimer);
             silenceTimer = setTimeout(() => {
                 if (isListening) try { recognition.stop(); } catch (e) {}
-            }, 2200);
+            }, 2400);
         };
 
         recognition.onerror = () => {
@@ -641,7 +684,7 @@
                     completeUserTurn(fullTranscript, true);
                 } else {
                     playSfx('no');
-                    document.getElementById('heardText').innerHTML = `🗣️ ได้ยินว่า "${fullTranscript}" — <span style="color:#b91c1c;">ยังไม่ครบครับ ลองพูดช้าๆ ชัดๆ อีกทีนะ</span>`;
+                    document.getElementById('heardText').innerHTML = `🗣️ ได้ยินว่า "${fullTranscript}" — <span style="color:#b91c1c;">ยังไม่ครบประโยคครับ ลองพูดให้จบประโยคอีกทีนะ</span>`;
                 }
             }
         };

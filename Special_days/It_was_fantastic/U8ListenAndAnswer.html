@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>It Was Fantastic! Listen &amp; Answer - Unit 8c</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Prompt:wght@400;500;600;700&family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://kruyanisa.github.io/classroom-core/quiz-config.js"></script>
+
+    <style>
+        :root {
+            --plum: #9333ea;
+            --plum-dark: #6b21a8;
+            --pink: #ec4899;
+            --pink-dark: #be185d;
+            --coral: #f97316;
+            --coral-dark: #c2410c;
+            --mint: #10b981;
+            --mint-dark: #059669;
+            --gold: #f59e0b;
+            --gold-dark: #b45309;
+            --teal: #0d9488;
+            --teal-dark: #0f766e;
+            --slate: #64748b;
+            --slate-dark: #475569;
+            --ink: #1e293b;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: 'Sarabun', sans-serif;
+            margin: 0;
+            padding: 12px 12px 48px 12px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--ink);
+            background: linear-gradient(155deg, #fdf2f8 0%, #f5f3ff 52%, #fff7ed 100%);
+        }
+
+        /* Profile Bar */
+        .profile-bar {
+            width: 100%;
+            max-width: 760px;
+            font-size: clamp(12px, 3.2vw, 14px);
+            background: rgba(255, 255, 255, 0.96);
+            border: 2px solid #f5d0fe;
+            padding: 8px 14px;
+            border-radius: 20px;
+            color: #6b21a8;
+            font-weight: 700;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 12px rgba(147, 51, 234, 0.1);
+        }
+
+        .btn-switch {
+            background: var(--pink);
+            color: #fff;
+            border: none;
+            padding: 4px 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-family: 'Prompt', sans-serif;
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        /* Main Card */
+        .card-shell {
+            width: 100%;
+            max-width: 760px;
+            background: rgba(255, 255, 255, 0.97);
+            border: 3px solid #f5d0fe;
+            border-radius: 28px;
+            padding: 20px 18px;
+            box-shadow: 0 14px 32px rgba(147, 51, 234, 0.12);
+            margin-bottom: 18px;
+        }
+
+        .header-top { text-align: center; margin-bottom: 16px; }
+
+        .badge-unit {
+            display: inline-block;
+            background: linear-gradient(90deg, var(--plum), var(--pink));
+            color: #fff;
+            font-family: 'Prompt', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 4px 14px;
+            border-radius: 20px;
+            margin-bottom: 6px;
+        }
+
+        h1 {
+            font-family: 'Fredoka One', cursive;
+            color: #6b21a8;
+            font-size: clamp(22px, 5.5vw, 31px);
+            margin: 0 0 4px 0;
+        }
+
+        .sub-note {
+            font-size: 14px;
+            color: #64748b;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        /* Audio Player Panel */
+        .audio-box {
+            background: linear-gradient(135deg, #faf5ff, #fdf2f8);
+            border: 2.5px solid #e9d5ff;
+            border-radius: 22px;
+            padding: 16px;
+            margin-bottom: 14px;
+        }
+
+        .audio-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-family: 'Prompt', sans-serif;
+            font-weight: 700;
+            color: #6b21a8;
+            font-size: 15px;
+            margin-bottom: 10px;
+        }
+
+        .seek-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Prompt', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            color: #7e22ce;
+            margin-bottom: 12px;
+        }
+
+        .seek-row input[type="range"] {
+            flex: 1;
+            accent-color: var(--plum);
+            cursor: pointer;
+        }
+
+        .btn-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        /* Tactile 3D Buttons */
+        .btn-3d {
+            padding: 10px 16px;
+            background: var(--plum);
+            color: #fff;
+            border: none;
+            border-radius: 14px;
+            font-family: 'Prompt', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 0 var(--plum-dark);
+            transition: 0.1s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-3d:active:not(:disabled) { transform: translateY(3px); box-shadow: none; }
+        .btn-3d:disabled { background: #94a3b8; box-shadow: 0 4px 0 #64748b; cursor: not-allowed; opacity: 0.75; }
+
+        .btn-mint { background: var(--mint); box-shadow: 0 4px 0 var(--mint-dark); }
+        .btn-pink { background: var(--pink); box-shadow: 0 4px 0 var(--pink-dark); }
+        .btn-gold { background: var(--gold); box-shadow: 0 4px 0 var(--gold-dark); }
+        .btn-teal { background: var(--teal); box-shadow: 0 4px 0 var(--teal-dark); }
+        .btn-slate { background: var(--slate); box-shadow: 0 4px 0 var(--slate-dark); }
+
+        /* Collapsible Dialogue Transcript */
+        .dialogue-panel {
+            display: none;
+            background: #ffffff;
+            border: 2.5px dashed #d8b4fe;
+            border-radius: 20px;
+            padding: 16px;
+            margin-bottom: 18px;
+            animation: popIn 0.2s ease;
+        }
+
+        .dialogue-panel.open { display: block; }
+
+        @keyframes popIn {
+            from { opacity: 0; transform: translateY(-6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .dialogue-title {
+            font-family: 'Prompt', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            color: #6b21a8;
+            margin: 0 0 12px 0;
+            text-align: center;
+        }
+
+        .chat-line {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 10px;
+            padding: 10px 14px;
+            border-radius: 16px;
+        }
+
+        .chat-bob {
+            background: #eff6ff;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .chat-ann {
+            background: #fdf2f8;
+            border-left: 4px solid #ec4899;
+        }
+
+        .speaker-name {
+            font-family: 'Prompt', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 2px;
+        }
+
+        .chat-bob .speaker-name { color: #1d4ed8; }
+        .chat-ann .speaker-name { color: #be185d; }
+
+        .line-en {
+            font-family: 'Prompt', sans-serif;
+            font-size: 14.5px;
+            font-weight: 600;
+            color: var(--ink);
+            line-height: 1.45;
+        }
+
+        .line-th {
+            font-size: 13.5px;
+            color: #475569;
+            font-weight: 600;
+            margin-top: 3px;
+        }
+
+        /* ================= PARTY INVITATION / NOTE CARD ================= */
+        .note-wrapper {
+            position: relative;
+            background: linear-gradient(145deg, #fdf4ff, #fff1f2);
+            border: 3px solid #d946ef;
+            border-radius: 24px;
+            padding: 22px 20px;
+            box-shadow: 8px 8px 0 #f0abfc;
+            margin-top: 6px;
+        }
+
+        .note-banner {
+            text-align: center;
+            font-family: 'Fredoka One', cursive;
+            font-size: clamp(19px, 4.8vw, 24px);
+            color: #a21caf;
+            margin: 0 0 16px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px dashed #e879f9;
+        }
+
+        .note-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 14px;
+            font-family: 'Prompt', sans-serif;
+            font-size: clamp(14.5px, 3.8vw, 16.5px);
+            line-height: 1.6;
+            color: var(--ink);
+        }
+
+        .note-label {
+            font-weight: 700;
+            color: #701a75;
+        }
+
+        .num-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, var(--gold), var(--coral));
+            color: #fff;
+            font-family: 'Fredoka One', cursive;
+            font-size: 14px;
+            flex-shrink: 0;
+            box-shadow: 0 2px 0 #b45309;
+        }
+
+        .example-pill {
+            display: inline-block;
+            background: #e0f2fe;
+            color: #0369a1;
+            border: 2px solid #7dd3fc;
+            border-radius: 10px;
+            padding: 2px 12px;
+            font-weight: 700;
+            font-style: italic;
+        }
+
+        .note-sublist {
+            margin: 4px 0 14px 12px;
+            padding-left: 14px;
+            border-left: 3px solid #f0abfc;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .note-select {
+            padding: 7px 12px;
+            border: 2.5px solid #cbd5e1;
+            border-radius: 12px;
+            font-family: 'Prompt', sans-serif;
+            font-size: clamp(14px, 3.6vw, 15.5px);
+            font-weight: 700;
+            color: #1e293b;
+            background: #ffffff;
+            outline: none;
+            cursor: pointer;
+            min-width: 145px;
+            transition: border-color 0.2s, background 0.2s;
+        }
+
+        .note-select:focus { border-color: var(--plum); }
+        .note-select.is-correct {
+            border-color: var(--mint) !important;
+            background: #dcfce7 !important;
+            color: #065f46 !important;
+        }
+        .note-select.is-wrong {
+            border-color: var(--pink) !important;
+            background: #ffe4e6 !important;
+            color: #9f1239 !important;
+        }
+
+        .fb-tag {
+            font-size: 13px;
+            font-weight: 700;
+            margin-left: 2px;
+        }
+
+        .submit-area {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 22px;
+        }
+
+        /* Modals */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+            visibility: hidden;
+            opacity: 0;
+            transition: 0.25s;
+            padding: 15px;
+        }
+        .modal-overlay.active { visibility: visible; opacity: 1; }
+        .modal-box {
+            background: #fff;
+            padding: 26px 20px;
+            border-radius: 26px;
+            text-align: center;
+            width: 100%;
+            max-width: 340px;
+            border: 4px solid var(--plum);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+        .modal-box input {
+            width: 100%;
+            padding: 11px;
+            margin-bottom: 10px;
+            border: 2px solid #e9d5ff;
+            border-radius: 14px;
+            text-align: center;
+            font-family: 'Sarabun', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            outline: none;
+        }
+        .score-num {
+            font-family: 'Fredoka One', cursive;
+            font-size: 56px;
+            color: var(--plum);
+            margin: 8px 0;
+            display: block;
+            line-height: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- User Profile Bar -->
+    <div id="userProfile" class="profile-bar" style="display:none;">
+        <span>👤 <span id="p_name"></span> | 🏫 <span id="p_room"></span> | 🆔 <span id="p_id"></span></span>
+        <button class="btn-switch" onclick="switchAccount()">🔄 สลับบัญชี</button>
+    </div>
+
+    <!-- Main Card -->
+    <div class="card-shell">
+        <div class="header-top">
+            <div class="badge-unit">Unit 8c • Listening Practice</div>
+            <h1>🎧 Bob &amp; Ann's Birthday Party</h1>
+            <p class="sub-note">ฟังบทสนทนาของ Bob และ Ann แล้วเลือกคำตอบลงในช่องว่างข้อ <strong>1 – 5</strong> ให้ถูกต้อง</p>
+        </div>
+
+        <!-- Audio Player -->
+        <div class="audio-box">
+            <div class="audio-header">
+                <span>🔊 บทสนทนา: Bob &amp; Ann (BobAnn.mp3)</span>
+            </div>
+            <div class="seek-row">
+                <span id="curTime">0:00</span>
+                <input type="range" id="seekBar" min="0" max="100" value="0" step="0.1">
+                <span id="durTime">0:00</span>
+            </div>
+            <div class="btn-row">
+                <button id="playBtn" class="btn-3d btn-mint" onclick="togglePlay()">▶️ เล่นเสียง</button>
+                <button class="btn-3d btn-gold" onclick="replayAudio()">🔄 ฟังใหม่</button>
+                <button id="speedBtn" class="btn-3d btn-teal" onclick="toggleSpeed()">🐢 ความเร็ว: ปกติ</button>
+                <button id="dialogueBtn" class="btn-3d btn-pink" onclick="toggleDialogue()">📖 เปิด Dialogue</button>
+            </div>
+        </div>
+
+        <!-- Hidden / Toggleable Dialogue -->
+        <div class="dialogue-panel" id="dialoguePanel">
+            <div class="dialogue-title">💬 บทสนทนา (Dialogue Script)</div>
+
+            <div class="chat-line chat-bob">
+                <span class="speaker-name">👦 Bob</span>
+                <div class="line-en">I can't wait for my birthday on Friday. I'm so excited. Let's go over the party arrangements again, Ann.</div>
+                <div class="line-th">ฉันอดใจรอวันเกิดในวันศุกร์นี้ไม่ไหวแล้ว ตื่นเต้นมากเลย เรามาทวนแผนเตรียมงานปาร์ตี้กันอีกรอบเถอะ แอน</div>
+            </div>
+
+            <div class="chat-line chat-ann">
+                <span class="speaker-name">👧 Ann</span>
+                <div class="line-en">OK. Well, it starts at 8 o'clock and everyone is coming so there'll be 15 people altogether.</div>
+                <div class="line-th">โอเค งานเริ่มตอน 8 โมง (2 ทุ่ม) และทุกคนจะมากันหมดเลย รวมทั้งหมดก็จะมี 15 คนนะ</div>
+            </div>
+
+            <div class="chat-line chat-bob">
+                <span class="speaker-name">👦 Bob</span>
+                <div class="line-en">Have we got enough food and drinks?</div>
+                <div class="line-th">พวกเรามีอาหารและเครื่องดื่มพอไหม?</div>
+            </div>
+
+            <div class="chat-line chat-ann">
+                <span class="speaker-name">👧 Ann</span>
+                <div class="line-en">I think so. We've got 3 large pizzas, 10 burgers, one packet of chocolate biscuits and 2 bottles of lemonade.</div>
+                <div class="line-th">ฉันคิดว่าพอนะ เรามีพิซซ่าถาดใหญ่ 3 ถาด เบอร์เกอร์ 10 ชิ้น บิสกิตช็อกโกแลต 1 ห่อ และน้ำมะนาวโซดา 2 ขวด</div>
+            </div>
+
+            <div class="chat-line chat-bob">
+                <span class="speaker-name">👦 Bob</span>
+                <div class="line-en">That sounds OK. What about activities? What will we do?</div>
+                <div class="line-th">ฟังดูโอเคเลย แล้วเรื่องกิจกรรมล่ะ พวกเราจะทำอะไรกันดี?</div>
+            </div>
+
+            <div class="chat-line chat-ann">
+                <span class="speaker-name">👧 Ann</span>
+                <div class="line-en">Don't worry, I know lots of party games and there'll be dancing of course.</div>
+                <div class="line-th">ไม่ต้องห่วง ฉันรู้จักเกมปาร์ตี้ตั้งเยอะแยะ แล้วก็ต้องมีการเต้นรำด้วยแน่นอน</div>
+            </div>
+
+            <div class="chat-line chat-bob">
+                <span class="speaker-name">👦 Bob</span>
+                <div class="line-en">Great! I can't wait!</div>
+                <div class="line-th">เยี่ยมเลย! อดใจรอไม่ไหวแล้ว!</div>
+            </div>
+        </div>
+
+        <!-- Exercise: Party Checklist Note -->
+        <div class="note-wrapper">
+            <div class="note-banner">🎈 Party Arrangements Note 🎈</div>
+
+            <!-- Example 0 -->
+            <div class="note-row">
+                <span class="note-label">Date:</span>
+                <span class="num-badge">0</span>
+                <span class="example-pill">Friday</span>
+                <span>22nd January <small style="color:#64748b;">(ตัวอย่าง)</small></span>
+            </div>
+
+            <!-- Q1 -->
+            <div class="note-row">
+                <span class="note-label">Time:</span>
+                <span class="num-badge">1</span>
+                <select id="q1" class="note-select">
+                    <option value="">-- เลือกคำตอบ --</option>
+                    <option value="7 o'clock">7 o'clock</option>
+                    <option value="8 o'clock">8 o'clock</option>
+                    <option value="9 o'clock">9 o'clock</option>
+                </select>
+                <span id="fb1" class="fb-tag"></span>
+            </div>
+
+            <!-- Q2 -->
+            <div class="note-row">
+                <span class="note-label">Number of people:</span>
+                <span class="num-badge">2</span>
+                <select id="q2" class="note-select">
+                    <option value="">-- เลือกคำตอบ --</option>
+                    <option value="14">14</option>
+                    <option value="15">15</option>
+                    <option value="50">50</option>
+                </select>
+                <span id="fb2" class="fb-tag"></span>
+            </div>
+
+            <!-- Food / Drinks -->
+            <div class="note-row" style="margin-bottom:6px;">
+                <span class="note-label">🍕 Food / Drinks:</span>
+            </div>
+            <div class="note-sublist">
+                <div class="note-row" style="margin-bottom:0;">• 3 large pizzas</div>
+                <div class="note-row" style="margin-bottom:0;">• 10 burgers</div>
+
+                <!-- Q3 -->
+                <div class="note-row" style="margin-bottom:0;">
+                    <span>• 1 packet of chocolate</span>
+                    <span class="num-badge">3</span>
+                    <select id="q3" class="note-select">
+                        <option value="">-- เลือกคำตอบ --</option>
+                        <option value="cakes">cakes</option>
+                        <option value="biscuits">biscuits</option>
+                        <option value="crisps">crisps</option>
+                    </select>
+                    <span>,</span>
+                    <span id="fb3" class="fb-tag"></span>
+                </div>
+
+                <!-- Q4 -->
+                <div class="note-row" style="margin-bottom:0;">
+                    <span>• 2</span>
+                    <span class="num-badge">4</span>
+                    <select id="q4" class="note-select">
+                        <option value="">-- เลือกคำตอบ --</option>
+                        <option value="bottles">bottles</option>
+                        <option value="cans">cans</option>
+                        <option value="glasses">glasses</option>
+                    </select>
+                    <span>of lemonade</span>
+                    <span id="fb4" class="fb-tag"></span>
+                </div>
+            </div>
+
+            <!-- Q5 -->
+            <div class="note-row" style="margin-bottom:0;">
+                <span class="note-label">🎉 Activities:</span>
+                <span>party</span>
+                <span class="num-badge">5</span>
+                <select id="q5" class="note-select">
+                    <option value="">-- เลือกคำตอบ --</option>
+                    <option value="music">music</option>
+                    <option value="games">games</option>
+                    <option value="quizzes">quizzes</option>
+                </select>
+                <span>, dancing</span>
+                <span id="fb5" class="fb-tag"></span>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="submit-area">
+            <button id="checkBtn" class="btn-3d btn-mint" style="padding:12px 26px; font-size:16px;" onclick="checkAnswers()">✅ ตรวจคำตอบ &amp; ส่งคะแนน</button>
+            <button id="revealBtn" class="btn-3d btn-gold" style="display:none; padding:12px 22px; font-size:15px;" onclick="revealAnswers()">👁️ ดูเฉลยทั้งหมด</button>
+            <button id="resetBtn" class="btn-3d btn-slate" style="display:none; padding:12px 22px; font-size:15px;" onclick="resetExercise()">🔄 ทำใหม่อีกครั้ง</button>
+        </div>
+    </div>
+
+    <!-- Hidden Audio Element -->
+    <audio id="audioEl" src="BobAnn.mp3" preload="auto"></audio>
+
+    <!-- Login Modal -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal-box">
+            <h2 id="modalTitle" style="color:#6b21a8; margin:0 0 6px 0; font-family:'Prompt';">📝 ลงชื่อเข้าเรียน</h2>
+            <p id="modalSub" style="color:#64748b; font-weight:600; margin:0 0 12px 0; font-size:14px;">กรอกข้อมูลเพื่อเริ่มทำแบบฝึกหัดและบันทึกคะแนน</p>
+            <input type="text" id="in_name" placeholder="ชื่อ - นามสกุล">
+            <input type="text" id="in_room" placeholder="ชั้น/ห้อง (เช่น 1/1)">
+            <input type="text" id="in_id" placeholder="รหัสนักเรียน (5 หลัก)" maxlength="5">
+            <button class="btn-3d" style="width:100%; justify-content:center;" onclick="confirmUser()">🚀 เริ่มเรียนเลย</button>
+        </div>
+    </div>
+
+    <!-- Score Modal -->
+    <div class="modal-overlay" id="scoreModal">
+        <div class="modal-box">
+            <h2 style="color:#6b21a8; margin:0; font-family:'Prompt';">🎉 สรุปผลคะแนน Listening</h2>
+            <p style="color:#64748b; font-weight:600; margin:6px 0 0 0; font-size:14px;">Bob &amp; Ann's Party (5 ข้อ)</p>
+            <span class="score-num"><span id="finalScoreText">0</span><span style="font-size:26px; color:#94a3b8;">/5</span></span>
+            <div id="saveStatus" style="font-weight:700; font-size:14px; margin-bottom:14px; color:#d97706; min-height:20px;"></div>
+            <button id="playAgainBtn" class="btn-3d btn-mint" style="width:100%; justify-content:center;" onclick="closeScoreModal()" disabled>👍 ตกลง / ดูผลคำตอบ</button>
+        </div>
+    </div>
+
+<script>
+    const TOPIC_NAME = 'ม.1 Unit 8 It was fantastic listen and answer';
+
+    const ANSWERS = {
+        q1: "8 o'clock",
+        q2: '15',
+        q3: 'biscuits',
+        q4: 'bottles',
+        q5: 'games'
+    };
+
+    const audioEl = document.getElementById('audioEl');
+    const seekBar = document.getElementById('seekBar');
+    let isSlow = false;
+    let currentScore = 0;
+    let isPendingSubmit = false;
+
+    // Web Audio API Sound Effects
+    function playSfx(type) {
+        try {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.type = type === 'ok' ? 'triangle' : 'sawtooth';
+            osc.frequency.setValueAtTime(type === 'ok' ? 587.33 : 220, ctx.currentTime);
+            if (type === 'ok') osc.frequency.setValueAtTime(880, ctx.currentTime + 0.1);
+            gain.gain.setValueAtTime(0.14, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.25);
+        } catch (e) {}
+    }
+
+    function formatTime(sec) {
+        if (isNaN(sec)) return '0:00';
+        const m = Math.floor(sec / 60);
+        const s = Math.floor(sec % 60);
+        return `${m}:${s < 10 ? '0' : ''}${s}`;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        checkLoginStatus();
+    });
+
+    // ================= AUDIO PLAYER =================
+    function togglePlay() {
+        if (audioEl.paused) {
+            audioEl.play().catch(() => {
+                Swal.fire('ไม่พบไฟล์เสียง', 'กรุณาตรวจสอบว่ามีไฟล์ BobAnn.mp3 อยู่ในโฟลเดอร์เดียวกันครับ', 'info');
+            });
+        } else {
+            audioEl.pause();
+        }
+    }
+
+    function replayAudio() {
+        audioEl.currentTime = 0;
+        audioEl.play().catch(() => {});
+    }
+
+    function toggleSpeed() {
+        isSlow = !isSlow;
+        audioEl.playbackRate = isSlow ? 0.85 : 1.0;
+        document.getElementById('speedBtn').innerText = isSlow ? '🐢 ความเร็ว: ช้า (0.85x)' : '🐢 ความเร็ว: ปกติ';
+    }
+
+    function toggleDialogue() {
+        const panel = document.getElementById('dialoguePanel');
+        const isOpen = panel.classList.toggle('open');
+        document.getElementById('dialogueBtn').innerText = isOpen ? '🙈 ซ่อน Dialogue' : '📖 เปิด Dialogue';
+    }
+
+    audioEl.addEventListener('play', () => {
+        document.getElementById('playBtn').innerText = '⏸️ หยุดชั่วคราว';
+    });
+
+    audioEl.addEventListener('pause', () => {
+        document.getElementById('playBtn').innerText = '▶️ เล่นเสียง';
+    });
+
+    audioEl.addEventListener('ended', () => {
+        document.getElementById('playBtn').innerText = '▶️ เล่นเสียง';
+    });
+
+    audioEl.addEventListener('loadedmetadata', () => {
+        seekBar.max = audioEl.duration || 100;
+        document.getElementById('durTime').innerText = formatTime(audioEl.duration);
+    });
+
+    audioEl.addEventListener('timeupdate', () => {
+        seekBar.value = audioEl.currentTime;
+        document.getElementById('curTime').innerText = formatTime(audioEl.currentTime);
+    });
+
+    seekBar.addEventListener('input', () => {
+        audioEl.currentTime = parseFloat(seekBar.value);
+    });
+
+    // ================= EXERCISE LOGIC =================
+    function checkAnswers() {
+        const keys = Object.keys(ANSWERS);
+        for (const k of keys) {
+            if (!document.getElementById(k).value) {
+                Swal.fire('ยังเลือกไม่ครบ!', 'กรุณาเลือกคำตอบให้ครบทั้ง 5 ข้อ (ข้อ 1 – 5) ก่อนส่งนะครับ', 'warning');
+                return;
+            }
+        }
+
+        let score = 0;
+        keys.forEach((k, idx) => {
+            const sel = document.getElementById(k);
+            const fb = document.getElementById(`fb${idx + 1}`);
+            sel.disabled = true;
+
+            if (sel.value === ANSWERS[k]) {
+                score++;
+                sel.classList.add('is-correct');
+                fb.style.color = '#059669';
+                fb.innerText = '✅';
+            } else {
+                sel.classList.add('is-wrong');
+                fb.style.color = '#be185d';
+                fb.innerText = '❌';
+            }
+        });
+
+        currentScore = score;
+        playSfx(score >= 3 ? 'ok' : 'no');
+
+        document.getElementById('checkBtn').style.display = 'none';
+        document.getElementById('revealBtn').style.display = 'inline-flex';
+        document.getElementById('resetBtn').style.display = 'inline-flex';
+
+        if (!localStorage.getItem('studentId')) {
+            isPendingSubmit = true;
+            document.getElementById('modalTitle').innerText = '📝 ลงชื่อเพื่อบันทึกคะแนน';
+            document.getElementById('modalSub').innerText = `คุณได้ ${currentScore}/5 คะแนน กรอกข้อมูลเพื่อส่งครู`;
+            document.getElementById('loginModal').classList.add('active');
+        } else {
+            submitScoreToSheet(currentScore);
+        }
+    }
+
+    function revealAnswers() {
+        Object.keys(ANSWERS).forEach((k, idx) => {
+            const sel = document.getElementById(k);
+            const fb = document.getElementById(`fb${idx + 1}`);
+            if (sel.value !== ANSWERS[k]) {
+                fb.style.color = '#b45309';
+                fb.innerText = `💡 เฉลย: ${ANSWERS[k]}`;
+            }
+        });
+    }
+
+    function resetExercise() {
+        Object.keys(ANSWERS).forEach((k, idx) => {
+            const sel = document.getElementById(k);
+            const fb = document.getElementById(`fb${idx + 1}`);
+            sel.disabled = false;
+            sel.value = '';
+            sel.classList.remove('is-correct', 'is-wrong');
+            fb.innerText = '';
+        });
+
+        document.getElementById('checkBtn').style.display = 'inline-flex';
+        document.getElementById('revealBtn').style.display = 'none';
+        document.getElementById('resetBtn').style.display = 'none';
+    }
+
+    function closeScoreModal() {
+        document.getElementById('scoreModal').classList.remove('active');
+    }
+
+    // ================= LOGIN & GOOGLE SHEETS =================
+    function formatRoomValue(val) {
+        const nums = val.match(/\d+/g);
+        if (nums && nums.length >= 2) return `ม.${nums[0]}/${nums[1]}`;
+        if (nums && nums.length === 1) return `ม.1/${nums[0]}`;
+        return val.trim();
+    }
+
+    document.getElementById('in_room').addEventListener('blur', function() {
+        this.value = formatRoomValue(this.value);
+    });
+
+    function checkLoginStatus() {
+        if (localStorage.getItem('studentId')) {
+            document.getElementById('userProfile').style.display = 'flex';
+            document.getElementById('p_name').innerText = localStorage.getItem('studentName');
+            document.getElementById('p_room').innerText = localStorage.getItem('studentRoom');
+            document.getElementById('p_id').innerText = localStorage.getItem('studentId');
+        } else {
+            document.getElementById('userProfile').style.display = 'none';
+            document.getElementById('loginModal').classList.add('active');
+        }
+    }
+
+    function switchAccount() {
+        Swal.fire({
+            title: '⚠️ สลับบัญชีผู้เล่น?',
+            text: 'ระบบจะล้างข้อมูลเดิมและเริ่มใหม่',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ec4899',
+            cancelButtonColor: '#94a3b8',
+            confirmButtonText: 'ตกลง',
+            cancelButtonText: 'ยกเลิก'
+        }).then((res) => {
+            if (res.isConfirmed) {
+                localStorage.clear();
+                isPendingSubmit = false;
+                document.getElementById('userProfile').style.display = 'none';
+                document.getElementById('in_name').value = '';
+                document.getElementById('in_room').value = '';
+                document.getElementById('in_id').value = '';
+                document.getElementById('modalTitle').innerText = '🔄 ลงชื่อบัญชีใหม่';
+                document.getElementById('modalSub').innerText = 'กรอกข้อมูลนักเรียนคนใหม่เพื่อเริ่มเรียน';
+                document.getElementById('loginModal').classList.add('active');
+            }
+        });
+    }
+
+    function confirmUser() {
+        const n = document.getElementById('in_name').value.trim();
+        const r = formatRoomValue(document.getElementById('in_room').value);
+        document.getElementById('in_room').value = r;
+        const id = document.getElementById('in_id').value.trim();
+
+        if (!n || !r || id.length !== 5) {
+            Swal.fire('ข้อมูลไม่ครบ!', 'กรุณากรอกชื่อ ห้อง และรหัสนักเรียน 5 หลัก', 'warning');
+            return;
+        }
+
+        localStorage.setItem('studentName', n);
+        localStorage.setItem('studentRoom', r);
+        localStorage.setItem('studentId', id);
+
+        document.getElementById('loginModal').classList.remove('active');
+        document.getElementById('userProfile').style.display = 'flex';
+        document.getElementById('p_name').innerText = n;
+        document.getElementById('p_room').innerText = r;
+        document.getElementById('p_id').innerText = id;
+
+        if (isPendingSubmit) {
+            isPendingSubmit = false;
+            submitScoreToSheet(currentScore);
+        }
+    }
+
+    function submitScoreToSheet(score) {
+        document.getElementById('scoreModal').classList.add('active');
+        document.getElementById('finalScoreText').innerText = score;
+        const stat = document.getElementById('saveStatus');
+        const playAgainBtn = document.getElementById('playAgainBtn');
+        playAgainBtn.disabled = true;
+
+        if (typeof QUIZ_CONFIG === 'undefined' || !QUIZ_CONFIG.SCRIPT_URL) {
+            stat.innerText = '❌ ไม่พบไฟล์ตั้งค่า (quiz-config.js)';
+            stat.style.color = '#b91c1c';
+            playAgainBtn.disabled = false;
+            return;
+        }
+
+        stat.innerText = '⏳ กำลังบันทึกคะแนนลงระบบ...';
+        stat.style.color = '#d97706';
+
+        fetch(QUIZ_CONFIG.SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            body: JSON.stringify({
+                name: localStorage.getItem('studentName'),
+                room: localStorage.getItem('studentRoom'),
+                studentId: "'" + localStorage.getItem('studentId'),
+                lesson: TOPIC_NAME,
+                score: score,
+                maxScore: 5
+            })
+        }).catch(e => console.error(e));
+
+        setTimeout(() => {
+            stat.innerText = '✅ บันทึกคะแนนลงระบบเรียบร้อย!';
+            stat.style.color = '#15803d';
+            playAgainBtn.disabled = false;
+        }, 1500);
+    }
+</script>
+</body>
+</html>

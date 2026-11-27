@@ -423,7 +423,6 @@
 <script>
     const TOPIC_NAME = 'ม.1 Unit 8 Festive food Speaking';
 
-    // เช็กครบ 100% ทุกกลุ่มคำในประโยค (อนุโลมเฉพาะคำพ้องเสียงจากไมค์สำหรับคำยาก)
     const dialogue = [
         {
             role: 'A',
@@ -463,12 +462,12 @@
         {
             role: 'B',
             text: 'We eat baked cod and for dessert we have turron.',
-            requiredGroups: [['we'], ['eat'], ['baked', 'bake'], ['cod', 'caught', 'card', 'cord'], ['and'], ['for', 'four'], ['dessert', 'desert'], ['have'], ['turron', 'turn', 'to run', 'turn on', 'turon']]
+            requiredGroups: [['we'], ['eat'], ['baked', 'bake'], ['cod', 'caught', 'card', 'cord'], ['and'], ['for', 'four'], ['dessert', 'desert'], ['have'], ['turron', 'torrent', 'toron', 'turon', 'turn', 'to run', 'turn on']]
         },
         {
             role: 'A',
             text: 'I hate turron.',
-            requiredGroups: [['i'], ['hate'], ['turron', 'turn', 'to run', 'turn on', 'turon']]
+            requiredGroups: [['i'], ['hate'], ['turron', 'torrent', 'toron', 'turon', 'turn', 'to run', 'turn on']]
         },
         {
             role: 'B',
@@ -635,7 +634,6 @@
         }
     }
 
-    // เช็กครบ 100% ทุกกลุ่มคำ
     function isLineMatched(spoken, line) {
         const clean = spoken.toLowerCase()
             .replace(/don't/g, 'dont')
@@ -686,7 +684,7 @@
                 clearTimeout(silenceTimer);
                 turnLocked = true;
                 try { recognition.stop(); } catch (e) {}
-                completeUserTurn(fullTranscript, true);
+                completeUserTurn(true);
                 return;
             }
 
@@ -713,7 +711,7 @@
             if (!turnLocked && fullTranscript) {
                 if (isLineMatched(fullTranscript, dialogue[currentIndex])) {
                     turnLocked = true;
-                    completeUserTurn(fullTranscript, true);
+                    completeUserTurn(true);
                 } else {
                     playSfx('no');
                     document.getElementById('heardText').innerHTML = `🗣️ ได้ยินว่า "${fullTranscript}" — <span style="color:#b91c1c;">ยังไม่ครบ 100% ครับ ลองพูดให้ครบทุกคำนะ</span>`;
@@ -741,19 +739,20 @@
         if (turnLocked) return;
         turnLocked = true;
         if (isListening) try { recognition.stop(); } catch (e) {}
-        completeUserTurn('(ข้ามประโยคนี้)', false);
+        completeUserTurn(false);
     }
 
-    function completeUserTurn(text, isPassed) {
+    function completeUserTurn(isPassed) {
         document.getElementById('micBtn').disabled = true;
         document.getElementById('skipBtn').disabled = true;
 
         if (isPassed) {
             passedCount++;
             playSfx('ok');
-            addBubble('user', `👤 คุณ (${userRole}) ✅`, text);
+            // แสดงข้อความจริงตามบทเรียน
+            addBubble('user', `👤 คุณ (${userRole}) ✅`, dialogue[currentIndex].text);
         } else {
-            addBubble('skipped', `👤 คุณ (${userRole}) ⏭️`, text);
+            addBubble('skipped', `👤 คุณ (${userRole}) ⏭️`, '(ข้ามประโยคนี้)');
         }
 
         updateProgressUI();

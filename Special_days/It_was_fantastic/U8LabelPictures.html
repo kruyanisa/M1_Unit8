@@ -1,0 +1,1773 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>It Was Fantastic! Label the Pictures - Unit 8c</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Prompt:wght@400;500;600;700&family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://kruyanisa.github.io/classroom-core/quiz-config.js"></script>
+
+    <style>
+        :root {
+            --coral: #f97316;
+            --coral-dark: #c2410c;
+            --crimson: #e11d48;
+            --crimson-dark: #9f1239;
+            --gold: #f59e0b;
+            --gold-dark: #b45309;
+            --teal: #0d9488;
+            --teal-dark: #0f766e;
+            --mint: #10b981;
+            --mint-dark: #059669;
+            --slate: #64748b;
+            --slate-dark: #475569;
+            --ink: #1e293b;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: 'Sarabun', sans-serif;
+            margin: 0;
+            padding: 12px 12px 48px 12px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--ink);
+            background: linear-gradient(155deg, #fff7ed 0%, #fef2f2 48%, #f0fdfa 100%);
+        }
+
+        /* Profile Bar */
+        .profile-bar {
+            width: 100%;
+            max-width: 860px;
+            font-size: clamp(12px, 3.2vw, 14px);
+            background: rgba(255, 255, 255, 0.96);
+            border: 2px solid #fed7aa;
+            padding: 8px 14px;
+            border-radius: 20px;
+            color: #9a3412;
+            font-weight: 700;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 12px rgba(249, 115, 22, 0.1);
+        }
+
+        .btn-switch {
+            background: var(--crimson);
+            color: #fff;
+            border: none;
+            padding: 4px 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-family: 'Prompt', sans-serif;
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        /* Main Container */
+        .card-shell {
+            width: 100%;
+            max-width: 860px;
+            background: rgba(255, 255, 255, 0.97);
+            border: 3px solid #fed7aa;
+            border-radius: 28px;
+            padding: 18px;
+            box-shadow: 0 14px 32px rgba(249, 115, 22, 0.12);
+            margin-bottom: 18px;
+        }
+
+        .header-top { text-align: center; margin-bottom: 14px; }
+
+        .badge-unit {
+            display: inline-block;
+            background: linear-gradient(90deg, var(--coral), var(--crimson));
+            color: #fff;
+            font-family: 'Prompt', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 4px 14px;
+            border-radius: 20px;
+            margin-bottom: 6px;
+        }
+
+        h1 {
+            font-family: 'Fredoka One', cursive;
+            color: #9a3412;
+            font-size: clamp(22px, 5.5vw, 31px);
+            margin: 0 0 4px 0;
+        }
+
+        .sub-note {
+            font-size: 14px;
+            color: #64748b;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        /* Story Selector Tabs */
+        .story-tabs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 14px 0;
+        }
+
+        .story-tab {
+            padding: 11px 12px;
+            border-radius: 16px;
+            border: 2.5px solid #e2e8f0;
+            background: #f8fafc;
+            color: #475569;
+            font-family: 'Prompt', sans-serif;
+            font-size: clamp(14px, 3.8vw, 16px);
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.15s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .story-tab.active-uk {
+            background: linear-gradient(135deg, #eff6ff, #dbeafe);
+            border-color: #3b82f6;
+            color: #1d4ed8;
+            box-shadow: 0 4px 0 #93c5fd;
+        }
+
+        .story-tab.active-cn {
+            background: linear-gradient(135deg, #fff1f2, #ffe4e6);
+            border-color: var(--crimson);
+            color: #9f1239;
+            box-shadow: 0 4px 0 #fda4af;
+        }
+
+        /* ================= MEDIA STAGE & OVERLAY SUBTITLES ================= */
+        .media-stage {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background: #0f172a;
+            border-radius: 22px;
+            overflow: hidden;
+            border: 3px solid #fdba74;
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .media-stage img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+            user-select: none;
+        }
+
+        /* Pseudo-fullscreen fallback for iOS/Mobile */
+        .media-stage.pseudo-fullscreen {
+            position: fixed !important;
+            inset: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            max-width: none !important;
+            aspect-ratio: auto !important;
+            border-radius: 0 !important;
+            border: none !important;
+            z-index: 9990 !important;
+            background: #020617 !important;
+        }
+
+        /* Fullscreen Floating Controls (strictly hidden outside fullscreen) */
+        .fs-floating-bar {
+            display: none;
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            z-index: 10005;
+            gap: 8px;
+            background: rgba(15, 23, 42, 0.78);
+            backdrop-filter: blur(8px);
+            padding: 8px 10px;
+            border-radius: 999px;
+            border: 1.5px solid rgba(255, 255, 255, 0.22);
+        }
+
+        .media-stage:fullscreen .fs-floating-bar,
+        .media-stage:-webkit-full-screen .fs-floating-bar,
+        .media-stage.pseudo-fullscreen .fs-floating-bar {
+            display: flex;
+            align-items: center;
+        }
+
+        .fs-ctrl-btn {
+            background: rgba(255, 255, 255, 0.16);
+            color: #fff;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-family: 'Prompt', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.15s;
+        }
+
+        .fs-ctrl-btn:hover { background: rgba(255, 255, 255, 0.3); }
+        .fs-ctrl-btn.exit-btn { background: var(--crimson); }
+
+        /* Overlay Subtitle Box */
+        .subtitle-overlay {
+            position: absolute;
+            bottom: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 92%;
+            max-width: 760px;
+            background: rgba(15, 23, 42, 0.82);
+            backdrop-filter: blur(6px);
+            color: #f8fafc;
+            padding: 10px 16px;
+            border-radius: 16px;
+            text-align: center;
+            border: 1.5px solid rgba(255, 255, 255, 0.16);
+            transition: opacity 0.2s;
+            z-index: 20;
+        }
+
+        .subtitle-overlay.hidden { opacity: 0; pointer-events: none; }
+
+        .sub-en {
+            font-family: 'Prompt', sans-serif;
+            font-size: clamp(14px, 3.6vw, 20px);
+            font-weight: 600;
+            line-height: 1.5;
+            margin-bottom: 4px;
+        }
+
+        .sub-th {
+            font-family: 'Sarabun', sans-serif;
+            font-size: clamp(12.5px, 3vw, 15.5px);
+            color: #fde68a;
+            font-weight: 600;
+            line-height: 1.35;
+        }
+
+        .sub-word {
+            display: inline-block;
+            padding: 0 2px;
+            border-radius: 5px;
+            transition: background 0.12s, color 0.12s, transform 0.12s;
+        }
+
+        .sub-word.active {
+            background: #f59e0b;
+            color: #0f172a;
+            font-weight: 700;
+            transform: scale(1.06);
+        }
+
+        .sub-word.vocab-hl {
+            text-decoration: underline;
+            text-decoration-style: dotted;
+            text-decoration-color: #38bdf8;
+            text-underline-offset: 4px;
+            cursor: pointer;
+            color: #bae6fd;
+        }
+
+        .sub-word.vocab-hl.active { color: #0f172a; }
+
+        /* Vocab Popover */
+        #vocab-popover {
+            display: none;
+            position: fixed;
+            z-index: 10050;
+            background: #ffffff;
+            color: var(--ink);
+            border: 3px solid var(--coral);
+            border-radius: 16px;
+            padding: 10px 14px;
+            min-width: 190px;
+            max-width: 260px;
+            box-shadow: 0 12px 28px rgba(15, 23, 42, 0.28);
+            font-family: 'Prompt', sans-serif;
+            animation: popIn 0.16s ease;
+        }
+
+        @keyframes popIn {
+            from { opacity: 0; transform: scale(0.92); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .vp-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+
+        .vp-word { font-size: 16px; font-weight: 700; color: #9a3412; }
+        .vp-pos { font-size: 11px; background: #ffedd5; color: #c2410c; padding: 2px 7px; border-radius: 999px; font-weight: 700; }
+        .vp-meaning { font-size: 14px; font-weight: 600; color: #0f766e; line-height: 1.4; }
+        .vp-close {
+            background: #f1f5f9;
+            border: none;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            font-size: 12px;
+            cursor: pointer;
+            color: #475569;
+            font-weight: 700;
+        }
+
+        /* Player Controls */
+        .player-bar {
+            margin-top: 12px;
+            background: #fff7ed;
+            border: 2px solid #fed7aa;
+            border-radius: 18px;
+            padding: 12px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .seek-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Prompt', sans-serif;
+            font-size: 12.5px;
+            font-weight: 700;
+            color: #9a3412;
+        }
+
+        .seek-row input[type="range"] {
+            flex: 1;
+            accent-color: var(--coral);
+            cursor: pointer;
+        }
+
+        .btn-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-3d {
+            padding: 9px 15px;
+            background: var(--coral);
+            color: #fff;
+            border: none;
+            border-radius: 14px;
+            font-family: 'Prompt', sans-serif;
+            font-size: 13.5px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 0 var(--coral-dark);
+            transition: 0.1s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-3d:active:not(:disabled) { transform: translateY(3px); box-shadow: none; }
+        .btn-3d:disabled { background: #94a3b8; box-shadow: 0 4px 0 #64748b; cursor: not-allowed; opacity: 0.75; }
+
+        .btn-teal { background: var(--teal); box-shadow: 0 4px 0 var(--teal-dark); }
+        .btn-mint { background: var(--mint); box-shadow: 0 4px 0 var(--mint-dark); }
+        .btn-gold { background: var(--gold); box-shadow: 0 4px 0 var(--gold-dark); }
+        .btn-crimson { background: var(--crimson); box-shadow: 0 4px 0 var(--crimson-dark); }
+        .btn-slate { background: var(--slate); box-shadow: 0 4px 0 var(--slate-dark); }
+
+        /* Collapsible Full Article + Translation */
+        .article-panel {
+            margin-top: 14px;
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 18px;
+            padding: 14px 16px;
+            display: none;
+        }
+
+        .article-panel.open { display: block; animation: popIn 0.2s ease; }
+
+        .article-title {
+            font-family: 'Prompt', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            color: #9a3412;
+            margin: 0 0 10px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .sentence-item {
+            padding: 8px 10px;
+            border-radius: 12px;
+            margin-bottom: 6px;
+            background: #ffffff;
+            border: 1.5px solid #e2e8f0;
+            cursor: pointer;
+            transition: 0.15s;
+        }
+
+        .sentence-item:hover { border-color: #fdba74; background: #fff7ed; }
+        .sentence-item.playing { border-color: var(--coral); background: #ffedd5; }
+
+        .sent-en {
+            font-family: 'Prompt', sans-serif;
+            font-size: 14.5px;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .sent-th {
+            font-size: 13.5px;
+            color: #0f766e;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        /* ================= EXERCISE: LABEL THE PICTURES (a-e) ================= */
+        .section-head {
+            text-align: center;
+            margin-bottom: 14px;
+        }
+
+        .section-head h2 {
+            font-family: 'Prompt', sans-serif;
+            font-size: clamp(18px, 4.8vw, 23px);
+            color: #9a3412;
+            margin: 0 0 4px 0;
+        }
+
+        .word-bank {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 16px;
+            padding: 10px;
+            background: #fff7ed;
+            border: 2px dashed #fdba74;
+            border-radius: 16px;
+        }
+
+        .bank-chip {
+            background: #ffffff;
+            border: 2px solid #fed7aa;
+            color: #9a3412;
+            font-family: 'Prompt', sans-serif;
+            font-size: 13.5px;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 999px;
+        }
+
+        .label-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        @media (max-width: 720px) {
+            .label-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 480px) {
+            .label-grid { grid-template-columns: 1fr; }
+        }
+
+        .pic-card {
+            background: #ffffff;
+            border: 2.5px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 14px 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            transition: border-color 0.2s, background 0.2s;
+        }
+
+        .pic-card.is-correct {
+            border-color: var(--mint);
+            background: #ecfdf5;
+        }
+
+        .pic-card.is-wrong {
+            border-color: var(--crimson);
+            background: #fff1f2;
+        }
+
+        .letter-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--coral), var(--crimson));
+            color: #fff;
+            font-family: 'Fredoka One', cursive;
+            font-size: 17px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 3px 8px rgba(225, 29, 72, 0.28);
+        }
+
+        .country-pill {
+            position: absolute;
+            top: 12px;
+            right: 10px;
+            font-family: 'Prompt', sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 999px;
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .food-art {
+            width: 100%;
+            aspect-ratio: 4 / 3;
+            max-height: 130px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 18px 0 8px 0;
+        }
+
+        .food-art svg {
+            width: 100%;
+            height: 100%;
+            max-width: 140px;
+            max-height: 120px;
+        }
+
+        .pic-clue {
+            font-size: 12.5px;
+            color: #64748b;
+            font-weight: 600;
+            margin-bottom: 10px;
+            min-height: 34px;
+        }
+
+        .pic-select {
+            width: 100%;
+            padding: 10px 10px;
+            border: 2px solid #cbd5e1;
+            border-radius: 12px;
+            font-family: 'Prompt', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--ink);
+            background: #f8fafc;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .pic-select:focus { border-color: var(--coral); background: #fff; }
+
+        .answer-reveal {
+            margin-top: 8px;
+            font-family: 'Prompt', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            min-height: 20px;
+        }
+
+        .submit-area {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 18px;
+        }
+
+        /* Modals */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+            visibility: hidden;
+            opacity: 0;
+            transition: 0.25s;
+            padding: 15px;
+        }
+        .modal-overlay.active { visibility: visible; opacity: 1; }
+        .modal-box {
+            background: #fff;
+            padding: 26px 20px;
+            border-radius: 26px;
+            text-align: center;
+            width: 100%;
+            max-width: 340px;
+            border: 4px solid var(--coral);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+        .modal-box input {
+            width: 100%;
+            padding: 11px;
+            margin-bottom: 10px;
+            border: 2px solid #fed7aa;
+            border-radius: 14px;
+            text-align: center;
+            font-family: 'Sarabun', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            outline: none;
+        }
+        .score-num {
+            font-family: 'Fredoka One', cursive;
+            font-size: 56px;
+            color: var(--coral);
+            margin: 8px 0;
+            display: block;
+            line-height: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- User Profile Bar -->
+    <div id="userProfile" class="profile-bar" style="display:none;">
+        <span>👤 <span id="p_name"></span> | 🏫 <span id="p_room"></span> | 🆔 <span id="p_id"></span></span>
+        <button class="btn-switch" onclick="switchAccount()">🔄 สลับบัญชี</button>
+    </div>
+
+    <!-- PART 1: INTERACTIVE READING & LISTENING STAGE -->
+    <div class="card-shell">
+        <div class="header-top">
+            <div class="badge-unit">Unit 8c • It was fantastic!</div>
+            <h1>🎂 Birthday Treats: Britain &amp; China</h1>
+            <p class="sub-note">ฟังเนื้อเรื่องพร้อมซับไตเติลคำต่อคำ (แตะคำศัพท์ที่มีขีดเส้นใต้เพื่อดูคำแปล) แล้วทำแบบฝึกหัดด้านล่าง</p>
+        </div>
+
+        <!-- Story Switcher -->
+        <div class="story-tabs">
+            <button id="tabUK" class="story-tab active-uk" onclick="selectStory(0)">🇬🇧 Britain (Jane, 13)</button>
+            <button id="tabCN" class="story-tab" onclick="selectStory(1)">🇨🇳 China (Lee, 12)</button>
+        </div>
+
+        <!-- Media Stage -->
+        <div class="media-stage" id="mediaStage">
+            <img id="stageImg" src="britain.jpg" alt="Birthday Treats">
+
+            <!-- Fullscreen-only Floating Bar -->
+            <div class="fs-floating-bar" id="fsFloatingBar">
+                <button class="fs-ctrl-btn" onclick="prevStory()" title="เรื่องก่อนหน้า">⏮️</button>
+                <button class="fs-ctrl-btn" id="fsPlayBtn" onclick="togglePlay()">▶️ Play</button>
+                <button class="fs-ctrl-btn" onclick="nextStory()" title="เรื่องถัดไป">⏭️</button>
+                <button class="fs-ctrl-btn exit-btn" onclick="toggleFullscreen()">✕ Exit (Esc)</button>
+            </div>
+
+            <!-- Word-by-Word Overlay Subtitle -->
+            <div class="subtitle-overlay" id="subtitleOverlay">
+                <div class="sub-en" id="subEn">กดปุ่ม ▶️ เพื่อฟังเรื่องราววันเกิดในประเทศอังกฤษ</div>
+                <div class="sub-th" id="subTh">แตะคำศัพท์ที่มีเส้นประเพื่อดูคำแปลเฉพาะคำ</div>
+            </div>
+        </div>
+
+        <!-- Audio Player Controls -->
+        <div class="player-bar">
+            <div class="seek-row">
+                <span id="curTime">0:00</span>
+                <input type="range" id="seekBar" min="0" max="100" value="0" step="0.1">
+                <span id="durTime">0:00</span>
+            </div>
+            <div class="btn-row">
+                <button id="playBtn" class="btn-3d btn-mint" onclick="togglePlay()">▶️ เล่นเสียง</button>
+                <button class="btn-3d btn-gold" onclick="replayAudio()">🔄 ฟังใหม่</button>
+                <button id="ccBtn" class="btn-3d btn-teal" onclick="toggleCC()">💬 ซับ: เปิด</button>
+                <button id="articleBtn" class="btn-3d btn-crimson" onclick="toggleArticle()">📖 บทความ+คำแปล</button>
+                <button class="btn-3d btn-slate" onclick="toggleFullscreen()">⛶ เต็มจอ</button>
+            </div>
+        </div>
+
+        <!-- Collapsible Full Article + Contextual Translation -->
+        <div class="article-panel" id="articlePanel">
+            <div class="article-title">
+                <span id="articleHeading">📖 บทความและคำแปล: Britain (Jane, 13)</span>
+                <span style="font-size:12px; color:#64748b;">👆 แตะแต่ละประโยคเพื่อฟังเสียงท่อนนั้น</span>
+            </div>
+            <div id="articleContent"></div>
+        </div>
+    </div>
+
+    <!-- PART 2: LABEL THE PICTURES (a-e) -->
+    <div class="card-shell">
+        <div class="section-head">
+            <h2>🏷️ Exercise 3: Label the pictures (a – e)</h2>
+            <p class="sub-note">เลือกคำศัพท์อาหารจากบทอ่านให้ตรงกับภาพแต่ละข้อ (เต็ม 5 คะแนน)</p>
+        </div>
+
+        <div class="word-bank">
+            <span class="bank-chip">birthday cake</span>
+            <span class="bank-chip">sandwiches</span>
+            <span class="bank-chip">chocolate biscuits</span>
+            <span class="bank-chip">red eggs</span>
+            <span class="bank-chip">noodle soup</span>
+        </div>
+
+        <div class="label-grid" id="labelGrid"></div>
+
+        <div class="submit-area">
+            <button id="checkBtn" class="btn-3d btn-mint" style="padding:12px 26px; font-size:16px;" onclick="checkAnswers()">✅ ตรวจคำตอบ &amp; ส่งคะแนน</button>
+            <button id="revealBtn" class="btn-3d btn-gold" style="display:none; padding:12px 22px; font-size:15px;" onclick="revealAllAnswers()">👁️ ดูเฉลยทั้งหมด</button>
+            <button id="resetBtn" class="btn-3d btn-slate" style="display:none; padding:12px 22px; font-size:15px;" onclick="resetExercise()">🔄 ทำใหม่อีกครั้ง</button>
+        </div>
+    </div>
+
+    <!-- Interactive Vocab Popover -->
+    <div id="vocab-popover">
+        <div class="vp-head">
+            <div>
+                <span id="vpWord" class="vp-word"></span>
+                <span id="vpPos" class="vp-pos"></span>
+            </div>
+            <button class="vp-close" onclick="hideVocabPopover()">✕</button>
+        </div>
+        <div id="vpMeaning" class="vp-meaning"></div>
+    </div>
+
+    <!-- Hidden Audio Element -->
+    <audio id="audioEl" preload="auto"></audio>
+
+    <!-- Login Modal -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal-box">
+            <h2 id="modalTitle" style="color:#9a3412; margin:0 0 6px 0; font-family:'Prompt';">📝 ลงชื่อเข้าเรียน</h2>
+            <p id="modalSub" style="color:#64748b; font-weight:600; margin:0 0 12px 0; font-size:14px;">กรอกข้อมูลเพื่อเริ่มเรียนและบันทึกคะแนน</p>
+            <input type="text" id="in_name" placeholder="ชื่อ - นามสกุล">
+            <input type="text" id="in_room" placeholder="ชั้น/ห้อง (เช่น 1/1)">
+            <input type="text" id="in_id" placeholder="รหัสนักเรียน (5 หลัก)" maxlength="5">
+            <button class="btn-3d" style="width:100%; justify-content:center;" onclick="confirmUser()">🚀 เริ่มเรียนเลย</button>
+        </div>
+    </div>
+
+    <!-- Score Modal -->
+    <div class="modal-overlay" id="scoreModal">
+        <div class="modal-box">
+            <h2 style="color:#9a3412; margin:0; font-family:'Prompt';">🎉 สรุปผลคะแนน</h2>
+            <p style="color:#64748b; font-weight:600; margin:6px 0 0 0; font-size:14px;">Label the Pictures (5 ข้อ)</p>
+            <span class="score-num"><span id="finalScoreText">0</span><span style="font-size:26px; color:#94a3b8;">/5</span></span>
+            <div id="saveStatus" style="font-weight:700; font-size:14px; margin-bottom:14px; color:#d97706; min-height:20px;"></div>
+            <button id="playAgainBtn" class="btn-3d btn-mint" style="width:100%; justify-content:center;" onclick="closeScoreModal()" disabled>👍 ตกลง / ดูผลคำตอบ</button>
+        </div>
+    </div>
+
+<script>
+    const TOPIC_NAME = 'ม.1 Unit 8 It was fantastic Label Pictures';
+
+    // ================= VOCABULARY DICTIONARY (FOR POPOVER) =================
+    const VOCAB_DICT = {
+        'britain':      { pos: 'n.', meaning: 'ประเทศสหราชอาณาจักร (อังกฤษ)' },
+        'usually':      { pos: 'adv.', meaning: 'โดยปกติ, มักจะ' },
+        'celebrate':    { pos: 'v.', meaning: 'เฉลิมฉลอง' },
+        'birthdays':    { pos: 'n.', meaning: 'วันเกิด (พหูพจน์)' },
+        'birthday':     { pos: 'n.', meaning: 'วันเกิด' },
+        'great':        { pos: 'adj.', meaning: 'ยอดเยี่ยม, ดีมาก' },
+        'brought':      { pos: 'v.', meaning: 'นำมาให้ (ช่อง 2 ของ bring)' },
+        'gifts':        { pos: 'n.', meaning: 'ของขวัญ' },
+        'decorated':    { pos: 'v.', meaning: 'ตกแต่ง (ช่อง 2 ของ decorate)' },
+        'balloons':     { pos: 'n.', meaning: 'ลูกโป่ง' },
+        'cake':         { pos: 'n.', meaning: 'เค้ก' },
+        'crisps':       { pos: 'n.', meaning: 'มันฝรั่งทอดกรอบ (แบบอังกฤษ)' },
+        'sandwiches':   { pos: 'n.', meaning: 'แซนด์วิช' },
+        'cakes':        { pos: 'n.', meaning: 'ขนมเค้กชิ้นเล็ก' },
+        'chocolate':    { pos: 'n.', meaning: 'ช็อกโกแลต' },
+        'biscuits':     { pos: 'n.', meaning: 'บิสกิต, คุกกี้กรอบ' },
+        'sausages':     { pos: 'n.', meaning: 'ไส้กรอก' },
+        'sticks':       { pos: 'n.', meaning: 'ไม้เสียบ' },
+        'fantastic':    { pos: 'adj.', meaning: 'ยอดเยี่ยมมาก, วิเศษมาก' },
+        'china':        { pos: 'n.', meaning: 'ประเทศจีน' },
+        'celebrations': { pos: 'n.', meaning: 'การเฉลิมฉลอง' },
+        'special':      { pos: 'adj.', meaning: 'พิเศษ' },
+        'relatives':    { pos: 'n.', meaning: 'ญาติพี่น้อง' },
+        'noodles':      { pos: 'n.', meaning: 'บะหมี่, ก๋วยเตี๋ยว' },
+        'mean':         { pos: 'v.', meaning: 'หมายความว่า' },
+        'life':         { pos: 'n.', meaning: 'ชีวิต, อายุยืนยาว' },
+        'soup':         { pos: 'n.', meaning: 'น้ำซุป' },
+        'tried':        { pos: 'v.', meaning: 'พยายาม (ช่อง 2 ของ try)' },
+        'cut':          { pos: 'v.', meaning: 'ตัด' },
+        'unlucky':      { pos: 'adj.', meaning: 'โชคร้าย, เป็นลางไม่ดี' },
+        'eggs':         { pos: 'n.', meaning: 'ไข่' },
+        'colour':       { pos: 'n.', meaning: 'สี (สะกดแบบอังกฤษ)' },
+        'believe':      { pos: 'v.', meaning: 'เชื่อว่า' },
+        'brings':       { pos: 'v.', meaning: 'นำมาซึ่ง' },
+        'luck':         { pos: 'n.', meaning: 'โชค, ความโชคดี' },
+        'envelopes':    { pos: 'n.', meaning: 'ซองจดหมาย, ซองอั่งเปา' },
+        'fun':          { pos: 'n.', meaning: 'ความสนุกสนาน' }
+    };
+
+    // ================= EMBEDDED SUBTITLES FROM BritainJane.json & ChinaLee.json =================
+    const STORIES = [
+        {
+            id: 'britain',
+            title: 'Britain (Jane, 13)',
+            img: 'britain.jpg',
+            audio: 'BritainJane.mp3',
+            segments: [
+                {
+                    start: 0.211, end: 1.5,
+                    en: 'Britain.',
+                    th: 'ประเทศอังกฤษ',
+                    words: [{ word: 'Britain', start: 0.211, end: 0.732 }]
+                },
+                {
+                    start: 1.994, end: 7.16,
+                    en: 'In Britain, we usually have a party to celebrate our birthdays.',
+                    th: 'ในประเทศอังกฤษ พวกเรามักจะจัดงานปาร์ตี้เพื่อฉลองวันเกิดกัน',
+                    words: [
+                        { word: 'In', start: 1.994, end: 2.114 },
+                        { word: 'Britain,', start: 2.234, end: 2.754 },
+                        { word: 'we', start: 3.155, end: 3.315 },
+                        { word: 'usually', start: 3.495, end: 3.976 },
+                        { word: 'have', start: 4.076, end: 4.276 },
+                        { word: 'a', start: 4.336, end: 4.357 },
+                        { word: 'party', start: 4.477, end: 5.057 },
+                        { word: 'to', start: 5.298, end: 5.418 },
+                        { word: 'celebrate', start: 5.498, end: 6.099 },
+                        { word: 'our', start: 6.299, end: 6.419 },
+                        { word: 'birthdays.', start: 6.479, end: 7.16 }
+                    ]
+                },
+                {
+                    start: 8.254, end: 11.515,
+                    en: 'My birthday party last year was great.',
+                    th: 'งานปาร์ตี้วันเกิดของฉันเมื่อปีที่แล้วเยี่ยมยอดมาก',
+                    words: [
+                        { word: 'My', start: 8.254, end: 8.534 },
+                        { word: 'birthday', start: 8.674, end: 9.214 },
+                        { word: 'party', start: 9.294, end: 9.754 },
+                        { word: 'last', start: 9.854, end: 10.174 },
+                        { word: 'year', start: 10.274, end: 10.595 },
+                        { word: 'was', start: 10.715, end: 10.875 },
+                        { word: 'great.', start: 11.055, end: 11.515 }
+                    ]
+                },
+                {
+                    start: 12.355, end: 14.455,
+                    en: 'My friends brought me gifts.',
+                    th: 'เพื่อนๆ ของฉันนำของขวัญมาให้ฉัน',
+                    words: [
+                        { word: 'My', start: 12.355, end: 12.515 },
+                        { word: 'friends', start: 12.675, end: 13.155 },
+                        { word: 'brought', start: 13.315, end: 13.615 },
+                        { word: 'me', start: 13.715, end: 13.835 },
+                        { word: 'gifts.', start: 13.935, end: 14.455 }
+                    ]
+                },
+                {
+                    start: 15.236, end: 17.996,
+                    en: 'We decorated the house with balloons.',
+                    th: 'พวกเราตกแต่งบ้านด้วยลูกโป่ง',
+                    words: [
+                        { word: 'We', start: 15.236, end: 15.396 },
+                        { word: 'decorated', start: 15.496, end: 16.236 },
+                        { word: 'the', start: 16.316, end: 16.436 },
+                        { word: 'house', start: 16.536, end: 16.916 },
+                        { word: 'with', start: 17.076, end: 17.236 },
+                        { word: 'balloons.', start: 17.336, end: 17.996 }
+                    ]
+                },
+                {
+                    start: 18.896, end: 21.397,
+                    en: 'My mum made me a birthday cake.',
+                    th: 'คุณแม่ของฉันทำเค้กวันเกิดให้ฉัน',
+                    words: [
+                        { word: 'My', start: 18.896, end: 19.056 },
+                        { word: 'mum', start: 19.196, end: 19.536 },
+                        { word: 'made', start: 19.756, end: 19.997 },
+                        { word: 'me', start: 20.057, end: 20.197 },
+                        { word: 'a', start: 20.237, end: 20.277 },
+                        { word: 'birthday', start: 20.357, end: 20.957 },
+                        { word: 'cake.', start: 21.037, end: 21.397 }
+                    ]
+                },
+                {
+                    start: 22.377, end: 33.939,
+                    en: 'We had a table full of food with crisps, sandwiches, small cakes, chocolate biscuits, ice cream and sausages on sticks.',
+                    th: 'พวกเรามีอาหารเต็มโต๊ะ ทั้งมันฝรั่งทอดกรอบ แซนด์วิช เค้กชิ้นเล็ก บิสกิตช็อกโกแลต ไอศกรีม และไส้กรอกเสียบไม้',
+                    words: [
+                        { word: 'We', start: 22.377, end: 22.497 },
+                        { word: 'had', start: 22.557, end: 22.717 },
+                        { word: 'a', start: 22.757, end: 22.797 },
+                        { word: 'table', start: 22.957, end: 23.497 },
+                        { word: 'full', start: 23.677, end: 23.997 },
+                        { word: 'of', start: 24.097, end: 24.157 },
+                        { word: 'food', start: 24.317, end: 24.698 },
+                        { word: 'with', start: 25.098, end: 25.238 },
+                        { word: 'crisps,', start: 25.418, end: 25.878 },
+                        { word: 'sandwiches,', start: 26.418, end: 27.238 },
+                        { word: 'small', start: 27.718, end: 28.098 },
+                        { word: 'cakes,', start: 28.218, end: 28.658 },
+                        { word: 'chocolate', start: 29.218, end: 29.699 },
+                        { word: 'biscuits,', start: 29.799, end: 30.359 },
+                        { word: 'ice', start: 31.039, end: 31.199 },
+                        { word: 'cream', start: 31.279, end: 31.639 },
+                        { word: 'and', start: 32.059, end: 32.179 },
+                        { word: 'sausages', start: 32.359, end: 32.999 },
+                        { word: 'on', start: 33.199, end: 33.319 },
+                        { word: 'sticks.', start: 33.459, end: 33.939 }
+                    ]
+                },
+                {
+                    start: 34.64, end: 36.1,
+                    en: 'I just love them!',
+                    th: 'ฉันชอบอาหารพวกนี้มากเลย!',
+                    words: [
+                        { word: 'I', start: 34.64, end: 34.72 },
+                        { word: 'just', start: 34.94, end: 35.28 },
+                        { word: 'love', start: 35.56, end: 35.86 },
+                        { word: 'them!', start: 35.92, end: 36.1 }
+                    ]
+                },
+                {
+                    start: 37.083, end: 39.775,
+                    en: 'I played party games with my friends.',
+                    th: 'ฉันเล่นเกมปาร์ตี้กับเพื่อนๆ ของฉัน',
+                    words: [
+                        { word: 'I', start: 37.083, end: 37.163 },
+                        { word: 'played', start: 37.264, end: 37.686 },
+                        { word: 'party', start: 37.846, end: 38.308 },
+                        { word: 'games', start: 38.349, end: 38.73 },
+                        { word: 'with', start: 38.811, end: 38.951 },
+                        { word: 'my', start: 39.032, end: 39.192 },
+                        { word: 'friends.', start: 39.293, end: 39.775 }
+                    ]
+                },
+                {
+                    start: 40.558, end: 42.547,
+                    en: 'It was fantastic.',
+                    th: 'มันยอดเยี่ยมมากเลย',
+                    words: [
+                        { word: 'It', start: 40.558, end: 40.659 },
+                        { word: 'was', start: 40.839, end: 41.121 },
+                        { word: 'fantastic.', start: 41.342, end: 42.547 }
+                    ]
+                },
+                {
+                    start: 43.491, end: 44.5,
+                    en: 'Jane (13)',
+                    th: 'เจน (อายุ 13 ปี)',
+                    words: [
+                        { word: 'Jane', start: 43.491, end: 43.853 },
+                        { word: '(13)', start: 43.873, end: 44.2 }
+                    ]
+                }
+            ]
+        },
+        {
+            id: 'china',
+            title: 'China (Lee, 12)',
+            img: 'china.jpg',
+            audio: 'ChinaLee.mp3',
+            segments: [
+                {
+                    start: 0.271, end: 1.5,
+                    en: 'China.',
+                    th: 'ประเทศจีน',
+                    words: [{ word: 'China', start: 0.271, end: 0.811 }]
+                },
+                {
+                    start: 1.992, end: 5.533,
+                    en: 'Birthday celebrations are very special in China.',
+                    th: 'การฉลองวันเกิดเป็นเรื่องที่พิเศษมากในประเทศจีน',
+                    words: [
+                        { word: 'Birthday', start: 1.992, end: 2.572 },
+                        { word: 'celebrations', start: 2.632, end: 3.532 },
+                        { word: 'are', start: 3.652, end: 3.752 },
+                        { word: 'very', start: 3.852, end: 4.172 },
+                        { word: 'special', start: 4.332, end: 4.812 },
+                        { word: 'in', start: 4.892, end: 4.992 },
+                        { word: 'China.', start: 5.092, end: 5.533 }
+                    ]
+                },
+                {
+                    start: 6.473, end: 9.134,
+                    en: 'I had a great time on my birthday.',
+                    th: 'ฉันมีช่วงเวลาที่ยอดเยี่ยมในวันเกิดของฉัน',
+                    words: [
+                        { word: 'I', start: 6.473, end: 6.573 },
+                        { word: 'had', start: 6.653, end: 6.973 },
+                        { word: 'a', start: 7.093, end: 7.133 },
+                        { word: 'great', start: 7.253, end: 7.633 },
+                        { word: 'time', start: 7.733, end: 8.113 },
+                        { word: 'on', start: 8.213, end: 8.293 },
+                        { word: 'my', start: 8.333, end: 8.533 },
+                        { word: 'birthday.', start: 8.593, end: 9.134 }
+                    ]
+                },
+                {
+                    start: 9.994, end: 14.035,
+                    en: 'All my friends and relatives came to our house to celebrate.',
+                    th: 'เพื่อนๆ และญาติๆ ทุกคนมาที่บ้านของพวกเราเพื่อร่วมฉลอง',
+                    words: [
+                        { word: 'All', start: 9.994, end: 10.174 },
+                        { word: 'my', start: 10.254, end: 10.434 },
+                        { word: 'friends', start: 10.574, end: 10.974 },
+                        { word: 'and', start: 11.054, end: 11.154 },
+                        { word: 'relatives', start: 11.234, end: 11.794 },
+                        { word: 'came', start: 11.934, end: 12.214 },
+                        { word: 'to', start: 12.315, end: 12.455 },
+                        { word: 'our', start: 12.575, end: 12.695 },
+                        { word: 'house', start: 12.755, end: 13.135 },
+                        { word: 'to', start: 13.255, end: 13.355 },
+                        { word: 'celebrate.', start: 13.415, end: 14.035 }
+                    ]
+                },
+                {
+                    start: 14.915, end: 17.196,
+                    en: 'We ate very long noodles.',
+                    th: 'พวกเรากินบะหมี่เส้นยาวมากๆ',
+                    words: [
+                        { word: 'We', start: 14.915, end: 15.095 },
+                        { word: 'ate', start: 15.255, end: 15.475 },
+                        { word: 'very', start: 15.695, end: 16.036 },
+                        { word: 'long', start: 16.216, end: 16.556 },
+                        { word: 'noodles.', start: 16.676, end: 17.196 }
+                    ]
+                },
+                {
+                    start: 17.936, end: 20.397,
+                    en: 'They mean we will have a long life.',
+                    th: 'มันมีความหมายว่าพวกเราจะมีอายุยืนยาว',
+                    words: [
+                        { word: 'They', start: 17.936, end: 18.136 },
+                        { word: 'mean', start: 18.216, end: 18.496 },
+                        { word: 'we', start: 18.596, end: 18.716 },
+                        { word: 'will', start: 18.756, end: 18.956 },
+                        { word: 'have', start: 18.996, end: 19.296 },
+                        { word: 'a', start: 19.497, end: 19.537 },
+                        { word: 'long', start: 19.637, end: 19.957 },
+                        { word: 'life.', start: 20.057, end: 20.397 }
+                    ]
+                },
+                {
+                    start: 21.297, end: 26.945,
+                    en: "They were in the soup and we tried not to cut them because it's unlucky!",
+                    th: 'เส้นบะหมี่อยู่ในน้ำซุป และพวกเราพยายามไม่ตัดเส้นเพราะเชื่อว่าเป็นลางไม่ดี!',
+                    words: [
+                        { word: 'They', start: 21.297, end: 21.498 },
+                        { word: 'were', start: 21.538, end: 21.698 },
+                        { word: 'in', start: 21.798, end: 21.898 },
+                        { word: 'the', start: 21.958, end: 22.078 },
+                        { word: 'soup', start: 22.178, end: 22.519 },
+                        { word: 'and', start: 22.899, end: 23.02 },
+                        { word: 'we', start: 23.08, end: 23.2 },
+                        { word: 'tried', start: 23.3, end: 23.741 },
+                        { word: 'not', start: 23.921, end: 24.221 },
+                        { word: 'to', start: 24.341, end: 24.441 },
+                        { word: 'cut', start: 24.502, end: 24.742 },
+                        { word: 'them', start: 24.802, end: 24.962 },
+                        { word: 'because', start: 25.343, end: 25.863 },
+                        { word: "it's", start: 26.024, end: 26.164 },
+                        { word: 'unlucky!', start: 26.364, end: 26.945 }
+                    ]
+                },
+                {
+                    start: 27.766, end: 30.049,
+                    en: 'We also ate red eggs.',
+                    th: 'พวกเรายังกินไข่สีแดงด้วย',
+                    words: [
+                        { word: 'We', start: 27.766, end: 27.926 },
+                        { word: 'also', start: 28.126, end: 28.587 },
+                        { word: 'ate', start: 28.827, end: 29.048 },
+                        { word: 'red', start: 29.248, end: 29.508 },
+                        { word: 'eggs.', start: 29.768, end: 30.049 }
+                    ]
+                },
+                {
+                    start: 30.83, end: 33.193,
+                    en: 'Red is a special colour for us.',
+                    th: 'สีแดงเป็นสีที่พิเศษสำหรับพวกเรา',
+                    words: [
+                        { word: 'Red', start: 30.83, end: 31.17 },
+                        { word: 'is', start: 31.411, end: 31.511 },
+                        { word: 'a', start: 31.571, end: 31.591 },
+                        { word: 'special', start: 31.731, end: 32.272 },
+                        { word: 'colour', start: 32.352, end: 32.712 },
+                        { word: 'for', start: 32.772, end: 32.933 },
+                        { word: 'us.', start: 33.073, end: 33.193 }
+                    ]
+                },
+                {
+                    start: 33.894, end: 36.097,
+                    en: 'We believe it brings good luck.',
+                    th: 'พวกเราเชื่อว่าสีแดงจะนำความโชคดีมาให้',
+                    words: [
+                        { word: 'We', start: 33.894, end: 34.054 },
+                        { word: 'believe', start: 34.134, end: 34.615 },
+                        { word: 'it', start: 34.735, end: 34.815 },
+                        { word: 'brings', start: 34.935, end: 35.376 },
+                        { word: 'good', start: 35.496, end: 35.716 },
+                        { word: 'luck.', start: 35.776, end: 36.097 }
+                    ]
+                },
+                {
+                    start: 36.878, end: 39.682,
+                    en: 'We decorated the house with red paper.',
+                    th: 'พวกเราตกแต่งบ้านด้วยกระดาษสีแดง',
+                    words: [
+                        { word: 'We', start: 36.878, end: 37.038 },
+                        { word: 'decorated', start: 37.158, end: 37.879 },
+                        { word: 'the', start: 37.939, end: 38.039 },
+                        { word: 'house', start: 38.099, end: 38.5 },
+                        { word: 'with', start: 38.6, end: 38.76 },
+                        { word: 'red', start: 38.86, end: 39.101 },
+                        { word: 'paper.', start: 39.221, end: 39.682 }
+                    ]
+                },
+                {
+                    start: 40.523, end: 43.366,
+                    en: 'I also got money in red envelopes.',
+                    th: 'ฉันยังได้รับเงินในซองสีแดง (อั่งเปา) ด้วย',
+                    words: [
+                        { word: 'I', start: 40.523, end: 40.603 },
+                        { word: 'also', start: 40.783, end: 41.184 },
+                        { word: 'got', start: 41.284, end: 41.484 },
+                        { word: 'money', start: 41.624, end: 41.965 },
+                        { word: 'in', start: 42.205, end: 42.285 },
+                        { word: 'red', start: 42.405, end: 42.625 },
+                        { word: 'envelopes.', start: 42.786, end: 43.366 }
+                    ]
+                },
+                {
+                    start: 44.167, end: 46.33,
+                    en: 'We all had a lot of fun.',
+                    th: 'พวกเราทุกคนสนุกกันมากเลย',
+                    words: [
+                        { word: 'We', start: 44.167, end: 44.328 },
+                        { word: 'all', start: 44.588, end: 44.768 },
+                        { word: 'had', start: 44.808, end: 45.169 },
+                        { word: 'a', start: 45.349, end: 45.389 },
+                        { word: 'lot', start: 45.549, end: 45.81 },
+                        { word: 'of', start: 45.87, end: 45.93 },
+                        { word: 'fun.', start: 46.03, end: 46.33 }
+                    ]
+                },
+                {
+                    start: 47.412, end: 48.3,
+                    en: 'Lee (12)',
+                    th: 'ลี (อายุ 12 ปี)',
+                    words: [
+                        { word: 'Lee,', start: 47.412, end: 47.692 },
+                        { word: '(12)', start: 47.712, end: 48.0 }
+                    ]
+                }
+            ]
+        }
+    ];
+
+    // ================= EXERCISE DATA (a - e) =================
+    const WORD_CHOICES = [
+        'birthday cake',
+        'sandwiches',
+        'chocolate biscuits',
+        'red eggs',
+        'noodle soup'
+    ];
+
+    const LABEL_ITEMS = [
+        {
+            letter: 'a',
+            country: '🇬🇧 Britain',
+            answer: 'birthday cake',
+            clue: 'My mum made me a _______.',
+            svg: `<svg viewBox="0 0 140 110" xmlns="http://www.w3.org/2000/svg">
+                <ellipse cx="70" cy="96" rx="52" ry="10" fill="#e2e8f0"/>
+                <rect x="28" y="64" width="84" height="30" rx="10" fill="#fbcfe8" stroke="#ec4899" stroke-width="2.5"/>
+                <path d="M28 74 Q42 84 56 74 T84 74 T112 74" fill="none" stroke="#f472b6" stroke-width="4" stroke-linecap="round"/>
+                <rect x="42" y="38" width="56" height="28" rx="8" fill="#fce7f3" stroke="#ec4899" stroke-width="2.5"/>
+                <path d="M42 48 Q56 56 70 48 T98 48" fill="none" stroke="#f472b6" stroke-width="3.5" stroke-linecap="round"/>
+                <rect x="56" y="20" width="6" height="18" rx="2" fill="#38bdf8"/>
+                <rect x="67" y="16" width="6" height="22" rx="2" fill="#fbbf24"/>
+                <rect x="78" y="20" width="6" height="18" rx="2" fill="#34d399"/>
+                <path d="M59 10 Q63 16 59 20 Q55 16 59 10Z" fill="#f97316"/>
+                <path d="M70 6 Q74 12 70 16 Q66 12 70 6Z" fill="#f97316"/>
+                <path d="M81 10 Q85 16 81 20 Q77 16 81 10Z" fill="#f97316"/>
+            </svg>`
+        },
+        {
+            letter: 'b',
+            country: '🇬🇧 Britain',
+            answer: 'sandwiches',
+            clue: 'We had crisps, _______, and small cakes.',
+            svg: `<svg viewBox="0 0 140 110" xmlns="http://www.w3.org/2000/svg">
+                <ellipse cx="70" cy="94" rx="54" ry="10" fill="#e2e8f0"/>
+                <polygon points="24,84 116,84 70,30" fill="#fde68a" stroke="#d97706" stroke-width="3" stroke-linejoin="round"/>
+                <path d="M28 76 Q48 70 68 76 T112 76" fill="none" stroke="#22c55e" stroke-width="6" stroke-linecap="round"/>
+                <path d="M32 69 L108 69" stroke="#ef4444" stroke-width="5" stroke-linecap="round"/>
+                <path d="M36 63 L104 63" stroke="#facc15" stroke-width="4" stroke-linecap="round"/>
+                <polygon points="34,58 106,58 70,18" fill="#fef3c7" stroke="#d97706" stroke-width="3" stroke-linejoin="round"/>
+            </svg>`
+        },
+        {
+            letter: 'c',
+            country: '🇬🇧 Britain',
+            answer: 'chocolate biscuits',
+            clue: 'Sweet crunchy brown treats on the party table.',
+            svg: `<svg viewBox="0 0 140 110" xmlns="http://www.w3.org/2000/svg">
+                <ellipse cx="70" cy="95" rx="52" ry="10" fill="#e2e8f0"/>
+                <circle cx="52" cy="64" r="28" fill="#78350f" stroke="#451a03" stroke-width="3"/>
+                <circle cx="42" cy="54" r="4" fill="#29150c"/>
+                <circle cx="60" cy="52" r="3.5" fill="#29150c"/>
+                <circle cx="50" cy="70" r="4.5" fill="#29150c"/>
+                <circle cx="38" cy="72" r="3" fill="#29150c"/>
+                <circle cx="88" cy="68" r="26" fill="#92400e" stroke="#451a03" stroke-width="3"/>
+                <circle cx="80" cy="58" r="3.8" fill="#29150c"/>
+                <circle cx="96" cy="62" r="4.2" fill="#29150c"/>
+                <circle cx="86" cy="78" r="3.5" fill="#29150c"/>
+                <circle cx="98" cy="76" r="3" fill="#29150c"/>
+            </svg>`
+        },
+        {
+            letter: 'd',
+            country: '🇨🇳 China',
+            answer: 'red eggs',
+            clue: 'We also ate _______. They bring good luck!',
+            svg: `<svg viewBox="0 0 140 110" xmlns="http://www.w3.org/2000/svg">
+                <ellipse cx="70" cy="94" rx="52" ry="10" fill="#e2e8f0"/>
+                <ellipse cx="46" cy="64" rx="20" ry="26" fill="#dc2626" stroke="#991b1b" stroke-width="2.5"/>
+                <ellipse cx="40" cy="54" rx="4" ry="8" fill="rgba(255,255,255,0.3)" transform="rotate(-15 40 54)"/>
+                <ellipse cx="94" cy="64" rx="20" ry="26" fill="#dc2626" stroke="#991b1b" stroke-width="2.5"/>
+                <ellipse cx="88" cy="54" rx="4" ry="8" fill="rgba(255,255,255,0.3)" transform="rotate(-15 88 54)"/>
+                <ellipse cx="70" cy="68" rx="22" ry="28" fill="#ef4444" stroke="#991b1b" stroke-width="2.5"/>
+                <ellipse cx="63" cy="56" rx="4.5" ry="9" fill="rgba(255,255,255,0.35)" transform="rotate(-15 63 56)"/>
+            </svg>`
+        },
+        {
+            letter: 'e',
+            country: '🇨🇳 China',
+            answer: 'noodle soup',
+            clue: 'Very long noodles in a bowl for a long life.',
+            svg: `<svg viewBox="0 0 140 110" xmlns="http://www.w3.org/2000/svg">
+                <ellipse cx="70" cy="96" rx="44" ry="8" fill="#e2e8f0"/>
+                <path d="M22 52 Q22 94 70 94 Q118 94 118 52 Z" fill="#dc2626" stroke="#991b1b" stroke-width="2.5"/>
+                <ellipse cx="70" cy="52" rx="48" ry="15" fill="#fef3c7" stroke="#991b1b" stroke-width="2.5"/>
+                <path d="M36 52 Q52 42 70 52 T104 52" fill="none" stroke="#f59e0b" stroke-width="4" stroke-linecap="round"/>
+                <path d="M40 57 Q58 48 76 57 T100 55" fill="none" stroke="#fbbf24" stroke-width="3.5" stroke-linecap="round"/>
+                <circle cx="54" cy="48" r="5" fill="#16a34a"/>
+                <circle cx="88" cy="50" r="4.5" fill="#16a34a"/>
+                <path d="M52 28 Q48 20 54 14" fill="none" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round"/>
+                <path d="M70 25 Q66 17 72 11" fill="none" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round"/>
+                <path d="M88 28 Q84 20 90 14" fill="none" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round"/>
+            </svg>`
+        }
+    ];
+
+    let currentStoryIdx = 0;
+    let ccEnabled = true;
+    let activeSegIdx = -1;
+    let currentScore = 0;
+    let isPendingSubmit = false;
+
+    const audioEl = document.getElementById('audioEl');
+    const seekBar = document.getElementById('seekBar');
+    const mediaStage = document.getElementById('mediaStage');
+
+    // Web Audio API Sound Effects
+    function playSfx(type) {
+        try {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.type = type === 'ok' ? 'triangle' : 'sawtooth';
+            osc.frequency.setValueAtTime(type === 'ok' ? 587.33 : 220, ctx.currentTime);
+            if (type === 'ok') osc.frequency.setValueAtTime(880, ctx.currentTime + 0.1);
+            gain.gain.setValueAtTime(0.14, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.25);
+        } catch (e) {}
+    }
+
+    function formatTime(sec) {
+        if (isNaN(sec)) return '0:00';
+        const m = Math.floor(sec / 60);
+        const s = Math.floor(sec % 60);
+        return `${m}:${s < 10 ? '0' : ''}${s}`;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        checkLoginStatus();
+        selectStory(0, false);
+        renderExercise();
+    });
+
+    // ================= STORY & SYNCED SUBTITLE ENGINE =================
+    function selectStory(idx, autoPlay = false) {
+        currentStoryIdx = idx;
+        activeSegIdx = -1;
+        hideVocabPopover();
+
+        const story = STORIES[idx];
+        document.getElementById('tabUK').className = idx === 0 ? 'story-tab active-uk' : 'story-tab';
+        document.getElementById('tabCN').className = idx === 1 ? 'story-tab active-cn' : 'story-tab';
+        document.getElementById('stageImg').src = story.img;
+        document.getElementById('articleHeading').innerText = `📖 บทความและคำแปล: ${story.title}`;
+
+        audioEl.pause();
+        audioEl.src = story.audio;
+        audioEl.load();
+        updatePlayButtons(false);
+
+        document.getElementById('subEn').innerText = `กดปุ่ม ▶️ เพื่อฟังเรื่องราว: ${story.title}`;
+        document.getElementById('subTh').innerText = 'แตะคำศัพท์ที่มีเส้นประเพื่อดูความหมายเฉพาะคำ';
+
+        renderArticleList();
+
+        if (autoPlay) {
+            audioEl.play().catch(() => {});
+        }
+    }
+
+    function prevStory() {
+        const nextIdx = (currentStoryIdx - 1 + STORIES.length) % STORIES.length;
+        selectStory(nextIdx, true);
+    }
+
+    function nextStory() {
+        const nextIdx = (currentStoryIdx + 1) % STORIES.length;
+        selectStory(nextIdx, true);
+    }
+
+    function togglePlay() {
+        hideVocabPopover();
+        if (audioEl.paused) {
+            audioEl.play().catch(() => {
+                Swal.fire('ไม่พบไฟล์เสียง', `กรุณาตรวจสอบว่ามีไฟล์ ${STORIES[currentStoryIdx].audio} อยู่ในโฟลเดอร์เดียวกัน`, 'info');
+            });
+        } else {
+            audioEl.pause();
+        }
+    }
+
+    function replayAudio() {
+        hideVocabPopover();
+        audioEl.currentTime = 0;
+        audioEl.play().catch(() => {});
+    }
+
+    function updatePlayButtons(isPlaying) {
+        document.getElementById('playBtn').innerText = isPlaying ? '⏸️ หยุดชั่วคราว' : '▶️ เล่นเสียง';
+        document.getElementById('fsPlayBtn').innerText = isPlaying ? '⏸️ Pause' : '▶️ Play';
+    }
+
+    audioEl.addEventListener('play', () => updatePlayButtons(true));
+    audioEl.addEventListener('pause', () => updatePlayButtons(false));
+    audioEl.addEventListener('ended', () => updatePlayButtons(false));
+
+    audioEl.addEventListener('loadedmetadata', () => {
+        seekBar.max = audioEl.duration || 100;
+        document.getElementById('durTime').innerText = formatTime(audioEl.duration);
+    });
+
+    seekBar.addEventListener('input', () => {
+        audioEl.currentTime = parseFloat(seekBar.value);
+    });
+
+    audioEl.addEventListener('timeupdate', () => {
+        const t = audioEl.currentTime;
+        seekBar.value = t;
+        document.getElementById('curTime').innerText = formatTime(t);
+
+        const segs = STORIES[currentStoryIdx].segments;
+        let foundIdx = -1;
+        for (let i = 0; i < segs.length; i++) {
+            if (t >= segs[i].start - 0.15 && t <= segs[i].end + 0.5) {
+                foundIdx = i;
+                break;
+            }
+        }
+
+        if (foundIdx !== -1) {
+            if (foundIdx !== activeSegIdx) {
+                activeSegIdx = foundIdx;
+                renderSubtitleSegment(segs[foundIdx]);
+                highlightArticleSentence(foundIdx);
+            }
+            updateWordHighlight(segs[foundIdx], t);
+        }
+    });
+
+    function cleanWordKey(w) {
+        return w.toLowerCase().replace(/[^a-z]/g, '');
+    }
+
+    function renderSubtitleSegment(seg) {
+        const enBox = document.getElementById('subEn');
+        enBox.innerHTML = '';
+
+        seg.words.forEach((wObj, i) => {
+            const span = document.createElement('span');
+            span.className = 'sub-word';
+            span.dataset.idx = i;
+            span.innerText = wObj.word;
+
+            const key = cleanWordKey(wObj.word);
+            if (VOCAB_DICT[key]) {
+                span.classList.add('vocab-hl');
+                span.onclick = (e) => {
+                    e.stopPropagation();
+                    showVocabPopover(e, wObj.word, key);
+                };
+            }
+
+            enBox.appendChild(span);
+            enBox.appendChild(document.createTextNode(' '));
+        });
+
+        document.getElementById('subTh').innerText = seg.th;
+    }
+
+    function updateWordHighlight(seg, currentTime) {
+        const spans = document.querySelectorAll('#subEn .sub-word');
+        seg.words.forEach((wObj, i) => {
+            if (!spans[i]) return;
+            if (currentTime >= wObj.start - 0.05 && currentTime <= wObj.end + 0.12) {
+                spans[i].classList.add('active');
+            } else {
+                spans[i].classList.remove('active');
+            }
+        });
+    }
+
+    // Interactive Vocab Popover (Fullscreen-safe)
+    function showVocabPopover(event, rawWord, key) {
+        audioEl.pause();
+        const entry = VOCAB_DICT[key];
+        if (!entry) return;
+
+        const pop = document.getElementById('vocab-popover');
+        const host = document.fullscreenElement || document.webkitFullscreenElement || document.body;
+        if (pop.parentElement !== host) {
+            host.appendChild(pop);
+        }
+
+        document.getElementById('vpWord').innerText = rawWord.replace(/[^a-zA-Z'-]/g, '');
+        document.getElementById('vpPos').innerText = entry.pos;
+        document.getElementById('vpMeaning').innerText = entry.meaning;
+
+        pop.style.display = 'block';
+        const popW = pop.offsetWidth || 220;
+        const popH = pop.offsetHeight || 86;
+
+        let left = event.clientX - popW / 2;
+        let top = event.clientY - popH - 14;
+
+        // Viewport boundary checks
+        if (left < 10) left = 10;
+        if (left + popW > window.innerWidth - 10) left = window.innerWidth - popW - 10;
+        if (top < 10) top = event.clientY + 18;
+        if (top + popH > window.innerHeight - 10) top = window.innerHeight - popH - 10;
+
+        pop.style.left = `${left}px`;
+        pop.style.top = `${top}px`;
+    }
+
+    function hideVocabPopover() {
+        document.getElementById('vocab-popover').style.display = 'none';
+    }
+
+    document.addEventListener('click', (e) => {
+        const pop = document.getElementById('vocab-popover');
+        if (pop.style.display === 'block' && !pop.contains(e.target) && !e.target.classList.contains('vocab-hl')) {
+            hideVocabPopover();
+        }
+    });
+
+    function toggleCC() {
+        ccEnabled = !ccEnabled;
+        document.getElementById('subtitleOverlay').classList.toggle('hidden', !ccEnabled);
+        document.getElementById('ccBtn').innerText = ccEnabled ? '💬 ซับ: เปิด' : '💬 ซับ: ปิด';
+    }
+
+    function toggleArticle() {
+        const panel = document.getElementById('articlePanel');
+        const isOpen = panel.classList.toggle('open');
+        document.getElementById('articleBtn').innerText = isOpen ? '📖 ซ่อนบทความ' : '📖 บทความ+คำแปล';
+    }
+
+    function renderArticleList() {
+        const box = document.getElementById('articleContent');
+        box.innerHTML = '';
+        STORIES[currentStoryIdx].segments.forEach((seg, i) => {
+            const div = document.createElement('div');
+            div.className = 'sentence-item';
+            div.id = `art-sent-${i}`;
+            div.innerHTML = `<div class="sent-en">${seg.en}</div><div class="sent-th">${seg.th}</div>`;
+            div.onclick = () => {
+                audioEl.currentTime = seg.start;
+                audioEl.play().catch(() => {});
+            };
+            box.appendChild(div);
+        });
+    }
+
+    function highlightArticleSentence(idx) {
+        document.querySelectorAll('.sentence-item').forEach((el, i) => {
+            el.classList.toggle('playing', i === idx);
+        });
+    }
+
+    // Fullscreen with CSS Pseudo-Fullscreen Fallback
+    function toggleFullscreen() {
+        hideVocabPopover();
+        const isNativeFS = document.fullscreenElement || document.webkitFullscreenElement;
+        const isPseudoFS = mediaStage.classList.contains('pseudo-fullscreen');
+
+        if (isNativeFS) {
+            if (document.exitFullscreen) document.exitFullscreen();
+            else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+        } else if (isPseudoFS) {
+            mediaStage.classList.remove('pseudo-fullscreen');
+        } else {
+            if (mediaStage.requestFullscreen) {
+                mediaStage.requestFullscreen().catch(() => mediaStage.classList.add('pseudo-fullscreen'));
+            } else if (mediaStage.webkitRequestFullscreen) {
+                mediaStage.webkitRequestFullscreen();
+            } else {
+                mediaStage.classList.add('pseudo-fullscreen');
+            }
+        }
+    }
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && mediaStage.classList.contains('pseudo-fullscreen')) {
+            mediaStage.classList.remove('pseudo-fullscreen');
+        }
+    });
+
+    // ================= EXERCISE LOGIC =================
+    function renderExercise() {
+        const grid = document.getElementById('labelGrid');
+        grid.innerHTML = '';
+
+        LABEL_ITEMS.forEach((item, idx) => {
+            const card = document.createElement('div');
+            card.className = 'pic-card';
+            card.id = `pic-card-${idx}`;
+
+            const optionsHtml = WORD_CHOICES.map(w => `<option value="${w}">${w}</option>`).join('');
+
+            card.innerHTML = `
+                <div class="letter-badge">${item.letter}</div>
+                <div class="country-pill">${item.country}</div>
+                <div class="food-art">${item.svg}</div>
+                <div class="pic-clue">${item.clue}</div>
+                <select class="pic-select" id="sel-${idx}">
+                    <option value="">-- เลือกคำศัพท์ --</option>
+                    ${optionsHtml}
+                </select>
+                <div class="answer-reveal" id="ans-${idx}"></div>
+            `;
+            grid.appendChild(card);
+        });
+    }
+
+    function checkAnswers() {
+        const picks = LABEL_ITEMS.map((_, idx) => document.getElementById(`sel-${idx}`).value);
+        if (picks.some(v => v === '')) {
+            Swal.fire('ยังเลือกไม่ครบ!', 'กรุณาเลือกคำศัพท์ให้ครบทั้ง 5 ภาพ (a – e) ก่อนส่งนะครับ', 'warning');
+            return;
+        }
+
+        let score = 0;
+        LABEL_ITEMS.forEach((item, idx) => {
+            const card = document.getElementById(`pic-card-${idx}`);
+            const sel = document.getElementById(`sel-${idx}`);
+            const ansEl = document.getElementById(`ans-${idx}`);
+            sel.disabled = true;
+
+            if (sel.value === item.answer) {
+                score++;
+                card.classList.add('is-correct');
+                ansEl.style.color = '#059669';
+                ansEl.innerText = '✅ ถูกต้อง!';
+            } else {
+                card.classList.add('is-wrong');
+                ansEl.style.color = '#e11d48';
+                ansEl.innerText = '❌ ยังไม่ถูก';
+            }
+        });
+
+        currentScore = score;
+        playSfx(score >= 3 ? 'ok' : 'no');
+
+        document.getElementById('checkBtn').style.display = 'none';
+        document.getElementById('revealBtn').style.display = 'inline-flex';
+        document.getElementById('resetBtn').style.display = 'inline-flex';
+
+        if (!localStorage.getItem('studentId')) {
+            isPendingSubmit = true;
+            document.getElementById('modalTitle').innerText = '📝 ลงชื่อเพื่อบันทึกคะแนน';
+            document.getElementById('modalSub').innerText = `คุณได้ ${currentScore}/5 คะแนน กรอกข้อมูลเพื่อส่งครู`;
+            document.getElementById('loginModal').classList.add('active');
+        } else {
+            submitScoreToSheet(currentScore);
+        }
+    }
+
+    function revealAllAnswers() {
+        LABEL_ITEMS.forEach((item, idx) => {
+            const ansEl = document.getElementById(`ans-${idx}`);
+            const sel = document.getElementById(`sel-${idx}`);
+            if (sel.value !== item.answer) {
+                ansEl.style.color = '#b45309';
+                ansEl.innerText = `💡 เฉลย: ${item.answer}`;
+            }
+        });
+    }
+
+    function resetExercise() {
+        document.getElementById('checkBtn').style.display = 'inline-flex';
+        document.getElementById('revealBtn').style.display = 'none';
+        document.getElementById('resetBtn').style.display = 'none';
+        renderExercise();
+    }
+
+    function closeScoreModal() {
+        document.getElementById('scoreModal').classList.remove('active');
+    }
+
+    // ================= LOGIN & GOOGLE SHEETS =================
+    function formatRoomValue(val) {
+        const nums = val.match(/\d+/g);
+        if (nums && nums.length >= 2) return `ม.${nums[0]}/${nums[1]}`;
+        if (nums && nums.length === 1) return `ม.1/${nums[0]}`;
+        return val.trim();
+    }
+
+    document.getElementById('in_room').addEventListener('blur', function() {
+        this.value = formatRoomValue(this.value);
+    });
+
+    function checkLoginStatus() {
+        if (localStorage.getItem('studentId')) {
+            document.getElementById('userProfile').style.display = 'flex';
+            document.getElementById('p_name').innerText = localStorage.getItem('studentName');
+            document.getElementById('p_room').innerText = localStorage.getItem('studentRoom');
+            document.getElementById('p_id').innerText = localStorage.getItem('studentId');
+        } else {
+            document.getElementById('userProfile').style.display = 'none';
+            document.getElementById('loginModal').classList.add('active');
+        }
+    }
+
+    function switchAccount() {
+        Swal.fire({
+            title: '⚠️ สลับบัญชีผู้เล่น?',
+            text: 'ระบบจะล้างข้อมูลเดิมและเริ่มใหม่',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#e11d48',
+            cancelButtonColor: '#94a3b8',
+            confirmButtonText: 'ตกลง',
+            cancelButtonText: 'ยกเลิก'
+        }).then((res) => {
+            if (res.isConfirmed) {
+                localStorage.clear();
+                isPendingSubmit = false;
+                document.getElementById('userProfile').style.display = 'none';
+                document.getElementById('in_name').value = '';
+                document.getElementById('in_room').value = '';
+                document.getElementById('in_id').value = '';
+                document.getElementById('modalTitle').innerText = '🔄 ลงชื่อบัญชีใหม่';
+                document.getElementById('modalSub').innerText = 'กรอกข้อมูลนักเรียนคนใหม่เพื่อเริ่มเรียน';
+                document.getElementById('loginModal').classList.add('active');
+            }
+        });
+    }
+
+    function confirmUser() {
+        const n = document.getElementById('in_name').value.trim();
+        const r = formatRoomValue(document.getElementById('in_room').value);
+        document.getElementById('in_room').value = r;
+        const id = document.getElementById('in_id').value.trim();
+
+        if (!n || !r || id.length !== 5) {
+            Swal.fire('ข้อมูลไม่ครบ!', 'กรุณากรอกชื่อ ห้อง และรหัสนักเรียน 5 หลัก', 'warning');
+            return;
+        }
+
+        localStorage.setItem('studentName', n);
+        localStorage.setItem('studentRoom', r);
+        localStorage.setItem('studentId', id);
+
+        document.getElementById('loginModal').classList.remove('active');
+        document.getElementById('userProfile').style.display = 'flex';
+        document.getElementById('p_name').innerText = n;
+        document.getElementById('p_room').innerText = r;
+        document.getElementById('p_id').innerText = id;
+
+        if (isPendingSubmit) {
+            isPendingSubmit = false;
+            submitScoreToSheet(currentScore);
+        }
+    }
+
+    function submitScoreToSheet(score) {
+        document.getElementById('scoreModal').classList.add('active');
+        document.getElementById('finalScoreText').innerText = score;
+        const stat = document.getElementById('saveStatus');
+        const playAgainBtn = document.getElementById('playAgainBtn');
+        playAgainBtn.disabled = true;
+
+        if (typeof QUIZ_CONFIG === 'undefined' || !QUIZ_CONFIG.SCRIPT_URL) {
+            stat.innerText = '❌ ไม่พบไฟล์ตั้งค่า (quiz-config.js)';
+            stat.style.color = '#b91c1c';
+            playAgainBtn.disabled = false;
+            return;
+        }
+
+        stat.innerText = '⏳ กำลังบันทึกคะแนนลงระบบ...';
+        stat.style.color = '#d97706';
+
+        fetch(QUIZ_CONFIG.SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            body: JSON.stringify({
+                name: localStorage.getItem('studentName'),
+                room: localStorage.getItem('studentRoom'),
+                studentId: "'" + localStorage.getItem('studentId'),
+                lesson: TOPIC_NAME,
+                score: score,
+                maxScore: LABEL_ITEMS.length
+            })
+        }).catch(e => console.error(e));
+
+        setTimeout(() => {
+            stat.innerText = '✅ บันทึกคะแนนลงระบบเรียบร้อย!';
+            stat.style.color = '#15803d';
+            playAgainBtn.disabled = false;
+        }, 1500);
+    }
+</script>
+</body>
+</html>
